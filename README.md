@@ -2,7 +2,7 @@
 
 Herramienta externa para Power BI Desktop que documenta un modelo (medidas DAX, tablas,
 columnas, relaciones, consultas Power Query) y su reporte (qué visual usa qué campo, en
-qué página), con exportación a CSV, Word y Markdown para IA.
+qué página), con exportación a Word, Excel, HTML, CSV, JSON y Markdown para IA.
 
 **Este proyecto no es un producto de Microsoft ni está afiliado, patrocinado o
 respaldado por Microsoft Corporation.** "Power BI" es una marca registrada de
@@ -26,7 +26,7 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
   ningún servidor: toda la búsqueda y lectura ocurre en tu máquina.
 - El código DAX/M que se exporta pasa por un enmascarado automático de patrones
   sensibles (emails, DNI, CUIT/CUIL, contraseñas/tokens en cadenas de conexión, rutas
-  locales que revelan tu usuario de Windows) antes de escribirse en el CSV/Word/Markdown.
+  locales que revelan tu usuario de Windows) antes de escribirse en cualquier exportación (Word, Excel, HTML, CSV, Markdown).
   Aun así, revisá el archivo exportado antes de compartirlo — ninguna heurística
   automática reemplaza una revisión humana si tu modelo tiene texto libre con datos
   personales embebidos a mano en una fórmula.
@@ -48,7 +48,9 @@ Este proyecto se distribuye bajo licencia MIT (ver `LICENSE`) — sin garantía,
 
 Usa dos componentes de terceros, redistribuidos dentro de la publicación self-contained:
 
-- **DocumentFormat.OpenXml** (Microsoft, licencia MIT) — generación del documento Word.
+- **DocumentFormat.OpenXml** (Microsoft, licencia MIT) — generación de los documentos Word y Excel.
+- **CommunityToolkit.Mvvm** (.NET Foundation, licencia MIT) — estructura MVVM de la interfaz.
+- **System.Management** (Microsoft, licencia MIT) — para detectar el motor local de Power BI Desktop.
 - **Microsoft.AnalysisServices.AdomdClient** (Microsoft, EULA de redistribución del SQL
   Server Feature Pack) — cliente para conectarse al motor analítico local que expone
   Power BI Desktop. Es el mismo componente que redistribuyen otras herramientas

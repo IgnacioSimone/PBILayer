@@ -262,8 +262,15 @@
                             AutomationProperties.Name="Reportes recientes" Padding="11,8">
                         <TextBlock Text="&#xE70D;" FontFamily="{StaticResource FontIcon}" FontSize="12" />
                     </Button>
-                    <Button Content="Exportar JSON" Style="{StaticResource SoftButton}"
-                            Command="{Binding ExportJsonCommand}" ToolTip="Guardar un snapshot para comparar después (Ctrl+Shift+E)" />
+                    <Button x:Name="ExportMenuButton" Style="{StaticResource SoftButton}" Click="ExportMenuButton_Click"
+                            ToolTip="Exportar a Word, Excel, HTML, CSV o JSON"
+                            AutomationProperties.Name="Exportar a otros formatos">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Exportar" VerticalAlignment="Center" />
+                            <TextBlock Text="&#xE70D;" FontFamily="{StaticResource FontIcon}" FontSize="11"
+                                       Margin="8,1,0,0" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
                     <Button Content="Exportar Markdown" Style="{StaticResource AccentButton}"
                             Command="{Binding ExportMarkdownCommand}" ToolTip="Guardar el contexto listo para pegar en un chat con IA (Ctrl+E)" />
                 </StackPanel>

@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 using PBIExplorer.Infrastructure;
 using PBIExplorer.ViewModels;
@@ -118,6 +119,25 @@ public partial class MainWindow : Window
 
         menu.Items.Add(new Separator());
         menu.Items.Add(new MenuItem { Header = "Limpiar recientes", Command = _viewModel.ClearRecentCommand });
+        menu.IsOpen = true;
+    }
+
+    private void ExportMenuButton_Click(object sender, RoutedEventArgs e)
+    {
+        var menu = new ContextMenu { PlacementTarget = ExportMenuButton, Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom };
+
+        void Add(string header, ICommand command, string? hint = null) =>
+            menu.Items.Add(new MenuItem { Header = header, Command = command, InputGestureText = hint });
+
+        Add("Documento de Word (.docx)", _viewModel.ExportWordCommand);
+        Add("Libro de Excel (.xlsx)", _viewModel.ExportExcelCommand);
+        Add("Página web (.html)", _viewModel.ExportHtmlCommand);
+        menu.Items.Add(new Separator());
+        Add("CSV de esta sección (como la ves)", _viewModel.ExportCsvCommand);
+        Add("CSV de todas las secciones (.zip)", _viewModel.ExportCsvZipCommand);
+        menu.Items.Add(new Separator());
+        Add("Snapshot para comparar (.json)", _viewModel.ExportJsonCommand, "Ctrl+Shift+E");
+        Add("Contexto para IA (.md)", _viewModel.ExportMarkdownCommand, "Ctrl+E");
         menu.IsOpen = true;
     }
 
