@@ -515,6 +515,46 @@
                 </Setter>
             </Style>
 
+            <!-- Casilla con los colores del tema (la de Windows queda blanca en el tema oscuro) -->
+            <Style TargetType="CheckBox">
+                <Setter Property="Foreground" Value="{DynamicResource Ink}" />
+                <Setter Property="Background" Value="{DynamicResource CardBg}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource InkFaint}" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="CheckBox">
+                            <StackPanel Orientation="Horizontal" Background="Transparent" SnapsToDevicePixels="True">
+                                <Border x:Name="Box" Width="16" Height="16" CornerRadius="4" BorderThickness="1.5"
+                                        Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
+                                        VerticalAlignment="Center">
+                                    <Path x:Name="Tick" Data="M3,8 L6.5,11.5 L13,4.5" Stroke="#151616" StrokeThickness="2"
+                                          StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeLineJoin="Round"
+                                          Stretch="Uniform" Margin="2" Visibility="Collapsed" />
+                                </Border>
+                                <ContentPresenter Margin="8,0,0,0" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </StackPanel>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="Box" Property="Background" Value="{DynamicResource AccentStrong}" />
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource AccentStrong}" />
+                                    <Setter TargetName="Tick" Property="Visibility" Value="Visible" />
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource AccentStrong}" />
+                                </Trigger>
+                                <Trigger Property="IsKeyboardFocused" Value="True">
+                                    <Setter TargetName="Box" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter Property="Opacity" Value="0.5" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
             <!-- Botón de texto (acciones de avisos y del panel de detalle) -->
             <Style x:Key="LinkButton" TargetType="Button">
                 <Setter Property="Foreground" Value="{DynamicResource Accent}" />
