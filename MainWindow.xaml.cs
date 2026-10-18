@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using PBIExplorer.Infrastructure;
 using PBIExplorer.ViewModels;
+using PBIExplorer.Views;
 
 namespace PBIExplorer;
 
@@ -14,8 +15,11 @@ public partial class MainWindow : Window
     private readonly MainViewModel _viewModel;
     private readonly AppSettings _settings;
 
-    public MainWindow(MainViewModel viewModel, AppSettings settings)
+    private readonly IDialogService _dialogs;
+
+    public MainWindow(MainViewModel viewModel, AppSettings settings, IDialogService dialogs)
     {
+        _dialogs = dialogs;
         InitializeComponent();
         _viewModel = viewModel;
         _settings = settings;
@@ -28,6 +32,7 @@ public partial class MainWindow : Window
         if (animate) RootShell.Opacity = 0;
 
         viewModel.PropertyChanged += OnViewModelPropertyChanged;
+        viewModel.AboutRequested += ShowAbout;
         ThemeService.Changed += () => ThemeService.UseImmersiveDarkTitleBar(this, ThemeService.IsDark);
 
         Loaded += async (_, _) =>
@@ -120,6 +125,40 @@ public partial class MainWindow : Window
         menu.Items.Add(new Separator());
         menu.Items.Add(new MenuItem { Header = "Limpiar recientes", Command = _viewModel.ClearRecentCommand });
         menu.IsOpen = true;
+    }
+
+    private void HelpMenuButton_Click(object sender, RoutedEventArgs e)
+    {
+        var menu = new ContextMenu { PlacementTarget = HelpMenuButton, Placement = System.Windows.Controls.Primitives.PlacementMode.Top };
+
+        void Add(string header, ICommand command, string? hint = null) =>
+            menu.Items.Add(new MenuItem { Header = header, Command = command, InputGestureText = hint });
+
+        Add("Atajos de teclado", _viewModel.ShowShortcutsCommand, "F1");
+        Add("Carpeta de datos y registros", _viewModel.OpenDataFolderCommand);
+        menu.Items.Add(new Separator());
+        Add("Buscar actualizaciones…", _viewModel.CheckForUpdatesCommand);
+        Add($"Acerca de {AppInfo.Name}", _viewModel.ShowAboutCommand);
+        menu.IsOpen = true;
+    }
+
+    private AboutWindow? _about;
+
+    /// <summary>Abre "Acerca de" (una sola ventana a la vez). Con <paramref name="checkNow"/> arranca buscando actualizaciones.</summary>
+    private void ShowAbout(bool checkNow)
+    {
+        if (_about is not null)
+        {
+            _about.Activate();
+        }
+        else
+        {
+            _about = new AboutWindow(new AboutViewModel(_viewModel.Updates, _dialogs)) { Owner = this };
+            _about.Closed += (_, _) => _about = null;
+            _about.Show();
+        }
+
+        if (checkNow) _viewModel.Updates.CheckNowCommand.Execute(null);
     }
 
     private void ExportMenuButton_Click(object sender, RoutedEventArgs e)

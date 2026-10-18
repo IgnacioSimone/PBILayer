@@ -5,6 +5,14 @@ using PBIExplorer.Services;
 
 namespace PBIExplorer.Infrastructure;
 
+/// <summary>Si la app busca versiones nuevas en GitHub: sin elegir todavía, sí o no.</summary>
+public enum UpdateCheckMode
+{
+    Unset,
+    On,
+    Off
+}
+
 /// <summary>Preferencias del usuario, persistidas en %LOCALAPPDATA%\PBIContext\settings.json.</summary>
 public sealed class AppSettings
 {
@@ -30,6 +38,14 @@ public sealed class AppSettings
     public string? LastSection { get; set; }
 
     public List<string> RecentFiles { get; set; } = new();
+
+    /// <summary>Buscar actualizaciones es opcional: sin elegir (Unset) no se hace ninguna conexión.</summary>
+    public UpdateCheckMode UpdateChecks { get; set; } = UpdateCheckMode.Unset;
+
+    /// <summary>Ya se le preguntó una vez al usuario si quiere buscar actualizaciones (no se insiste).</summary>
+    public bool UpdatePromptShown { get; set; }
+
+    public DateTime? LastUpdateCheckUtc { get; set; }
 
     /// <summary>Se llama cuando cambia algo que conviene guardar enseguida (ej. recientes).</summary>
     [JsonIgnore]

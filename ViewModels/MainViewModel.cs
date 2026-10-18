@@ -6,6 +6,7 @@ using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 using PBIExplorer.Services;
 using PBIExplorer.Services.Export;
+using PBIExplorer.Services.Updates;
 
 namespace PBIExplorer.ViewModels;
 
@@ -30,12 +31,16 @@ public sealed partial class MainViewModel : ObservableObject
     private string? _modelReportName;   // reporte de Power BI Desktop al que pertenece el modelo cargado
     private CancellationTokenSource? _cts;
 
-    public MainViewModel(IPowerBiBackend backend, IDialogService dialogs, AppSettings? settings = null, Action? persist = null)
+    public MainViewModel(IPowerBiBackend backend, IDialogService dialogs, AppSettings? settings = null, Action? persist = null,
+        UpdateViewModel? updates = null)
     {
         _backend = backend;
         _dialogs = dialogs;
         _settings = settings ?? new AppSettings();
         _persist = persist;
+        Updates = updates ?? new UpdateViewModel(
+            new NullUpdateFeed(), new UpdateInstaller(new System.Net.Http.HttpClient(), Path.GetTempPath()),
+            dialogs, _settings, persist, AppInfo.Version);
         _settings.Changed = () =>
         {
             SyncRecentFiles();
@@ -101,6 +106,11 @@ public sealed partial class MainViewModel : ObservableObject
     public FiltersSectionViewModel Filters { get; }
     public PerformanceSectionViewModel Performance { get; }
     public CompareSectionViewModel Compare { get; }
+
+    public UpdateViewModel Updates { get; }
+
+    /// <summary>Pide abrir la ventana "Acerca de" (el parámetro dice si arranca buscando actualizaciones).</summary>
+    public event Action<bool>? AboutRequested;
 
     public IReadOnlyList<SectionViewModel> Sections { get; }
     public ObservableCollection<string> RecentFiles { get; } = new();
@@ -188,7 +198,55 @@ public sealed partial class MainViewModel : ObservableObject
 
         // "Abrir con" desde el Explorador, o PBIContext.exe "ruta.pbix": carga ese archivo.
         if (StartupFile(args) is { } file) await OpenFileAsync(file);
+
+        await CheckForUpdatesAtStartupAsync();
     }
+
+    /// <summary>Al arrancar: la primera vez pregunta (una sola vez) si buscar actualizaciones; si ya dijo que sí,
+    /// busca como mucho una vez al día y avisa si hay una versión nueva. Sin elegir, no se conecta a nada.</summary>
+    private async Task CheckForUpdatesAtStartupAsync()
+    {
+        try
+        {
+            if (_settings.UpdateChecks == UpdateCheckMode.Unset && !_settings.UpdatePromptShown)
+            {
+                _settings.UpdatePromptShown = true;
+                _persist?.Invoke();
+                Notify(ToastKind.Info,
+                    "¿Querés que PBI Context busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. " +
+                    "Podés cambiarlo cuando quieras en Acerca de.",
+                    "Activar", () =>
+                    {
+                        Updates.AutoCheck = true;
+                        AboutRequested?.Invoke(true);
+                    },
+                    sticky: true);
+                return;
+            }
+
+            var result = await Updates.AutoCheckIfDueAsync();
+            // (UpdateStatus también es un método de esta clase: por eso el nombre completo del enum.)
+            if (result is { Status: PBIExplorer.Services.Updates.UpdateStatus.Available, Release: { } release })
+            {
+                Notify(ToastKind.Info, $"Hay una versión nueva de PBI Context: {release.Version.Major}.{release.Version.Minor}.{release.Version.Build}.",
+                    "Ver", () => AboutRequested?.Invoke(false), sticky: true);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Una falla buscando actualizaciones nunca debe molestar a quien está trabajando.
+            AppLog.Write($"Chequeo de actualizaciones: {ex.Message}");
+        }
+    }
+
+    [RelayCommand]
+    private void ShowAbout() => AboutRequested?.Invoke(false);
+
+    [RelayCommand]
+    private void CheckForUpdates() => AboutRequested?.Invoke(true);
+
+    [RelayCommand]
+    private void OpenDataFolder() => _dialogs.OpenWithShell(AppInfo.DataDirectory);
 
     /// <summary>Un único argumento que es un .pbix existente (Power BI Desktop, en cambio, pasa servidor y base).</summary>
     private static string? StartupFile(string[] args) =>

@@ -16,6 +16,9 @@ public interface IDialogService
     /// <summary>Abre el Explorador de Windows con el archivo seleccionado.</summary>
     void RevealInExplorer(string path);
 
+    /// <summary>Lanza el instalador de una actualización (ya verificado) y cierra la aplicación.</summary>
+    void RunInstallerAndExit(string path);
+
     /// <summary>Abre un archivo con su aplicación asociada (ej. el log en el Bloc de notas).</summary>
     void OpenWithShell(string path);
 }

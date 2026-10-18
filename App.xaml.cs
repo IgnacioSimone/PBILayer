@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Threading;
 using PBIExplorer.Infrastructure;
 using PBIExplorer.Services;
+using PBIExplorer.Services.Updates;
 using PBIExplorer.ViewModels;
 
 namespace PBIExplorer;
@@ -23,8 +24,17 @@ public partial class App : Application
             var settings = AppSettings.Load();
             ThemeService.Apply(settings.Theme);
 
-            var viewModel = new MainViewModel(new PowerBiBackend(), new WpfDialogService(), settings, () => settings.Save());
-            new MainWindow(viewModel, settings).Show();
+            var dialogs = new WpfDialogService();
+
+            // Única conexión de red de la app, y solo si el usuario la activa (ver Acerca de).
+            var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(20) };
+            http.DefaultRequestHeaders.UserAgent.ParseAdd($"PBIContext/{AppInfo.VersionText}");
+            var feed = new GitHubUpdateFeed(http, AppInfo.RepositoryOwner, AppInfo.RepositoryName);
+            var installer = new UpdateInstaller(http, System.IO.Path.Combine(AppPaths.DataDir, "updates"));
+            var updates = new UpdateViewModel(feed, installer, dialogs, settings, () => settings.Save(), AppInfo.Version);
+
+            var viewModel = new MainViewModel(new PowerBiBackend(), dialogs, settings, () => settings.Save(), updates);
+            new MainWindow(viewModel, settings, dialogs).Show();
         }
         catch (Exception ex)
         {

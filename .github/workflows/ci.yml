@@ -1,0 +1,38 @@
+name: CI
+
+# Compila y corre los tests en cada push y pull request.
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-test:
+    # La app es WPF (net8.0-windows): solo compila en Windows.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restaurar
+        run: dotnet restore
+
+      - name: Compilar
+        run: dotnet build PBIExplorer.csproj -c Release --no-restore
+
+      - name: Tests
+        run: dotnet test PBIExplorer.Tests -c Release --logger "trx;LogFileName=tests.trx"
+
+      - name: Guardar resultados de los tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-tests
+          path: "**/tests.trx"
+          if-no-files-found: ignore
