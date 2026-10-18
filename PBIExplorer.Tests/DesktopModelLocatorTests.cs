@@ -8,10 +8,10 @@ public class DesktopModelLocatorTests
     public void Extracts_the_workspace_data_folder_from_the_engine_command_line()
     {
         const string cmd = "\"C:\\Program Files\\WindowsApps\\PBI\\bin\\msmdsrv.exe\" -c -n AnalysisServicesWorkspace_abc " +
-                           "-s \"C:\\Users\\nacho\\Microsoft\\Power BI Desktop Store App\\AnalysisServicesWorkspaces\\AnalysisServicesWorkspace_abc\\Data\"";
+                           "-s \"C:\\Users\\usuario\\Microsoft\\Power BI Desktop Store App\\AnalysisServicesWorkspaces\\AnalysisServicesWorkspace_abc\\Data\"";
 
         Assert.Equal(
-            @"C:\Users\nacho\Microsoft\Power BI Desktop Store App\AnalysisServicesWorkspaces\AnalysisServicesWorkspace_abc\Data",
+            @"C:\Users\usuario\Microsoft\Power BI Desktop Store App\AnalysisServicesWorkspaces\AnalysisServicesWorkspace_abc\Data",
             DesktopModelLocator.ParseDataDir(cmd));
     }
 

@@ -10,7 +10,7 @@ public class SensitiveTextGuardTests
     [InlineData("Cliente[DNI] = \"12345678\"", "Cliente[DNI] = \"********\"")]
     [InlineData("Cliente[CUIT] = \"20-12345678-9\"", "Cliente[CUIT] = \"**-********-*\"")]
     [InlineData("20-12345678-9", "**-********-*")]
-    [InlineData(@"C:\Users\NachoSimone\Documents\ventas.xlsx", @"C:\Users\***\Documents\ventas.xlsx")]
+    [InlineData(@"C:\Users\UsuarioEjemplo\Documents\ventas.xlsx", @"C:\Users\***\Documents\ventas.xlsx")]
     public void Mask_ScrubsKnownPiiPatterns(string input, string expected)
     {
         Assert.Equal(expected, SensitiveTextGuard.Mask(input));
