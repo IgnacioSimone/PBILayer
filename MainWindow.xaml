@@ -64,31 +64,6 @@
                 </Setter>
             </Style>
 
-            <!-- Botón de texto (acción dentro de un aviso) -->
-            <Style x:Key="LinkButton" TargetType="Button">
-                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
-                <Setter Property="FontFamily" Value="{StaticResource FontText}" />
-                <Setter Property="FontSize" Value="12.5" />
-                <Setter Property="FontWeight" Value="SemiBold" />
-                <Setter Property="Cursor" Value="Hand" />
-                <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocusRing}" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Border x:Name="Bd" CornerRadius="6" Padding="10,5" Background="Transparent">
-                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                                  VerticalAlignment="Center" />
-                            </Border>
-                            <ControlTemplate.Triggers>
-                                <Trigger Property="IsMouseOver" Value="True">
-                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoft}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
             <!-- Aviso (toast): el color del icono indica el tipo -->
             <DataTemplate DataType="{x:Type vm:ToastViewModel}">
                 <Border x:Name="ToastCard" Style="{StaticResource Card}" MinWidth="320" MaxWidth="440" Margin="0,10,0,0"

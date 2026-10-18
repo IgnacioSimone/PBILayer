@@ -58,6 +58,20 @@ public sealed partial class MainViewModel : ObservableObject
             Summary, Measures, Tables, Columns, Relationships, PowerQuery,
             Usage, Visuals, Filters, Performance, Compare
         };
+        var detailContext = new DetailContext
+        {
+            FindUsage = (kind, table, name) => _usage.FirstOrDefault(u => u.Kind == kind && u.Table == table && u.Name == name),
+            Navigate = NavigateTo,
+            Copy = text =>
+            {
+                _dialogs.CopyText(text);
+                Notify(ToastKind.Success, "Copiado al portapapeles.");
+            }
+        };
+        Measures.DetailContext = detailContext;
+        Columns.DetailContext = detailContext;
+        PowerQuery.DetailContext = detailContext;
+
         _selectedSection = Sections.FirstOrDefault(s => s.Title == _settings.LastSection) ?? Summary;
         _theme = _settings.Theme;
 
@@ -574,6 +588,57 @@ public sealed partial class MainViewModel : ObservableObject
     // =====================================================================
     // Navegación, búsqueda y tema
     // =====================================================================
+
+    /// <summary>Salta al objeto que nombra una dependencia: "[Medida]" va a Medidas DAX y
+    /// "Tabla[Columna]" va a Columnas, con esa fila seleccionada y su detalle abierto.</summary>
+    private void NavigateTo(string label)
+    {
+        var open = label.IndexOf('[');
+        if (open >= 0 && label.EndsWith(']'))
+        {
+            var table = label[..open];
+            var field = label[(open + 1)..^1];
+
+            // Un filtro de búsqueda activo podría esconder justo el objeto al que se quiere ir.
+            GlobalSearchText = "";
+
+            if (table.Length == 0)
+            {
+                var measure = _model.Measures.FirstOrDefault(m => string.Equals(m.Name, field, StringComparison.OrdinalIgnoreCase));
+                if (measure is not null)
+                {
+                    SelectedSection = Measures;
+                    Measures.SelectedItem = measure;
+                    return;
+                }
+            }
+            else
+            {
+                var column = _model.Columns.FirstOrDefault(c =>
+                    string.Equals(c.Table, table, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(c.Name, field, StringComparison.OrdinalIgnoreCase));
+                if (column is not null)
+                {
+                    SelectedSection = Columns;
+                    Columns.SelectedItem = column;
+                    return;
+                }
+
+                // DAX permite calificar una medida con su tabla (Tabla[Medida]).
+                var qualifiedMeasure = _model.Measures.FirstOrDefault(m =>
+                    string.Equals(m.Table, table, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(m.Name, field, StringComparison.OrdinalIgnoreCase));
+                if (qualifiedMeasure is not null)
+                {
+                    SelectedSection = Measures;
+                    Measures.SelectedItem = qualifiedMeasure;
+                    return;
+                }
+            }
+        }
+
+        Notify(ToastKind.Info, $"No encontré {label} en el modelo (puede ser de una tabla oculta o de otra versión).");
+    }
 
     [RelayCommand]
     private void GoToSection(string? index)

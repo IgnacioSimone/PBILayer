@@ -508,6 +508,39 @@
                 </Setter>
             </Style>
 
+            <!-- Botón de texto (acciones de avisos y del panel de detalle) -->
+            <Style x:Key="LinkButton" TargetType="Button">
+                <Setter Property="Foreground" Value="{DynamicResource Accent}" />
+                <Setter Property="FontFamily" Value="{StaticResource FontText}" />
+                <Setter Property="FontSize" Value="12.5" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="FocusVisualStyle" Value="{StaticResource KeyboardFocusRing}" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="Bd" CornerRadius="6" Padding="10,5" Background="Transparent">
+                                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                                  VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoft}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- Colores de sintaxis del panel de detalle (DAX y M) -->
+            <SolidColorBrush x:Key="SyntaxKeyword"   Color="#A12C7B" />
+            <SolidColorBrush x:Key="SyntaxFunction"  Color="#0F6AA6" />
+            <SolidColorBrush x:Key="SyntaxString"    Color="#1C7C4C" />
+            <SolidColorBrush x:Key="SyntaxNumber"    Color="#96650F" />
+            <SolidColorBrush x:Key="SyntaxComment"   Color="#5E725E" />
+            <SolidColorBrush x:Key="SyntaxReference" Color="#B54A2C" />
+
             <!-- Tarjeta reutilizable -->
             <Style x:Key="Card" TargetType="Border">
                 <Setter Property="Background" Value="{DynamicResource CardBg}" />

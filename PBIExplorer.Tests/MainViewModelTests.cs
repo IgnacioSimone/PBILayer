@@ -58,6 +58,9 @@ public class MainViewModelTests
         public string? PickOpenFile(string filter) => OpenFileResult;
         public string? PickSaveFile(string filter, string suggestedName) => null;
         public void RevealInExplorer(string path) => Revealed.Add(path);
+        public List<string> Copied { get; } = new();
+        public void CopyText(string text) => Copied.Add(text);
+
         public List<string> Opened { get; } = new();
         public Action<string>? OnOpenWithShell { get; set; }
 
@@ -137,6 +140,110 @@ public class MainViewModelTests
         Assert.Equal(2, vm.Measures.View.Cast<object>().Count());
         Assert.Null(vm.Measures.BadgeText);
         Assert.Equal("2 filas", vm.Measures.CountText);
+    }
+
+    [Fact]
+    public async Task Selecting_a_measure_opens_its_detail_with_code_and_dependencies()
+    {
+        var vm = Create(new FakeBackend { Model = SampleModel() });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        Assert.Null(vm.Measures.Detail);
+
+        vm.Measures.SelectedItem = vm.Measures.View.Cast<MeasureInfo>().Single(m => m.Name == "Margen");
+
+        var detail = Assert.IsType<DetailViewModel>(vm.Measures.Detail);
+        Assert.Equal("Margen", detail.Title);
+        Assert.Equal("Medida · Ventas", detail.Subtitle);
+        Assert.Equal("[Total] * 0.2", detail.Code);
+        Assert.Equal(CodeLanguage.Dax, detail.Language);
+        Assert.Equal(new[] { "[Total]" }, detail.DependsOn.Select(d => d.Label));
+        Assert.Equal("Sin uso — candidata a eliminar", detail.StatusText);
+
+        vm.Measures.CloseDetailCommand.Execute(null);
+        Assert.Null(vm.Measures.Detail);
+    }
+
+    [Fact]
+    public async Task Clicking_a_dependency_jumps_to_that_object_even_with_a_search_active()
+    {
+        var vm = Create(new FakeBackend { Model = SampleModel() });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.Measures.SelectedItem = vm.Measures.View.Cast<MeasureInfo>().Single(m => m.Name == "Margen");
+        vm.GlobalSearchText = "margen";   // esconde a "Total"
+
+        vm.Measures.Detail!.DependsOn[0].OpenCommand.Execute(null);
+
+        Assert.Same(vm.Measures, vm.SelectedSection);
+        Assert.Equal("Total", vm.Measures.SelectedItem!.Name);
+        Assert.Equal("", vm.GlobalSearchText);
+        Assert.Equal("Total", vm.Measures.Detail!.Title);
+        // y "Total" ahora muestra que lo usa [Margen]
+        Assert.Equal(new[] { "[Margen]" }, vm.Measures.Detail!.UsedBy.Select(d => d.Label));
+    }
+
+    [Fact]
+    public async Task A_dependency_written_with_its_table_can_be_a_measure()
+    {
+        var model = SampleModel();
+        model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Calificada", Expression = "Ventas[Total] + 1" });
+        var vm = Create(new FakeBackend { Model = model });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.Measures.SelectedItem = vm.Measures.View.Cast<MeasureInfo>().Single(m => m.Name == "Calificada");
+
+        vm.Measures.Detail!.DependsOn.Single(d => d.Label == "Ventas[Total]").OpenCommand.Execute(null);
+
+        Assert.Equal("Total", vm.Measures.SelectedItem!.Name);
+        Assert.Empty(vm.Toasts);
+    }
+
+    [Fact]
+    public async Task A_dependency_that_is_not_in_the_model_says_so()
+    {
+        var model = SampleModel();
+        model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Rara", Expression = "[No existe]" });
+        var vm = Create(new FakeBackend { Model = model });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.Measures.SelectedItem = vm.Measures.View.Cast<MeasureInfo>().Single(m => m.Name == "Rara");
+
+        vm.Measures.Detail!.DependsOn[0].OpenCommand.Execute(null);
+
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Info && t.Message.Contains("[No existe]"));
+        Assert.Equal("Rara", vm.Measures.SelectedItem!.Name);
+    }
+
+    [Fact]
+    public async Task Calculated_columns_show_their_dax_and_plain_columns_show_their_source()
+    {
+        var model = SampleModel();
+        model.Columns.Add(new ColumnInfo { Table = "Ventas", Name = "Doble", Expression = "Ventas[Monto] * 2", ColumnType = "Calculated" });
+        model.Columns[0].SourceColumn = "monto_src";
+        var vm = Create(new FakeBackend { Model = model });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+
+        vm.Columns.SelectedItem = model.Columns[1];
+        Assert.Equal("Ventas[Monto] * 2", vm.Columns.Detail!.Code);
+        Assert.Equal(new[] { "Ventas[Monto]" }, vm.Columns.Detail.DependsOn.Select(d => d.Label));
+
+        vm.Columns.SelectedItem = model.Columns[0];
+        Assert.Null(vm.Columns.Detail!.Code);
+        Assert.Contains(vm.Columns.Detail.Facts, f => f.Label == "Columna de origen" && f.Value == "monto_src");
+    }
+
+    [Fact]
+    public async Task Power_query_detail_is_m_code_and_copy_goes_to_the_clipboard()
+    {
+        var model = SampleModel();
+        model.PowerQueries.Add(new PowerQueryInfo { Name = "Ventas", Kind = "Tabla", MCode = "let Origen = 1 in Origen" });
+        var dialogs = new FakeDialogs();
+        var vm = Create(new FakeBackend { Model = model }, dialogs);
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+
+        vm.PowerQuery.SelectedItem = model.PowerQueries[0];
+        vm.PowerQuery.Detail!.CopyCommand.Execute(null);
+
+        Assert.Equal(CodeLanguage.M, vm.PowerQuery.Detail.Language);
+        Assert.Equal(new[] { "let Origen = 1 in Origen" }, dialogs.Copied);
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success);
     }
 
     [Fact]
