@@ -1,0 +1,12 @@
+Tile_Desc_Tables	Las tablas del modelo, con cuántas columnas y medidas tiene cada una.	The model's tables, with how many columns and measures each one has.
+Tile_Desc_Columns	Cada campo de cada tabla: su tipo de dato y si es calculado o viene de los datos.	Every field in every table: its data type and whether it is calculated or comes from the data.
+Tile_Desc_Measures	Cálculos en DAX (totales, ratios, indicadores) que usan los visuales.	DAX calculations (totals, ratios, KPIs) used by the visuals.
+Tile_Desc_Relationships	Cómo se conectan las tablas entre sí y en qué dirección filtran.	How tables connect to each other and in which direction they filter.
+Tile_Desc_PowerQuery	Consultas que cargan y transforman los datos antes de llegar al modelo.	Queries that load and transform the data before it reaches the model.
+Tile_Desc_Pages	Las hojas del reporte, lo que ve la persona que lo usa.	The report's sheets: what the end user sees.
+Tile_Desc_Visuals	Gráficos, tablas y segmentadores que hay en las páginas.	Charts, tables and slicers placed on the pages.
+Tile_Desc_FieldUses	Las veces que un visual usa un campo o medida: muestra qué se aprovecha más.	How many times a visual uses a field or measure: shows what is used the most.
+Tile_Desc_Filters	Filtros aplicados a nivel de reporte, de página y de visual.	Filters applied at report, page and visual level.
+Tile_Desc_Unused	Objetos que ningún visual ni fórmula usa: candidatos a limpiar.	Objects that no visual or formula uses: cleanup candidates.
+Tile_Open	Ver detalle	View details
+Search_Clear	Borrar búsqueda	Clear search

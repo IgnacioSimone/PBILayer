@@ -1,0 +1,3 @@
+Wait_Title	Abriendo «{0}»	Opening “{0}”
+Wait_Body	Power BI Desktop está cargando el archivo. Cuando termine, la app lee el modelo y muestra el análisis completo automáticamente.	Power BI Desktop is loading the file. When it finishes, the app reads the model and shows the full analysis automatically.
+Wait_Hint	Con archivos grandes puede tardar unos minutos. No cierres Power BI Desktop mientras tanto.	Large files can take a few minutes. Please keep Power BI Desktop open in the meantime.

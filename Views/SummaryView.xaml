@@ -44,8 +44,23 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Border Style="{StaticResource Card}" Width="196" MinHeight="152" Padding="20"
-                                Margin="0,0,14,14"
+                        <Button Margin="0,0,14,14" Cursor="Hand" Focusable="True"
+                                Command="{Binding DataContext.OpenTileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                CommandParameter="{Binding}"
+                                ToolTip="{views:Loc Tile_Open}">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border x:Name="Ring" CornerRadius="14" BorderThickness="2" BorderBrush="Transparent">
+                                        <ContentPresenter />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsKeyboardFocused" Value="True">
+                                            <Setter TargetName="Ring" Property="BorderBrush" Value="{DynamicResource Accent}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Button.Template>
+                        <Border Style="{StaticResource Card}" Width="232" MinHeight="196" Padding="20"
                                 Loaded="Tile_Loaded" MouseEnter="Tile_MouseEnter" MouseLeave="Tile_MouseLeave">
                             <StackPanel>
                                 <Border Width="38" Height="38" CornerRadius="10" Margin="0,0,0,16"
@@ -72,8 +87,12 @@
                                         </Style>
                                     </TextBlock.Style>
                                 </TextBlock>
+                                <TextBlock Text="{Binding Description}" FontSize="11.5" Margin="0,10,0,0"
+                                           FontFamily="{StaticResource FontText}" Foreground="{DynamicResource InkFaint}"
+                                           TextWrapping="Wrap" LineHeight="16" />
                             </StackPanel>
                         </Border>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

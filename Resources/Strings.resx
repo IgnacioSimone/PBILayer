@@ -358,6 +358,18 @@
   <data name="Term_CardManyToMany" xml:space="preserve"><value>Muchos a muchos</value></data>
   <data name="Term_CardOneToOne" xml:space="preserve"><value>Uno a uno</value></data>
   <data name="Term_QueryParamFunction" xml:space="preserve"><value>Parámetro / función</value></data>
+  <data name="Tile_Desc_Tables" xml:space="preserve"><value>Las tablas del modelo, con cuántas columnas y medidas tiene cada una.</value></data>
+  <data name="Tile_Desc_Columns" xml:space="preserve"><value>Cada campo de cada tabla: su tipo de dato y si es calculado o viene de los datos.</value></data>
+  <data name="Tile_Desc_Measures" xml:space="preserve"><value>Cálculos en DAX (totales, ratios, indicadores) que usan los visuales.</value></data>
+  <data name="Tile_Desc_Relationships" xml:space="preserve"><value>Cómo se conectan las tablas entre sí y en qué dirección filtran.</value></data>
+  <data name="Tile_Desc_PowerQuery" xml:space="preserve"><value>Consultas que cargan y transforman los datos antes de llegar al modelo.</value></data>
+  <data name="Tile_Desc_Pages" xml:space="preserve"><value>Las hojas del reporte, lo que ve la persona que lo usa.</value></data>
+  <data name="Tile_Desc_Visuals" xml:space="preserve"><value>Gráficos, tablas y segmentadores que hay en las páginas.</value></data>
+  <data name="Tile_Desc_FieldUses" xml:space="preserve"><value>Las veces que un visual usa un campo o medida: muestra qué se aprovecha más.</value></data>
+  <data name="Tile_Desc_Filters" xml:space="preserve"><value>Filtros aplicados a nivel de reporte, de página y de visual.</value></data>
+  <data name="Tile_Desc_Unused" xml:space="preserve"><value>Objetos que ningún visual ni fórmula usa: candidatos a limpiar.</value></data>
+  <data name="Tile_Open" xml:space="preserve"><value>Ver detalle</value></data>
+  <data name="Search_Clear" xml:space="preserve"><value>Borrar búsqueda</value></data>
   <data name="Search_Placeholder" xml:space="preserve"><value>Buscar en todas las secciones…</value></data>
   <data name="Toast_Close" xml:space="preserve"><value>Cerrar</value></data>
   <data name="Toast_CloseAria" xml:space="preserve"><value>Cerrar aviso</value></data>
@@ -451,4 +463,7 @@
   <data name="Install_HashMismatch" xml:space="preserve"><value>La descarga está dañada: su SHA-256 no coincide con el publicado. No se instaló.</value></data>
   <data name="Install_RateLimit" xml:space="preserve"><value>GitHub limitó las consultas por un rato; probá de nuevo más tarde.</value></data>
   <data name="Install_LaunchFailed" xml:space="preserve"><value>No se pudo iniciar el instalador (¿se canceló el permiso de administrador?).</value></data>
+  <data name="Wait_Title" xml:space="preserve"><value>Abriendo «{0}»</value></data>
+  <data name="Wait_Body" xml:space="preserve"><value>Power BI Desktop está cargando el archivo. Cuando termine, la app lee el modelo y muestra el análisis completo automáticamente.</value></data>
+  <data name="Wait_Hint" xml:space="preserve"><value>Con archivos grandes puede tardar unos minutos. No cierres Power BI Desktop mientras tanto.</value></data>
 </root>

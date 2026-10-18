@@ -48,6 +48,7 @@ public sealed partial class MainViewModel : ObservableObject
         };
 
         Summary = new SummaryViewModel();
+        Summary.Navigate = section => SelectedSection = section;
         Measures = new MeasuresSectionViewModel();
         Tables = new TablesSectionViewModel();
         Columns = new ColumnsSectionViewModel();
@@ -121,6 +122,10 @@ public sealed partial class MainViewModel : ObservableObject
     [ObservableProperty] private SectionViewModel _selectedSection;
     [ObservableProperty] private string _statusText = Loc.T("Status_NoConnection");
     [ObservableProperty] private string _globalSearchText = "";
+
+    /// <summary>Verdadero mientras se espera que Power BI Desktop termine de abrir el archivo: la pantalla muestra la tarjeta de espera.</summary>
+    [ObservableProperty] private bool _isWaitingForDesktop;
+    [ObservableProperty] private string _waitingTitle = "";
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(ThemeLabel))]
@@ -385,22 +390,32 @@ public sealed partial class MainViewModel : ObservableObject
     {
         var name = Path.GetFileNameWithoutExtension(path);
         StatusText = Loc.F("Status_OpeningInDesktop", name);
-        _dialogs.OpenWithShell(path);
-
-        var deadline = DateTime.UtcNow + DesktopWaitTimeout;
-        while (DateTime.UtcNow < deadline)
+        WaitingTitle = Loc.F("Wait_Title", name);
+        IsWaitingForDesktop = true;
+        try
         {
-            // Mientras Desktop carga, el título de su ventana todavía no tiene el nombre del archivo:
-            // el modelo simplemente no aparece todavía y se vuelve a intentar.
-            if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
-            {
-                Notify(ToastKind.Success, Loc.F("Toast_ModelRead", name));
-                return;
-            }
-            await Task.Delay(DesktopPollInterval, ct);
-        }
+            _dialogs.OpenWithShell(path);
 
-        Notify(ToastKind.Warning, Loc.F("Toast_DesktopStillOpening", name), sticky: true);
+            var deadline = DateTime.UtcNow + DesktopWaitTimeout;
+            while (DateTime.UtcNow < deadline)
+            {
+                // Mientras Desktop carga, el título de su ventana todavía no tiene el nombre del archivo:
+                // el modelo simplemente no aparece todavía y se vuelve a intentar.
+                if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
+                {
+                    Notify(ToastKind.Success, Loc.F("Toast_ModelRead", name));
+                    return;
+                }
+                await Task.Delay(DesktopPollInterval, ct);
+            }
+
+            Notify(ToastKind.Warning, Loc.F("Toast_DesktopStillOpening", name), sticky: true);
+        }
+        finally
+        {
+            // Pase lo que pase (éxito, tiempo agotado o cancelación) la tarjeta de espera se va.
+            IsWaitingForDesktop = false;
+        }
     }
 
     private void ClearModel()
@@ -808,21 +823,21 @@ public sealed partial class MainViewModel : ObservableObject
         var hiddenTables = _model.Tables.Count(t => t.IsHidden);
         var hiddenMeasures = _model.Measures.Count(m => m.IsHidden);
 
-        var tiles = new (string Icon, string Label, int Value, string? Sub)[]
+        var tiles = new (string Icon, string Label, int Value, string? Sub, string Description, SectionViewModel Target)[]
         {
-            ("", Loc.T("Section_Tables"),    _model.Tables.Count,        hiddenTables   > 0 ? Loc.F("Tile_Hidden", hiddenTables)   : null),
-            ("", Loc.T("Section_Columns"),   _model.Columns.Count,       null),
-            ("", Loc.T("Section_Measures"),  _model.Measures.Count,      hiddenMeasures > 0 ? Loc.F("Tile_Hidden", hiddenMeasures) : null),
-            ("", Loc.T("Section_Relationships"), _model.Relationships.Count, null),
-            ("", Loc.T("Tile_PowerQuery"), _model.PowerQueries.Count,  null),
-            ("", Loc.T("Tile_Pages"),        pages,                      null),
-            ("", Loc.T("Tile_Visuals"),       visualCount,                null),
-            ("", Loc.T("Tile_FieldUses"), _visuals.Count,             null),
-            ("", Loc.T("Section_Filters"),   _filters.Count,             null),
-            ("", Loc.T("Tile_Unused"),        _usage.Count(u => u.IsUnused), null),
+            ("", Loc.T("Section_Tables"),    _model.Tables.Count,        hiddenTables   > 0 ? Loc.F("Tile_Hidden", hiddenTables)   : null, Loc.T("Tile_Desc_Tables"), Tables),
+            ("", Loc.T("Section_Columns"),   _model.Columns.Count,       null, Loc.T("Tile_Desc_Columns"), Columns),
+            ("", Loc.T("Section_Measures"),  _model.Measures.Count,      hiddenMeasures > 0 ? Loc.F("Tile_Hidden", hiddenMeasures) : null, Loc.T("Tile_Desc_Measures"), Measures),
+            ("", Loc.T("Section_Relationships"), _model.Relationships.Count, null, Loc.T("Tile_Desc_Relationships"), Relationships),
+            ("", Loc.T("Tile_PowerQuery"), _model.PowerQueries.Count,  null, Loc.T("Tile_Desc_PowerQuery"), PowerQuery),
+            ("", Loc.T("Tile_Pages"),        pages,                      null, Loc.T("Tile_Desc_Pages"), Visuals),
+            ("", Loc.T("Tile_Visuals"),       visualCount,                null, Loc.T("Tile_Desc_Visuals"), Visuals),
+            ("", Loc.T("Tile_FieldUses"), _visuals.Count,             null, Loc.T("Tile_Desc_FieldUses"), Visuals),
+            ("", Loc.T("Section_Filters"),   _filters.Count,             null, Loc.T("Tile_Desc_Filters"), Filters),
+            ("", Loc.T("Tile_Unused"),        _usage.Count(u => u.IsUnused), null, Loc.T("Tile_Desc_Unused"), Usage),
         };
 
-        Summary.SetTiles(tiles.Select((t, i) => new TileViewModel(t.Icon, t.Label, t.Value, t.Sub, i)));
+        Summary.SetTiles(tiles.Select((t, i) => new TileViewModel(t.Icon, t.Label, t.Value, t.Sub, i, t.Description, t.Target)));
     }
 
     private void UpdateEmptyStates()

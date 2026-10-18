@@ -23,6 +23,7 @@ public partial class App : Application
 
             var settings = AppSettings.Load();
             Loc.Initialize(settings.Language);
+            Views.SearchCommands.Register();
             ThemeService.Apply(settings.Theme);
 
             var dialogs = new WpfDialogService();

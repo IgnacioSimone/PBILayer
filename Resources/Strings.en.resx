@@ -358,6 +358,18 @@
   <data name="Term_CardManyToMany" xml:space="preserve"><value>Many to many</value></data>
   <data name="Term_CardOneToOne" xml:space="preserve"><value>One to one</value></data>
   <data name="Term_QueryParamFunction" xml:space="preserve"><value>Parameter / function</value></data>
+  <data name="Tile_Desc_Tables" xml:space="preserve"><value>The model&apos;s tables, with how many columns and measures each one has.</value></data>
+  <data name="Tile_Desc_Columns" xml:space="preserve"><value>Every field in every table: its data type and whether it is calculated or comes from the data.</value></data>
+  <data name="Tile_Desc_Measures" xml:space="preserve"><value>DAX calculations (totals, ratios, KPIs) used by the visuals.</value></data>
+  <data name="Tile_Desc_Relationships" xml:space="preserve"><value>How tables connect to each other and in which direction they filter.</value></data>
+  <data name="Tile_Desc_PowerQuery" xml:space="preserve"><value>Queries that load and transform the data before it reaches the model.</value></data>
+  <data name="Tile_Desc_Pages" xml:space="preserve"><value>The report&apos;s sheets: what the end user sees.</value></data>
+  <data name="Tile_Desc_Visuals" xml:space="preserve"><value>Charts, tables and slicers placed on the pages.</value></data>
+  <data name="Tile_Desc_FieldUses" xml:space="preserve"><value>How many times a visual uses a field or measure: shows what is used the most.</value></data>
+  <data name="Tile_Desc_Filters" xml:space="preserve"><value>Filters applied at report, page and visual level.</value></data>
+  <data name="Tile_Desc_Unused" xml:space="preserve"><value>Objects that no visual or formula uses: cleanup candidates.</value></data>
+  <data name="Tile_Open" xml:space="preserve"><value>View details</value></data>
+  <data name="Search_Clear" xml:space="preserve"><value>Clear search</value></data>
   <data name="Search_Placeholder" xml:space="preserve"><value>Search all sections…</value></data>
   <data name="Toast_Close" xml:space="preserve"><value>Close</value></data>
   <data name="Toast_CloseAria" xml:space="preserve"><value>Close notification</value></data>
@@ -451,4 +463,7 @@
   <data name="Install_HashMismatch" xml:space="preserve"><value>The download is corrupted: its SHA-256 does not match the published one. It was not installed.</value></data>
   <data name="Install_RateLimit" xml:space="preserve"><value>GitHub rate-limited the requests for a while; try again later.</value></data>
   <data name="Install_LaunchFailed" xml:space="preserve"><value>Could not start the installer (was the administrator permission cancelled?).</value></data>
+  <data name="Wait_Title" xml:space="preserve"><value>Opening “{0}”</value></data>
+  <data name="Wait_Body" xml:space="preserve"><value>Power BI Desktop is loading the file. When it finishes, the app reads the model and shows the full analysis automatically.</value></data>
+  <data name="Wait_Hint" xml:space="preserve"><value>Large files can take a few minutes. Please keep Power BI Desktop open in the meantime.</value></data>
 </root>
