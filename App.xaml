@@ -11,37 +11,39 @@
                  el look por defecto de cualquier demo generada por IA; esto se corre
                  a propósito hacia algo con más carácter editorial).
                  ============================================================ -->
-            <!-- #B54A2C sobre blanco da contraste 5.3:1 (WCAG AA, texto normal). -->
-            <Color x:Key="AccentColor">#B54A2C</Color>
+            <!-- Amarillo del icono. Como relleno lleva texto negro (OnAccent); como TEXTO sobre fondo claro se usa un ámbar
+                 oscuro (Accent, contraste 5.4:1 sobre blanco) porque el amarillo puro no se lee sobre blanco. -->
+            <Color x:Key="AccentColor">#F6C944</Color>
 
-            <SolidColorBrush x:Key="WindowBg"      Color="#F7F2EA" />
-            <SolidColorBrush x:Key="SidebarBg"     Color="#EFE6D8" />
-            <SolidColorBrush x:Key="CardBg"        Color="#FFFDF9" />
-            <SolidColorBrush x:Key="Separator"     Color="#DFD1BC" />
-            <SolidColorBrush x:Key="SeparatorSoft" Color="#F0E7D8" />
+            <SolidColorBrush x:Key="WindowBg"      Color="#F5F5F2" />
+            <SolidColorBrush x:Key="SidebarBg"     Color="#ECECE8" />
+            <SolidColorBrush x:Key="CardBg"        Color="#FFFFFF" />
+            <SolidColorBrush x:Key="Separator"     Color="#DCDCD6" />
+            <SolidColorBrush x:Key="SeparatorSoft" Color="#EDEDE8" />
 
-            <SolidColorBrush x:Key="Ink"        Color="#241E19" />
+            <SolidColorBrush x:Key="Ink"        Color="#151616" />
             <!-- Grises cálidos (con un pelo de matiz cobre) en vez de grises fríos neutros;
                  mismo nivel de luminancia que antes, así que el contraste WCAG se mantiene. -->
-            <SolidColorBrush x:Key="InkDim"     Color="#6E5F51" />
-            <SolidColorBrush x:Key="InkFaint"   Color="#6B5C4E" />
+            <SolidColorBrush x:Key="InkDim"     Color="#565753" />
+            <SolidColorBrush x:Key="InkFaint"   Color="#6A6B66" />
 
-            <SolidColorBrush x:Key="Accent"     Color="#B54A2C" />
-            <SolidColorBrush x:Key="AccentSoft" Color="#FBE9DD" />
+            <SolidColorBrush x:Key="Accent"     Color="#8A6400" />
+            <SolidColorBrush x:Key="AccentSoft" Color="#FFF3C4" />
             <SolidColorBrush x:Key="HoverTint"  Color="#00000000" />
-            <SolidColorBrush x:Key="RowAlt"     Color="#FBF6EE" />
-            <SolidColorBrush x:Key="RowHover"   Color="#FBEEE2" />
+            <SolidColorBrush x:Key="RowAlt"     Color="#FAFAF7" />
+            <SolidColorBrush x:Key="RowHover"   Color="#FFF8DA" />
 
-            <!-- Rellenos con texto blanco encima: mismo cobre en claro y oscuro (contraste 5.3:1).
-                 "Accent" (texto, iconos, foco) sí se aclara en el tema oscuro. -->
-            <SolidColorBrush x:Key="AccentStrong"  Color="#B54A2C" />
-            <SolidColorBrush x:Key="AccentHover"   Color="#C86540" />
-            <SolidColorBrush x:Key="AccentPressed" Color="#9C3E22" />
-            <SolidColorBrush x:Key="NavHover"      Color="#E6DBC9" />
-            <SolidColorBrush x:Key="PanelTint"     Color="#EBE0CE" />
+            <!-- Rellenos amarillos: iguales en claro y oscuro, con texto casi negro (OnAccent) encima.
+                 "Accent" (texto, iconos, foco) cambia con el tema: ámbar oscuro en claro, amarillo en oscuro. -->
+            <SolidColorBrush x:Key="AccentStrong"  Color="#F6C944" />
+            <SolidColorBrush x:Key="AccentHover"   Color="#FFD761" />
+            <SolidColorBrush x:Key="AccentPressed" Color="#D9A71E" />
+            <SolidColorBrush x:Key="OnAccent"      Color="#121313" />
+            <SolidColorBrush x:Key="NavHover"      Color="#E2E2DC" />
+            <SolidColorBrush x:Key="PanelTint"     Color="#E6E6E0" />
             <SolidColorBrush x:Key="ButtonBg"      Color="#FFFFFF" />
-            <SolidColorBrush x:Key="ButtonHover"   Color="#F7F7F9" />
-            <SolidColorBrush x:Key="ButtonPressed" Color="#ECECEF" />
+            <SolidColorBrush x:Key="ButtonHover"   Color="#F5F5F2" />
+            <SolidColorBrush x:Key="ButtonPressed" Color="#EAEAE5" />
             <SolidColorBrush x:Key="ThumbBrush"      Color="#38000000" />
             <SolidColorBrush x:Key="ThumbHoverBrush" Color="#60000000" />
             <SolidColorBrush x:Key="StatusBad"  Color="#C0392B" />
@@ -235,7 +237,7 @@
 
             <Style x:Key="AccentButton" TargetType="Button" BasedOn="{StaticResource SoftButton}">
                 <Setter Property="Background" Value="{DynamicResource AccentStrong}" />
-                <Setter Property="Foreground" Value="White" />
+                <Setter Property="Foreground" Value="{DynamicResource OnAccent}" />
                 <Setter Property="BorderBrush" Value="{DynamicResource AccentStrong}" />
                 <Setter Property="Template">
                     <Setter.Value>
@@ -249,7 +251,7 @@
                                     <ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="1" />
                                 </Border.RenderTransform>
                                 <Border.Effect>
-                                    <DropShadowEffect Color="#B54A2C" Opacity="0.30" BlurRadius="12" ShadowDepth="2" Direction="270" />
+                                    <DropShadowEffect Color="#F6C944" Opacity="0.35" BlurRadius="12" ShadowDepth="2" Direction="270" />
                                 </Border.Effect>
                                 <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"
                                                   Margin="{TemplateBinding Padding}"
@@ -319,8 +321,8 @@
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentStrong}" />
-                                    <Setter Property="Foreground" Value="White" />
-                                    <Setter TargetName="Icon" Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{DynamicResource OnAccent}" />
+                                    <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource OnAccent}" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
@@ -543,7 +545,7 @@
             <SolidColorBrush x:Key="SyntaxString"    Color="#1C7C4C" />
             <SolidColorBrush x:Key="SyntaxNumber"    Color="#96650F" />
             <SolidColorBrush x:Key="SyntaxComment"   Color="#5E725E" />
-            <SolidColorBrush x:Key="SyntaxReference" Color="#B54A2C" />
+            <SolidColorBrush x:Key="SyntaxReference" Color="#8A6400" />
 
             <!-- Tarjeta reutilizable -->
             <Style x:Key="Card" TargetType="Border">

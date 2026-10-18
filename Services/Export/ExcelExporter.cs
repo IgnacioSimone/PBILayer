@@ -163,16 +163,16 @@ public static class ExcelExporter
         styles.Stylesheet = new Stylesheet(
             new Fonts(
                 new Font(new FontSize { Val = 11 }, new FontName { Val = "Calibri" }),                                         // 0
-                new Font(new Bold(), new FontSize { Val = 11 }, new Color { Rgb = "FF241E19" }, new FontName { Val = "Calibri" }), // 1
+                new Font(new Bold(), new FontSize { Val = 11 }, new Color { Rgb = "FF151616" }, new FontName { Val = "Calibri" }), // 1
                 new Font(new FontSize { Val = 10 }, new FontName { Val = "Consolas" }),                                        // 2
                 new Font(new Bold(), new FontSize { Val = 18 }, new FontName { Val = "Calibri" })),                            // 3
             new Fills(
                 new Fill(new PatternFill { PatternType = PatternValues.None }),
                 new Fill(new PatternFill { PatternType = PatternValues.Gray125 }),
-                new Fill(new PatternFill(new ForegroundColor { Rgb = "FFEFE6D8" }) { PatternType = PatternValues.Solid })),
+                new Fill(new PatternFill(new ForegroundColor { Rgb = "FFFFF3C4" }) { PatternType = PatternValues.Solid })),
             new Borders(
                 new Border(),
-                new Border(new BottomBorder(new Color { Rgb = "FFDFD1BC" }) { Style = BorderStyleValues.Thin })),
+                new Border(new BottomBorder(new Color { Rgb = "FFDCDCD6" }) { Style = BorderStyleValues.Thin })),
             new CellStyleFormats(new CellFormat()),
             new CellFormats(
                 new CellFormat(),                                                                                              // 0 normal

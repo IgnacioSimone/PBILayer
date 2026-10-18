@@ -17,6 +17,10 @@ Versión grande: la app pasa de herramienta externa de un solo uso a una aplicac
 - **Instalador** (Inno Setup) con icono propio, acceso directo en el menú Inicio y registro automático como herramienta externa; ventana **Acerca de** con la versión.
 - **Actualizaciones opcionales**: buscar versiones nuevas en GitHub y bajarlas con verificación SHA-256. Está apagado por defecto: es la única conexión de red de la app y solo ocurre si la activás.
 
+### Cambiado (identidad visual)
+- Nuevo icono (capas amarillas con barras blancas sobre fondo negro), también en la cinta de *Herramientas externas* de Power BI Desktop, el instalador, el menú Inicio y *Acerca de*. La fuente es `Assets/icon.svg`; `Assets/make-icon.ps1` regenera el `.ico` y el `.png`.
+- Paleta en amarillo, blanco y negro (el amarillo del icono) en los temas claro y oscuro; el oscuro es gris carbón, no negro puro. También en los documentos exportados (Word, Excel, HTML).
+
 ### Corregido
 - *Uso y limpieza* marcaba como "sin uso" medidas que otras fórmulas referencian con el nombre de la tabla delante (`Tabla[Medida]`).
 - Las tarjetas del Resumen fallaban al animarse con un modelo cargado.

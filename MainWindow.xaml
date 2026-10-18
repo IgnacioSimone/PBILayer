@@ -55,8 +55,8 @@
                                 </Trigger>
                                 <Trigger Property="IsSelected" Value="True">
                                     <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentStrong}" />
-                                    <Setter Property="Foreground" Value="White" />
-                                    <Setter TargetName="Icon" Property="Foreground" Value="White" />
+                                    <Setter Property="Foreground" Value="{DynamicResource OnAccent}" />
+                                    <Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource OnAccent}" />
                                     <Setter Property="FontWeight" Value="SemiBold" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
