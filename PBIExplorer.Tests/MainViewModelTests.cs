@@ -24,8 +24,20 @@ public class MainViewModelTests
         /// <summary>Lo que "Power BI Desktop" tiene abierto en este test (null = nada).</summary>
         public DesktopModel? Desktop { get; set; }
 
+        /// <summary>Si es mayor que 0, el modelo de Desktop recién "aparece" en ese sondeo (simula la carga lenta).</summary>
+        public int DesktopAppearsAfter { get; set; }
+        public Action? OnDesktopPoll { get; set; }
+        private int _polls;
+
         public Task<DesktopModel?> FindDesktopModelAsync(string? reportName)
         {
+            if (DesktopAppearsAfter > 0)
+            {
+                OnDesktopPoll?.Invoke();
+                if (++_polls >= DesktopAppearsAfter && reportName is not null)
+                    Desktop = new DesktopModel("localhost:5000", "guid-1", reportName);
+            }
+
             var match = Desktop is not null &&
                         (reportName is null || string.Equals(reportName, Desktop.ReportName, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(match ? Desktop : null);
@@ -46,7 +58,14 @@ public class MainViewModelTests
         public string? PickOpenFile(string filter) => OpenFileResult;
         public string? PickSaveFile(string filter, string suggestedName) => null;
         public void RevealInExplorer(string path) => Revealed.Add(path);
-        public void OpenWithShell(string path) { }
+        public List<string> Opened { get; } = new();
+        public Action<string>? OnOpenWithShell { get; set; }
+
+        public void OpenWithShell(string path)
+        {
+            Opened.Add(path);
+            OnOpenWithShell?.Invoke(path);
+        }
     }
 
     private static MainViewModel Create(FakeBackend? backend = null, FakeDialogs? dialogs = null, AppSettings? settings = null)
@@ -186,7 +205,54 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task Connection_failure_raises_a_retryable_error_toast()    {
+    public async Task Opening_the_report_in_desktop_waits_for_its_model_and_then_reads_it()
+    {
+        var backend = new FakeBackend { Model = SampleModel() };
+        var dialogs = new FakeDialogs();
+        // Power BI Desktop "tarda" en abrir: el modelo recién aparece en el tercer sondeo.
+        dialogs.OnOpenWithShell = _ => backend.DesktopAppearsAfter = 3;
+        var vm = Create(backend, dialogs);
+        vm.DesktopPollInterval = TimeSpan.FromMilliseconds(5);
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+        Assert.Equal(0, vm.Measures.TotalCount);
+
+        await vm.OpenReportInDesktopCommand.ExecuteAsync(null);
+
+        Assert.Single(dialogs.Opened);
+        Assert.Equal(2, vm.Measures.TotalCount);
+        Assert.False(vm.IsBusy);
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success);
+    }
+
+    [Fact]
+    public async Task Waiting_for_desktop_gives_up_with_a_clear_warning()
+    {
+        var vm = Create(new FakeBackend());
+        vm.DesktopPollInterval = TimeSpan.FromMilliseconds(5);
+        vm.DesktopWaitTimeout = TimeSpan.FromMilliseconds(40);
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+
+        await vm.OpenReportInDesktopCommand.ExecuteAsync(null);
+
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Warning && t.Message.Contains("todavía no terminó"));
+        Assert.False(vm.IsBusy);
+    }
+
+    [Fact]
+    public async Task Sections_offer_to_open_the_report_in_desktop_when_only_the_pbix_is_loaded()
+    {
+        var vm = Create(new FakeBackend());
+
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+
+        Assert.Equal("Falta el modelo de este tablero", vm.Tables.EmptyTitle);
+        Assert.Equal("Abrir en Power BI Desktop", vm.Tables.EmptyActionText);
+        Assert.NotNull(vm.Tables.EmptyActionCommand);
+    }
+
+    [Fact]
+    public async Task Connection_failure_raises_a_retryable_error_toast()
+    {
         var vm = Create(new FakeBackend { ReadError = new InvalidOperationException("boom") });
 
         var ok = await vm.ConnectToLiveModelAsync("localhost:1", "db");
