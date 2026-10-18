@@ -158,7 +158,7 @@ public sealed partial class MainViewModel : ObservableObject
                 await ConnectToLiveModelAsync(args[1], args[2], ct);
                 if (ct.IsCancellationRequested) return;
             }
-            else
+            else if (StartupFile(args) is null)
             {
                 // Abierta por su cuenta: si hay un tablero abierto en Power BI Desktop, se engancha solo.
                 StatusText = "Buscando un tablero abierto en Power BI Desktop…";
@@ -167,9 +167,18 @@ public sealed partial class MainViewModel : ObservableObject
             }
 
             RefreshAll();
-            await TryAutoLoadVisualsAsync(ct);
+            if (StartupFile(args) is null) await TryAutoLoadVisualsAsync(ct);
         });
+
+        // "Abrir con" desde el Explorador, o PBIContext.exe "ruta.pbix": carga ese archivo.
+        if (StartupFile(args) is { } file) await OpenFileAsync(file);
     }
+
+    /// <summary>Un único argumento que es un .pbix existente (Power BI Desktop, en cambio, pasa servidor y base).</summary>
+    private static string? StartupFile(string[] args) =>
+        args.Length == 2 && args[1].EndsWith(".pbix", StringComparison.OrdinalIgnoreCase) && File.Exists(args[1])
+            ? args[1]
+            : null;
 
     private async Task RunBusyAsync(Func<CancellationToken, Task> work)
     {
@@ -233,13 +242,13 @@ public sealed partial class MainViewModel : ObservableObject
 
     /// <summary>Busca el modelo del tablero abierto en Power BI Desktop (por nombre, o el único
     /// abierto) y lo lee. Devuelve false si no hay ninguno o si falló la lectura.</summary>
-    private async Task<bool> ConnectToDesktopModelAsync(string? reportName, CancellationToken ct)
+    private async Task<bool> ConnectToDesktopModelAsync(string? reportName, CancellationToken ct, bool quiet = false)
     {
         var found = await WithCancellation(_backend.FindDesktopModelAsync(reportName), ct);
         if (found is null) return false;
 
         AppLog.Write($"Modelo de Power BI Desktop encontrado: \"{found.ReportName}\" en {found.Server}");
-        if (!await ConnectToLiveModelAsync(found.Server, found.Database, ct)) return false;
+        if (!await ConnectToLiveModelAsync(found.Server, found.Database, ct, quiet)) return false;
 
         _modelReportName = found.ReportName;
         return true;
@@ -266,8 +275,48 @@ public sealed partial class MainViewModel : ObservableObject
 
             Notify(ToastKind.Info,
                 $"No pude leer el modelo (tablas, columnas, medidas, relaciones) porque \"{name}\" no está abierto en " +
-                "Power BI Desktop: ese dato va comprimido dentro del .pbix y solo se puede leer con el archivo abierto. " +
-                "Abrilo ahí y tocá Actualizar.",
+                "Power BI Desktop: ese dato va comprimido dentro del .pbix y solo se puede leer con el archivo abierto.",
+                "Abrir en Power BI Desktop", () => OpenReportInDesktopCommand.Execute(null),
+                sticky: true);
+        });
+    }
+
+    /// <summary>Cuánto se espera entre intentos mientras Power BI Desktop abre el archivo.</summary>
+    public TimeSpan DesktopPollInterval { get; set; } = TimeSpan.FromSeconds(3);
+
+    /// <summary>Tiempo máximo de espera: un .pbix de varios cientos de MB puede tardar minutos en abrir.</summary>
+    public TimeSpan DesktopWaitTimeout { get; set; } = TimeSpan.FromMinutes(4);
+
+    /// <summary>Abre el reporte actual en Power BI Desktop y, apenas su modelo está disponible, lo lee.</summary>
+    [RelayCommand]
+    private async Task OpenReportInDesktopAsync()
+    {
+        if (_reportPath is null) return;
+        var path = _reportPath;
+        var name = Path.GetFileNameWithoutExtension(path);
+
+        _dialogs.OpenWithShell(path);
+
+        await RunBusyAsync(async ct =>
+        {
+            StatusText = $"Abriendo \"{name}\" en Power BI Desktop… con archivos grandes puede tardar unos minutos.";
+            var deadline = DateTime.UtcNow + DesktopWaitTimeout;
+
+            while (DateTime.UtcNow < deadline)
+            {
+                // Mientras Desktop carga, el título de su ventana todavía no tiene el nombre del archivo:
+                // el modelo simplemente no aparece todavía y se vuelve a intentar.
+                if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
+                {
+                    LoadReport(path);
+                    Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
+                    return;
+                }
+                await Task.Delay(DesktopPollInterval, ct);
+            }
+
+            Notify(ToastKind.Warning,
+                $"Power BI Desktop todavía no terminó de abrir \"{name}\". Cuando termine, tocá Actualizar (F5).",
                 sticky: true);
         });
     }
@@ -293,7 +342,7 @@ public sealed partial class MainViewModel : ObservableObject
     // Modelo en vivo (metadata vía DMVs)
     // =====================================================================
 
-    public async Task<bool> ConnectToLiveModelAsync(string server, string database, CancellationToken ct = default)
+    public async Task<bool> ConnectToLiveModelAsync(string server, string database, CancellationToken ct = default, bool quiet = false)
     {
         try
         {
@@ -334,6 +383,8 @@ public sealed partial class MainViewModel : ObservableObject
         catch (Exception ex)
         {
             AppLog.Write($"ERROR conectando al modelo: {ex}");
+            if (quiet) return false;   // sondeo mientras Power BI Desktop termina de abrir: se reintenta solo
+
             StatusText = "No se pudo conectar al modelo en vivo.";
             NotifyError($"No se pudo conectar al modelo de Power BI Desktop. {ex.Message}", "Reintentar",
                 () => RefreshCommand.Execute(null));
@@ -651,12 +702,13 @@ public sealed partial class MainViewModel : ObservableObject
         // Las secciones del modelo comparten el mismo tipo de estado vacío: "no hay
         // conexión" vs. "esta sección puntual no tiene filas".
         var notConnected = !HasModel;
-        SetModelEmpty(Measures, notConnected, _model.Measures.Count == 0, "El modelo conectado no tiene medidas DAX.");
-        SetModelEmpty(Tables, notConnected, _model.Tables.Count == 0, "El modelo conectado no tiene tablas visibles.");
-        SetModelEmpty(Columns, notConnected, _model.Columns.Count == 0, "El modelo conectado no tiene columnas.");
-        SetModelEmpty(Relationships, notConnected, _model.Relationships.Count == 0, "El modelo conectado no tiene relaciones definidas.");
-        SetModelEmpty(PowerQuery, notConnected, _model.PowerQueries.Count == 0, "El modelo conectado no tiene consultas de Power Query.");
-        SetModelEmpty(Usage, notConnected, _model.Measures.Count == 0 && _model.Columns.Count == 0, "No hay medidas ni columnas para analizar todavía.");
+        var fromReport = notConnected && _reportPath is not null;
+        SetModelEmpty(Measures, notConnected, fromReport, _model.Measures.Count == 0, "El modelo conectado no tiene medidas DAX.");
+        SetModelEmpty(Tables, notConnected, fromReport, _model.Tables.Count == 0, "El modelo conectado no tiene tablas visibles.");
+        SetModelEmpty(Columns, notConnected, fromReport, _model.Columns.Count == 0, "El modelo conectado no tiene columnas.");
+        SetModelEmpty(Relationships, notConnected, fromReport, _model.Relationships.Count == 0, "El modelo conectado no tiene relaciones definidas.");
+        SetModelEmpty(PowerQuery, notConnected, fromReport, _model.PowerQueries.Count == 0, "El modelo conectado no tiene consultas de Power Query.");
+        SetModelEmpty(Usage, notConnected, fromReport, _model.Measures.Count == 0 && _model.Columns.Count == 0, "No hay medidas ni columnas para analizar todavía.");
 
         if (_filters.Count == 0)
             Filters.SetEmpty(true, "Sin filtros detectados",
@@ -672,11 +724,18 @@ public sealed partial class MainViewModel : ObservableObject
             Performance.SetEmpty(false);
     }
 
-    private static void SetModelEmpty(SectionViewModel section, bool notConnected, bool sectionIsEmpty, string emptyBody)
+    private void SetModelEmpty(SectionViewModel section, bool notConnected, bool fromReport, bool sectionIsEmpty, string emptyBody)
     {
-        if (notConnected)
+        // Con un .pbix cargado pero sin modelo, la salida es abrirlo en Power BI Desktop desde acá.
+        section.EmptyActionText = fromReport ? "Abrir en Power BI Desktop" : null;
+        section.EmptyActionCommand = fromReport ? OpenReportInDesktopCommand : null;
+
+        if (fromReport)
+            section.SetEmpty(true, "Falta el modelo de este tablero",
+                "Las tablas, columnas y medidas no se pueden leer del archivo .pbix (van comprimidas adentro): hay que tener el tablero abierto en Power BI Desktop.");
+        else if (notConnected)
             section.SetEmpty(true, "Sin modelo conectado",
-                "Abrí tu tablero en Power BI Desktop y lanzá PBI Context desde la pestaña Herramientas externas. Ahí se llenan medidas, tablas, columnas y relaciones.");
+                "Abrí tu tablero en Power BI Desktop y esta app se engancha sola, o lanzala desde la pestaña Herramientas externas. Ahí se llenan medidas, tablas, columnas y relaciones.");
         else if (sectionIsEmpty)
             section.SetEmpty(true, "Esta sección está vacía", emptyBody);
         else
@@ -718,12 +777,13 @@ public sealed partial class MainViewModel : ObservableObject
         {
             StatusText = "Elegí un snapshot .json exportado antes para ver qué cambió.";
         }
-        else if (HasModel && (section == Measures || section == Tables || section == Columns
-                              || section == Relationships || section == PowerQuery))
+        else if (section == Measures || section == Tables || section == Columns
+                 || section == Relationships || section == PowerQuery)
         {
-            StatusText =
-                $"{_model.Tables.Count} tablas · {_model.Columns.Count} columnas · " +
-                $"{_model.Measures.Count} medidas · {_model.Relationships.Count} relaciones";
+            StatusText = HasModel
+                ? $"{_model.Tables.Count} tablas · {_model.Columns.Count} columnas · " +
+                  $"{_model.Measures.Count} medidas · {_model.Relationships.Count} relaciones"
+                : "Sin modelo: hace falta tener el tablero abierto en Power BI Desktop.";
         }
     }
 
