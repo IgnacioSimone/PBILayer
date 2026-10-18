@@ -82,6 +82,56 @@ public class ModelDiffAnalyzerTests
     }
 
     [Fact]
+    public void Compare_FilterAdded_ReportedAsAgregado_WhenFilterListsProvided()
+    {
+        var older = BaseModel();
+        var newer = BaseModel();
+
+        var olderFilters = new List<FilterInfo>();
+        var newerFilters = new List<FilterInfo>
+        {
+            new() { Scope = "Página", Page = "Resumen", Table = "Ventas", Field = "Anio", FilterType = "Categorical", Summary = "incluye: 2024" }
+        };
+
+        var diff = ModelDiffAnalyzer.Compare(older, newer, olderFilters, newerFilters);
+
+        Assert.Contains(diff, e => e.Kind == DiffKind.Agregado && e.Category == "Filtro");
+    }
+
+    [Fact]
+    public void Compare_FilterConditionChanged_ReportedAsModificado()
+    {
+        var older = BaseModel();
+        var newer = BaseModel();
+
+        var filter = new FilterInfo { Scope = "Reporte", Table = "Ventas", Field = "Anio", FilterType = "Categorical", Summary = "incluye: 2024" };
+        var olderFilters = new List<FilterInfo> { filter };
+        var newerFilters = new List<FilterInfo>
+        {
+            new() { Scope = "Reporte", Table = "Ventas", Field = "Anio", FilterType = "Categorical", Summary = "incluye: 2024, 2025" }
+        };
+
+        var diff = ModelDiffAnalyzer.Compare(older, newer, olderFilters, newerFilters);
+
+        var entry = Assert.Single(diff);
+        Assert.Equal(DiffKind.Modificado, entry.Kind);
+        Assert.Equal("Filtro", entry.Category);
+        Assert.Contains("condición", entry.Detail);
+    }
+
+    [Fact]
+    public void Compare_WithoutFilterLists_SkipsFilterComparison()
+    {
+        var older = BaseModel();
+        var newer = BaseModel();
+
+        // Sin pasar olderFilters/newerFilters, no debe agregar ninguna entrada de categoría "Filtro".
+        var diff = ModelDiffAnalyzer.Compare(older, newer);
+
+        Assert.DoesNotContain(diff, e => e.Category == "Filtro");
+    }
+
+    [Fact]
     public void Compare_DuplicateKeys_DoesNotThrow_KeepsFirst()
     {
         var older = new ModelSnapshot();

@@ -28,7 +28,8 @@ public class ModelDiffEntry
 /// </summary>
 public static class ModelDiffAnalyzer
 {
-    public static List<ModelDiffEntry> Compare(ModelSnapshot older, ModelSnapshot newer)
+    public static List<ModelDiffEntry> Compare(ModelSnapshot older, ModelSnapshot newer,
+        List<FilterInfo>? olderFilters = null, List<FilterInfo>? newerFilters = null)
     {
         var entries = new List<ModelDiffEntry>();
 
@@ -91,12 +92,30 @@ public static class ModelDiffAnalyzer
                 return changes;
             });
 
+        if (olderFilters is not null || newerFilters is not null)
+        {
+            CompareByKey(entries, "Filtro",
+                ByKeyFirstWins(olderFilters ?? new List<FilterInfo>(), FilterKey),
+                ByKeyFirstWins(newerFilters ?? new List<FilterInfo>(), FilterKey),
+                (a, b) =>
+                {
+                    var changes = new List<string>();
+                    if (a.FilterType != b.FilterType) changes.Add($"tipo \"{a.FilterType}\" → \"{b.FilterType}\"");
+                    if (a.Summary != b.Summary) changes.Add($"condición \"{a.Summary}\" → \"{b.Summary}\"");
+                    return changes;
+                });
+        }
+
         return entries
             .OrderBy(e => e.Kind)
             .ThenBy(e => e.Category)
             .ThenBy(e => e.Name)
             .ToList();
     }
+
+    /// <summary>Los filtros no tienen un nombre único garantizado — la clave de comparación
+    /// es el nivel + dónde vive + qué campo filtra.</summary>
+    private static string FilterKey(FilterInfo f) => $"{f.Scope} · {f.Page} · {f.VisualText} · {f.Table}[{f.Field}]";
 
     /// <summary>Como Dictionary.ToDictionary, pero si hay una clave repetida (no debería
     /// pasar en un modelo válido, pero esta herramienta no controla eso) se queda con la

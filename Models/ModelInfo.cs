@@ -103,3 +103,20 @@ public class VisualFieldUsage
     public string Table { get; set; } = "";
     public string Field { get; set; } = "";
 }
+
+public class FilterInfo
+{
+    public string Scope { get; set; } = "";        // "Reporte" | "Página" | "Visual"
+    public string Page { get; set; } = "";          // vacío para nivel Reporte
+    public string VisualTitle { get; set; } = "";   // vacío salvo Scope == "Visual"
+    public string VisualType { get; set; } = "";
+    public string Name { get; set; } = "";
+    public string FieldKind { get; set; } = "";     // Medida / Columna / Jerarquía
+    public string Table { get; set; } = "";
+    public string Field { get; set; } = "";
+    public string FilterType { get; set; } = "";    // Categorical / TopN / Advanced / RelativeDate / ...
+    public string Summary { get; set; } = "";       // condición en texto, best-effort
+
+    public string TargetText => $"{Table}[{Field}]";
+    public string VisualText => Scope == "Visual" ? (string.IsNullOrEmpty(VisualTitle) ? VisualType : VisualTitle) : "";
+}
