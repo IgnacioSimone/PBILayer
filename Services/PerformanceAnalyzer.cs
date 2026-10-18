@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -11,6 +12,13 @@ public class PerformanceWarning
     public string Table { get; set; } = "";
     public string Subject { get; set; } = "";
     public string Message { get; set; } = "";
+
+    public string SeverityText => Severity switch
+    {
+        PerformanceSeverity.Alta => Loc.T("Severity_High"),
+        PerformanceSeverity.Media => Loc.T("Severity_Medium"),
+        _ => Loc.T("Severity_Low")
+    };
 }
 
 /// <summary>
@@ -31,12 +39,10 @@ public static class PerformanceAnalyzer
             warnings.Add(new PerformanceWarning
             {
                 Severity = PerformanceSeverity.Alta,
-                Category = "Relación bidireccional",
+                Category = Loc.T("Perf_Bidirectional_Cat"),
                 Table = r.FromTable,
                 Subject = $"{r.FromTable}[{r.FromColumn}] ↔ {r.ToTable}[{r.ToColumn}]",
-                Message = "El filtro cruzado en ambos sentidos evalúa más rutas de propagación de las " +
-                          "necesarias y puede generar ambigüedad de filtro. Confirmá que de verdad haga " +
-                          "falta que el filtro viaje en las dos direcciones."
+                Message = Loc.T("Perf_Bidirectional_Msg")
             });
         }
 
@@ -46,12 +52,10 @@ public static class PerformanceAnalyzer
             warnings.Add(new PerformanceWarning
             {
                 Severity = PerformanceSeverity.Alta,
-                Category = "Relación muchos a muchos",
+                Category = Loc.T("Perf_ManyToMany_Cat"),
                 Table = r.FromTable,
                 Subject = $"{r.FromTable}[{r.FromColumn}] ↔ {r.ToTable}[{r.ToColumn}]",
-                Message = "Las relaciones muchos a muchos suelen ser más caras de evaluar que uno a muchos " +
-                          "— confirmá que sea intencional y no un error de modelado (por ejemplo, una tabla " +
-                          "puente que falta)."
+                Message = Loc.T("Perf_ManyToMany_Msg")
             });
         }
 
@@ -64,12 +68,10 @@ public static class PerformanceAnalyzer
             warnings.Add(new PerformanceWarning
             {
                 Severity = PerformanceSeverity.Media,
-                Category = "Columnas calculadas",
+                Category = Loc.T("Perf_CalcColumns_Cat"),
                 Table = group.Key,
                 Subject = group.Key,
-                Message = $"{count} columnas calculadas en esta tabla. Cada una ocupa espacio en el modelo " +
-                          "y se recalcula en cada refresh — si el cálculo se puede resolver en Power Query " +
-                          "(M) al cargar los datos, o como medida en vez de columna, suele ser más liviano."
+                Message = Loc.F("Perf_CalcColumns_Msg", count)
             });
         }
 
@@ -82,12 +84,10 @@ public static class PerformanceAnalyzer
             warnings.Add(new PerformanceWarning
             {
                 Severity = PerformanceSeverity.Media,
-                Category = "CALCULATE anidado",
+                Category = Loc.T("Perf_NestedCalc_Cat"),
                 Table = m.Table,
                 Subject = m.Name,
-                Message = $"{depth} niveles de CALCULATE/CALCULATETABLE anidados. Cada nivel agrega una " +
-                          "transición de contexto — a partir de 3 conviene revisar si se puede simplificar " +
-                          "con variables (VAR) o menos anidamiento."
+                Message = Loc.F("Perf_NestedCalc_Msg", depth)
             });
         }
 

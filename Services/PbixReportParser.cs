@@ -2,6 +2,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -576,12 +577,12 @@ public class PbixReportParser
     /// </summary>
     private static string SummarizeCondition(JsonElement filter, string filterType)
     {
-        var typeLabel = string.IsNullOrEmpty(filterType) ? "tipo desconocido" : filterType;
+        var typeLabel = string.IsNullOrEmpty(filterType) ? Loc.T("Filter_TypeUnknown") : filterType;
 
         if (!filter.TryGetProperty("filter", out var cond) ||
             !cond.TryGetProperty("Where", out var where) ||
             where.ValueKind != JsonValueKind.Array || where.GetArrayLength() == 0)
-            return $"(tipo: {typeLabel})";
+            return Loc.F("Filter_TypeOnly", typeLabel);
 
         var values = new List<string>();
         var isExclude = false;
@@ -611,12 +612,12 @@ public class PbixReportParser
             }
         }
 
-        if (values.Count == 0) return $"(tipo: {typeLabel} — condición no interpretada automáticamente)";
+        if (values.Count == 0) return Loc.F("Filter_NotInterpreted", typeLabel);
 
         const int maxShown = 8;
         var text = string.Join(", ", values.Take(maxShown));
-        if (values.Count > maxShown) text += $" y {values.Count - maxShown} más";
-        return (isExclude ? "excluye: " : "incluye: ") + text;
+        if (values.Count > maxShown) text = Loc.F("Filter_AndMore", text, values.Count - maxShown);
+        return Loc.F(isExclude ? "Filter_Excludes" : "Filter_Includes", text);
     }
 
     /// <summary>Power BI codifica los literales como texto: strings entre comillas simples

@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -28,22 +29,22 @@ public sealed class UpdateInstaller
     public async Task<string> DownloadAndVerifyAsync(ReleaseInfo release, IProgress<double>? progress, CancellationToken ct)
     {
         if (!release.CanInstall || release.InstallerName is null)
-            throw new InvalidOperationException("Esta versión no publicó el instalador junto con su hash; descargala desde la página de la versión.");
+            throw new InvalidOperationException(Loc.T("Install_NoInstallerPublished"));
 
         if (!IsTrustedUrl(release.InstallerUrl!) || !IsTrustedUrl(release.ChecksumUrl!))
-            throw new InvalidOperationException("La descarga no apunta a GitHub; por seguridad no se instala sola.");
+            throw new InvalidOperationException(Loc.T("Install_UntrustedUrl"));
 
         // El nombre sale de la respuesta de red: nunca se usa como ruta tal cual.
         var fileName = Path.GetFileName(release.InstallerName);
         if (string.IsNullOrWhiteSpace(fileName) || !fileName.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
-            throw new InvalidOperationException("El nombre del instalador publicado no es válido.");
+            throw new InvalidOperationException(Loc.T("Install_BadName"));
 
         Directory.CreateDirectory(_directory);
         var target = Path.Combine(_directory, fileName);
         var partial = target + ".part";
 
         var expected = ParseChecksum(await _http.GetStringAsync(release.ChecksumUrl!, ct), fileName)
-                       ?? throw new InvalidDataException("El archivo de hash publicado no tiene un SHA-256 válido.");
+                       ?? throw new InvalidDataException(Loc.T("Install_BadChecksumFile"));
 
         try
         {
@@ -68,7 +69,7 @@ public sealed class UpdateInstaller
 
             var actual = await HashFileAsync(partial, ct);
             if (!string.Equals(actual, expected, StringComparison.OrdinalIgnoreCase))
-                throw new InvalidDataException("La descarga está dañada: su SHA-256 no coincide con el publicado. No se instaló.");
+                throw new InvalidDataException(Loc.T("Install_HashMismatch"));
 
             File.Move(partial, target, overwrite: true);
             progress?.Report(1);

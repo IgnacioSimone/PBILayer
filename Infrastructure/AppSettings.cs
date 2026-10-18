@@ -28,6 +28,9 @@ public sealed class AppSettings
 
     public ThemeMode Theme { get; set; } = ThemeMode.System;
 
+    /// <summary>Idioma de la interfaz (se aplica al reiniciar). En automático sigue el de Windows.</summary>
+    public AppLanguage Language { get; set; } = AppLanguage.System;
+
     public double? WindowLeft { get; set; }
     public double? WindowTop { get; set; }
     public double? WindowWidth { get; set; }

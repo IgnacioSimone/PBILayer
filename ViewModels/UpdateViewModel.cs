@@ -30,7 +30,7 @@ public sealed partial class UpdateViewModel : ObservableObject
         _persist = persist;
         _current = current;
         _utcNow = utcNow ?? (() => DateTime.UtcNow);
-        _statusText = $"Versión instalada: {current.Major}.{current.Minor}.{current.Build}";
+        _statusText = Loc.F("Update_Installed", $"{current.Major}.{current.Minor}.{current.Build}");
     }
 
     [ObservableProperty] private string _statusText;
@@ -91,10 +91,10 @@ public sealed partial class UpdateViewModel : ObservableObject
 
     private async Task<UpdateCheckResult> RunCheckAsync(bool manual, CancellationToken ct)
     {
-        if (IsBusy) return new UpdateCheckResult(UpdateStatus.Failed, Error: "Ya hay una operación en curso.");
+        if (IsBusy) return new UpdateCheckResult(UpdateStatus.Failed, Error: Loc.T("Update_Busy"));
 
         IsChecking = true;
-        StatusText = "Buscando actualizaciones…";
+        StatusText = Loc.T("Update_Checking");
         try
         {
             var result = await UpdateChecker.CheckAsync(_feed, _current, ct);
@@ -109,10 +109,10 @@ public sealed partial class UpdateViewModel : ObservableObject
             Release = result.Status is UpdateStatus.Available or UpdateStatus.UpToDate ? result.Release : null;
             StatusText = result.Status switch
             {
-                UpdateStatus.Available => $"Hay una versión nueva: {result.Release!.Version.Major}.{result.Release.Version.Minor}.{result.Release.Version.Build}",
-                UpdateStatus.UpToDate => "Tenés la última versión.",
-                UpdateStatus.NoReleases => "No hay versiones publicadas para consultar (el repositorio puede ser privado).",
-                _ => manual ? $"No se pudo buscar: {result.Error}" : StatusText
+                UpdateStatus.Available => Loc.F("Update_Available", $"{result.Release!.Version.Major}.{result.Release.Version.Minor}.{result.Release.Version.Build}"),
+                UpdateStatus.UpToDate => Loc.T("Update_UpToDate"),
+                UpdateStatus.NoReleases => Loc.T("Update_NoReleases"),
+                _ => manual ? Loc.F("Update_CheckFailed", result.Error) : StatusText
             };
             return result;
         }
@@ -129,11 +129,11 @@ public sealed partial class UpdateViewModel : ObservableObject
 
         IsDownloading = true;
         Progress = 0;
-        StatusText = "Descargando la actualización…";
+        StatusText = Loc.T("Update_Downloading");
         try
         {
             var path = await _installer.DownloadAndVerifyAsync(Release!, new Progress<double>(p => Progress = p), CancellationToken.None);
-            StatusText = "Verificada. Cerrando PBI Context para instalar…";
+            StatusText = Loc.T("Update_Verified");
 
             // El instalador pide permisos de administrador (registra la herramienta externa) y cierra la app si hace falta.
             _dialogs.RunInstallerAndExit(path);
@@ -141,7 +141,7 @@ public sealed partial class UpdateViewModel : ObservableObject
         catch (Exception ex)
         {
             AppLog.Write($"ERROR actualizando: {ex}");
-            StatusText = $"No se pudo actualizar: {ex.Message}";
+            StatusText = Loc.F("Update_Failed", ex.Message);
         }
         finally
         {

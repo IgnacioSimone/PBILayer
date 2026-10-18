@@ -1,0 +1,73 @@
+# Textos fijos de las ventanas (XAML y menús).
+Search_Placeholder	Buscar en todas las secciones…	Search all sections…
+Toast_Close	Cerrar	Close
+Toast_CloseAria	Cerrar aviso	Close notification
+App_Tagline	Documentación de modelo y reporte	Model and report documentation
+Privacy_Title	PRIVACIDAD	PRIVACY
+Privacy_Short	Solo se lee metadata. Nunca se consulta una fila de datos.	Only metadata is read. A row of data is never queried.
+Theme_Tooltip	Cambiar tema (Ctrl+T)	Change theme (Ctrl+T)
+Theme_Aria	Cambiar tema	Change theme
+Help_Tooltip	Ayuda, actualizaciones y acerca de	Help, updates and about
+Help_Aria	Ayuda y acerca de	Help and about
+Nav_Aria	Secciones	Sections
+Busy_Aria	Cargando	Loading
+Btn_Cancel	Cancelar	Cancel
+Tip_Cancel	Cancelar la operación en curso	Cancel the current operation
+Btn_Refresh	Actualizar	Refresh
+Tip_Refresh	Volver a leer el modelo y el reporte (F5)	Read the model and report again (F5)
+Btn_OpenPbix	Abrir .pbix	Open .pbix
+Tip_OpenPbix	Abrir un reporte .pbix (Ctrl+O)	Open a .pbix report (Ctrl+O)
+Tip_Recent	Reportes abiertos recientemente	Recently opened reports
+Aria_Recent	Reportes recientes	Recent reports
+Btn_Export	Exportar	Export
+Tip_Export	Exportar a Word, Excel, HTML, CSV o JSON	Export to Word, Excel, HTML, CSV or JSON
+Aria_Export	Exportar a otros formatos	Export to other formats
+Btn_ExportMarkdown	Exportar Markdown	Export Markdown
+Tip_ExportMarkdown	Guardar el contexto listo para pegar en un chat con IA (Ctrl+E)	Save the context ready to paste into an AI chat (Ctrl+E)
+Tip_Search	Buscar en todas las secciones (Ctrl+F). Esc para limpiar.	Search all sections (Ctrl+F). Esc to clear.
+Summary_Empty	Conectate a un modelo desde Power BI Desktop y/o abrí el .pbix para ver los números acá.	Connect to a model from Power BI Desktop and/or open the .pbix to see the numbers here.
+Copy_Cell	Copiar celda	Copy cell
+Copy_Row	Copiar fila	Copy row
+Copy_All	Copiar todas las filas visibles	Copy all visible rows
+Usage_OnlyUnused	Mostrar solo objetos sin uso	Show only unused objects
+Col_From	Desde	From
+Col_To	Hacia	To
+Detail_Aria	Detalle	Details
+Detail_GoToTip	Ir a este objeto	Go to this object
+Detail_Close	Cerrar el detalle	Close the details
+Detail_Copy	Copiar	Copy
+Detail_CopyTip	Copiar el código completo	Copy the full code
+Detail_CodeHeader	CÓDIGO	CODE
+Detail_CodeAria	Código	Code
+Detail_DependsOn	DEPENDE DE	DEPENDS ON
+Detail_UsedBy	USADA POR	USED BY
+About_Title	Acerca de PBI Context	About PBI Context
+About_Description	Documenta un modelo de Power BI y su reporte: medidas DAX, tablas, columnas, relaciones, Power Query, qué visual usa qué campo y qué objetos no se usan en ningún lado.	Documents a Power BI model and its report: DAX measures, tables, columns, relationships, Power Query, which visual uses which field and which objects are not used anywhere.
+About_UpdatesHeader	ACTUALIZACIONES	UPDATES
+Btn_CheckNow	Buscar ahora	Check now
+Btn_InstallUpdate	Descargar e instalar	Download and install
+Btn_ViewRelease	Ver la versión en GitHub	View the release on GitHub
+About_AutoCheckTip	Es la única conexión de red de la app. No envía ningún dato tuyo, del modelo ni del tablero.	It is the app's only network connection. It sends none of your data, the model's or the report's.
+About_AutoCheck	Buscar actualizaciones automáticamente al abrir (una consulta a GitHub por día, sin enviar datos)	Check for updates automatically on startup (one query to GitHub per day, no data sent)
+Link_Repo	Repositorio	Repository
+Link_License	Licencia MIT	MIT license
+Link_Changelog	Novedades de cada versión	What's new in each version
+Link_DataFolder	Carpeta de datos y registros	Data and logs folder
+Btn_Close	Cerrar	Close
+Menu_ClearRecent	Limpiar recientes	Clear recent
+Menu_Word	Documento de Word (.docx)	Word document (.docx)
+Menu_Excel	Libro de Excel (.xlsx)	Excel workbook (.xlsx)
+Menu_Html	Página web (.html)	Web page (.html)
+Menu_CsvSection	CSV de esta sección (como la ves)	CSV of this section (as you see it)
+Menu_CsvAll	CSV de todas las secciones (.zip)	CSV of all sections (.zip)
+Menu_Json	Snapshot para comparar (.json)	Snapshot to compare (.json)
+Menu_Markdown	Contexto para IA (.md)	AI context (.md)
+Menu_Shortcuts	Atajos de teclado	Keyboard shortcuts
+Menu_CheckUpdates	Buscar actualizaciones…	Check for updates…
+Menu_About	Acerca de {0}	About {0}
+Menu_Language	Idioma	Language
+Lang_Auto	Automático (Windows)	Automatic (Windows)
+Lang_Spanish	Español	Español
+Lang_English	English	English
+Lang_RestartPrompt	El idioma cambia al reiniciar PBI Context.	The language changes when PBI Context restarts.
+Lang_RestartAction	Reiniciar ahora	Restart now

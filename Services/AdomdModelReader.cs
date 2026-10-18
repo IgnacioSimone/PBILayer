@@ -1,5 +1,6 @@
 using System.Data;
 using Microsoft.AnalysisServices.AdomdClient;
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -218,8 +219,7 @@ public class AdomdModelReader
         if (columnRefById.Count == 0 && snapshot.Tables.Count == 0 && snapshot.Relationships.Count == 0 &&
             snapshot.Warnings.Any(w => w.StartsWith("TMSCHEMA_TABLES") || w.StartsWith("TMSCHEMA_COLUMNS")))
         {
-            snapshot.Warnings.Add("Relaciones: no se pudieron resolver porque Tablas y/o Columnas fallaron antes " +
-                "(las relaciones dependen de esa información). No significa que el modelo no tenga relaciones.");
+            snapshot.Warnings.Add(Loc.T("Warn_RelationshipsUnresolved"));
         }
 
         // ---------- Power Query (M) ----------

@@ -8,6 +8,11 @@ public static class UsageLabels
 
     public static string Query(string name) => $"{QueryPrefix}{name}»";
 
+    /// <summary>La etiqueta tal como se muestra: "Consulta «X»" o "Query «X»" según el idioma. Las otras ("[Medida]",
+    /// "Tabla[Columna]") son nombres del modelo y se muestran igual en cualquier idioma.</summary>
+    public static string Display(string label) =>
+        TryParseQuery(label, out var name) ? $"{Terms.Display("Consulta")} «{name}»" : label;
+
     public static bool TryParseQuery(string label, out string name)
     {
         if (label.StartsWith(QueryPrefix, StringComparison.Ordinal) && label.EndsWith('»'))

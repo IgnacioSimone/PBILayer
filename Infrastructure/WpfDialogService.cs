@@ -52,6 +52,19 @@ public sealed class WpfDialogService : IDialogService
         }
     }
 
+    public void RestartApplication()
+    {
+        try
+        {
+            if (Environment.ProcessPath is { } exe) Process.Start(new ProcessStartInfo(exe) { UseShellExecute = true });
+            Application.Current.Shutdown();
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write($"No se pudo reiniciar la aplicación: {ex.Message}");
+        }
+    }
+
     public void RunInstallerAndExit(string path)
     {
         try
@@ -64,7 +77,7 @@ public sealed class WpfDialogService : IDialogService
         {
             // El usuario canceló el aviso de permisos de administrador: la app sigue abierta.
             AppLog.Write($"No se lanzó el instalador: {ex.Message}");
-            throw new InvalidOperationException("No se pudo iniciar el instalador (¿se canceló el permiso de administrador?).", ex);
+            throw new InvalidOperationException(Loc.T("Install_LaunchFailed"), ex);
         }
     }
 

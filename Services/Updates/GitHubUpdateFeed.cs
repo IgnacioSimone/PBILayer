@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -30,7 +31,7 @@ public sealed class GitHubUpdateFeed : IUpdateFeed
         {
             if (response.StatusCode == HttpStatusCode.Forbidden && response.Headers.TryGetValues("X-RateLimit-Remaining", out var left) &&
                 left.FirstOrDefault() == "0")
-                throw new HttpRequestException("GitHub limitó las consultas por un rato; probá de nuevo más tarde.");
+                throw new HttpRequestException(Loc.T("Install_RateLimit"));
             return null;
         }
 

@@ -88,8 +88,8 @@
                     </Border.Triggers>
                     <DockPanel>
                         <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" VerticalAlignment="Top"
-                                Command="{Binding DismissCommand}" ToolTip="Cerrar"
-                                AutomationProperties.Name="Cerrar aviso">
+                                Command="{Binding DismissCommand}" ToolTip="{views:Loc Toast_Close}"
+                                AutomationProperties.Name="{views:Loc Toast_CloseAria}">
                             <TextBlock Text="&#xE711;" FontFamily="{StaticResource FontIcon}" FontSize="11"
                                        Foreground="{DynamicResource InkDim}" />
                         </Button>
@@ -160,7 +160,7 @@
                                FontFamily="{StaticResource FontDisplay}"
                                FontSize="21" FontWeight="Bold"
                                Foreground="{DynamicResource Ink}" />
-                    <TextBlock Text="Documentación de modelo y reporte"
+                    <TextBlock Text="{views:Loc App_Tagline}"
                                FontFamily="{StaticResource FontSmall}"
                                FontSize="11.5" Foreground="{DynamicResource InkFaint}"
                                TextWrapping="Wrap" Margin="0,3,0,0" />
@@ -169,10 +169,10 @@
                 <Border DockPanel.Dock="Bottom" Margin="18,10,18,18" Padding="13,11"
                         Background="{DynamicResource PanelTint}" CornerRadius="10">
                     <StackPanel>
-                        <TextBlock Text="PRIVACIDAD"
+                        <TextBlock Text="{views:Loc Privacy_Title}"
                                    FontFamily="{StaticResource FontSmall}" FontSize="9.5"
                                    FontWeight="Bold" Foreground="{DynamicResource InkFaint}" />
-                        <TextBlock Text="Solo se lee metadata. Nunca se consulta una fila de datos."
+                        <TextBlock Text="{views:Loc Privacy_Short}"
                                    FontFamily="{StaticResource FontSmall}" FontSize="11"
                                    Foreground="{DynamicResource InkDim}"
                                    TextWrapping="Wrap" Margin="0,4,0,0" />
@@ -186,8 +186,8 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Button Grid.Column="0" Style="{StaticResource LinkButton}" HorizontalContentAlignment="Left"
-                            Command="{Binding CycleThemeCommand}" ToolTip="Cambiar tema (Ctrl+T)"
-                            AutomationProperties.Name="Cambiar tema">
+                            Command="{Binding CycleThemeCommand}" ToolTip="{views:Loc Theme_Tooltip}"
+                            AutomationProperties.Name="{views:Loc Theme_Aria}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE793;" FontFamily="{StaticResource FontIcon}" FontSize="14"
                                        Foreground="{DynamicResource InkDim}" VerticalAlignment="Center" Margin="0,0,8,0" />
@@ -196,8 +196,8 @@
                         </StackPanel>
                     </Button>
                     <Button Grid.Column="1" Style="{StaticResource LinkButton}"
-                            x:Name="HelpMenuButton" Click="HelpMenuButton_Click" ToolTip="Ayuda, actualizaciones y acerca de"
-                            AutomationProperties.Name="Ayuda y acerca de">
+                            x:Name="HelpMenuButton" Click="HelpMenuButton_Click" ToolTip="{views:Loc Help_Tooltip}"
+                            AutomationProperties.Name="{views:Loc Help_Aria}">
                         <TextBlock Text="&#xE897;" FontFamily="{StaticResource FontIcon}" FontSize="14"
                                    Foreground="{DynamicResource InkDim}" />
                     </Button>
@@ -209,7 +209,7 @@
                          SelectedItem="{Binding SelectedSection, Mode=TwoWay}"
                          VerticalAlignment="Top"
                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                         AutomationProperties.Name="Secciones">
+                         AutomationProperties.Name="{views:Loc Nav_Aria}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Title}" />
@@ -247,33 +247,33 @@
                                AutomationProperties.LiveSetting="Polite" />
                     <ProgressBar IsIndeterminate="True" Height="2" Margin="0,8,0,0"
                                  Foreground="{DynamicResource Accent}" Background="Transparent" BorderThickness="0"
-                                 AutomationProperties.Name="Cargando"
+                                 AutomationProperties.Name="{views:Loc Busy_Aria}"
                                  Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Button Content="Cancelar" Style="{StaticResource SoftButton}"
-                            Command="{Binding CancelCommand}" ToolTip="Cancelar la operación en curso"
+                    <Button Content="{views:Loc Btn_Cancel}" Style="{StaticResource SoftButton}"
+                            Command="{Binding CancelCommand}" ToolTip="{views:Loc Tip_Cancel}"
                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibility}}" />
-                    <Button Content="Actualizar" Style="{StaticResource SoftButton}"
-                            Command="{Binding RefreshCommand}" ToolTip="Volver a leer el modelo y el reporte (F5)" />
-                    <Button x:Name="OpenPbixButton" Content="Abrir .pbix" Style="{StaticResource SoftButton}"
-                            Command="{Binding ChoosePbixCommand}" ToolTip="Abrir un reporte .pbix (Ctrl+O)" />
+                    <Button Content="{views:Loc Btn_Refresh}" Style="{StaticResource SoftButton}"
+                            Command="{Binding RefreshCommand}" ToolTip="{views:Loc Tip_Refresh}" />
+                    <Button x:Name="OpenPbixButton" Content="{views:Loc Btn_OpenPbix}" Style="{StaticResource SoftButton}"
+                            Command="{Binding ChoosePbixCommand}" ToolTip="{views:Loc Tip_OpenPbix}" />
                     <Button x:Name="RecentButton" Style="{StaticResource SoftButton}" Click="RecentButton_Click"
-                            IsEnabled="{Binding HasRecentFiles}" ToolTip="Reportes abiertos recientemente"
-                            AutomationProperties.Name="Reportes recientes" Padding="11,8">
+                            IsEnabled="{Binding HasRecentFiles}" ToolTip="{views:Loc Tip_Recent}"
+                            AutomationProperties.Name="{views:Loc Aria_Recent}" Padding="11,8">
                         <TextBlock Text="&#xE70D;" FontFamily="{StaticResource FontIcon}" FontSize="12" />
                     </Button>
                     <Button x:Name="ExportMenuButton" Style="{StaticResource SoftButton}" Click="ExportMenuButton_Click"
-                            ToolTip="Exportar a Word, Excel, HTML, CSV o JSON"
-                            AutomationProperties.Name="Exportar a otros formatos">
+                            ToolTip="{views:Loc Tip_Export}"
+                            AutomationProperties.Name="{views:Loc Aria_Export}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Exportar" VerticalAlignment="Center" />
+                            <TextBlock Text="{views:Loc Btn_Export}" VerticalAlignment="Center" />
                             <TextBlock Text="&#xE70D;" FontFamily="{StaticResource FontIcon}" FontSize="11"
                                        Margin="8,1,0,0" VerticalAlignment="Center" />
                         </StackPanel>
                     </Button>
-                    <Button Content="Exportar Markdown" Style="{StaticResource AccentButton}"
-                            Command="{Binding ExportMarkdownCommand}" ToolTip="Guardar el contexto listo para pegar en un chat con IA (Ctrl+E)" />
+                    <Button Content="{views:Loc Btn_ExportMarkdown}" Style="{StaticResource AccentButton}"
+                            Command="{Binding ExportMarkdownCommand}" ToolTip="{views:Loc Tip_ExportMarkdown}" />
                 </StackPanel>
             </Grid>
 
@@ -281,8 +281,8 @@
             <TextBox x:Name="GlobalSearchBox" Grid.Row="2" HorizontalAlignment="Left" Width="380"
                      Style="{StaticResource SearchBox}"
                      Text="{Binding GlobalSearchText, UpdateSourceTrigger=PropertyChanged}"
-                     ToolTip="Buscar en todas las secciones (Ctrl+F). Esc para limpiar."
-                     AutomationProperties.Name="Buscar en todas las secciones" />
+                     ToolTip="{views:Loc Tip_Search}"
+                     AutomationProperties.Name="{views:Loc Search_Placeholder}" />
 
             <Border Grid.Row="4" Style="{StaticResource Card}" ClipToBounds="True">
                 <!-- La vista de cada sección sale de Views/SectionTemplates.xaml según el tipo de ViewModel -->

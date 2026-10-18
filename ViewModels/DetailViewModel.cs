@@ -18,7 +18,8 @@ public sealed class DependencyLink
 {
     public DependencyLink(string label, Action<string> navigate)
     {
-        Label = label;
+        // Se muestra traducido ("Query «X»" en inglés) pero se navega con la etiqueta canónica.
+        Label = UsageLabels.Display(label);
         OpenCommand = new RelayCommand(() => navigate(label));
     }
 
@@ -47,6 +48,7 @@ public sealed class DetailViewModel
         Language = language;
         Facts = facts;
         StatusText = usage?.Status;
+        State = usage?.State;
         DependsOn = (usage?.DependsOn ?? new List<string>()).Select(l => new DependencyLink(l, context.Navigate)).ToList();
         UsedBy = (usage?.UsedBy ?? new List<string>()).Select(l => new DependencyLink(l, context.Navigate)).ToList();
         CopyCommand = new RelayCommand(() => { if (!string.IsNullOrEmpty(Code)) context.Copy(Code); }, () => !string.IsNullOrEmpty(Code));
@@ -60,6 +62,9 @@ public sealed class DetailViewModel
 
     /// <summary>"En uso", "Solo uso interno" o "Sin uso — candidata a eliminar" (null si no hay análisis de uso).</summary>
     public string? StatusText { get; }
+
+    /// <summary>El mismo veredicto como valor: las pantallas lo usan para colorear sin depender del idioma del texto.</summary>
+    public UsageState? State { get; }
 
     public IReadOnlyList<DependencyLink> DependsOn { get; }
     public IReadOnlyList<DependencyLink> UsedBy { get; }

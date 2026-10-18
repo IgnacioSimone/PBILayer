@@ -1,0 +1,8 @@
+# Textos que genera la lectura del modelo y del reporte (resúmenes de filtros, advertencias).
+Filter_TypeUnknown	tipo desconocido	unknown type
+Filter_TypeOnly	(tipo: {0})	(type: {0})
+Filter_NotInterpreted	(tipo: {0} — condición no interpretada automáticamente)	(type: {0} — condition not interpreted automatically)
+Filter_AndMore	{0} y {1} más	{0} and {1} more
+Filter_Includes	incluye: {0}	includes: {0}
+Filter_Excludes	excluye: {0}	excludes: {0}
+Warn_RelationshipsUnresolved	Relaciones: no se pudieron resolver porque Tablas y/o Columnas fallaron antes (las relaciones dependen de esa información). No significa que el modelo no tenga relaciones.	Relationships: could not be resolved because Tables and/or Columns failed earlier (relationships depend on that information). It does not mean the model has no relationships.

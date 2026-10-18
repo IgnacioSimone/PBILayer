@@ -22,6 +22,7 @@ public partial class App : Application
             base.OnStartup(e);
 
             var settings = AppSettings.Load();
+            Loc.Initialize(settings.Language);
             ThemeService.Apply(settings.Theme);
 
             var dialogs = new WpfDialogService();

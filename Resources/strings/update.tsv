@@ -1,0 +1,22 @@
+# Actualizaciones, "Acerca de" y mensajes del instalador de actualizaciones.
+Update_Installed	Versión instalada: {0}	Installed version: {0}
+Update_Busy	Ya hay una operación en curso.	An operation is already in progress.
+Update_Checking	Buscando actualizaciones…	Checking for updates…
+Update_Available	Hay una versión nueva: {0}	A new version is available: {0}
+Update_UpToDate	Tenés la última versión.	You have the latest version.
+Update_NoReleases	No hay versiones publicadas para consultar (el repositorio puede ser privado).	There are no published versions to check (the repository may be private).
+Update_CheckFailed	No se pudo buscar: {0}	Could not check: {0}
+Update_Downloading	Descargando la actualización…	Downloading the update…
+Update_Verified	Verificada. Cerrando PBI Context para instalar…	Verified. Closing PBI Context to install…
+Update_Failed	No se pudo actualizar: {0}	Could not update: {0}
+About_Version	Versión {0}	Version {0}
+About_Author	© 2026 {0} · Licencia {1}	© 2026 {0} · {1} license
+About_Disclaimer	Herramienta independiente, sin afiliación a Microsoft. Power BI es marca de Microsoft.	Independent tool, not affiliated with Microsoft. Power BI is a trademark of Microsoft.
+About_Privacy	Solo lee metadata del modelo y del reporte: nunca consulta una fila de datos. No tiene telemetría. La única conexión posible es buscar actualizaciones en GitHub, y solo si la activás.	It only reads model and report metadata: it never queries a row of data. It has no telemetry. The only possible connection is checking for updates on GitHub, and only if you turn it on.
+Install_NoInstallerPublished	Esta versión no publicó el instalador junto con su hash; descargala desde la página de la versión.	This version did not publish the installer together with its hash; download it from the release page.
+Install_UntrustedUrl	La descarga no apunta a GitHub; por seguridad no se instala sola.	The download does not point to GitHub; for safety it will not install by itself.
+Install_BadName	El nombre del instalador publicado no es válido.	The published installer name is not valid.
+Install_BadChecksumFile	El archivo de hash publicado no tiene un SHA-256 válido.	The published hash file does not contain a valid SHA-256.
+Install_HashMismatch	La descarga está dañada: su SHA-256 no coincide con el publicado. No se instaló.	The download is corrupted: its SHA-256 does not match the published one. It was not installed.
+Install_RateLimit	GitHub limitó las consultas por un rato; probá de nuevo más tarde.	GitHub rate-limited the requests for a while; try again later.
+Install_LaunchFailed	No se pudo iniciar el instalador (¿se canceló el permiso de administrador?).	Could not start the installer (was the administrator permission cancelled?).

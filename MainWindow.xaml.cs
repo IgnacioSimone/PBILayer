@@ -123,7 +123,7 @@ public partial class MainWindow : Window
         }
 
         menu.Items.Add(new Separator());
-        menu.Items.Add(new MenuItem { Header = "Limpiar recientes", Command = _viewModel.ClearRecentCommand });
+        menu.Items.Add(new MenuItem { Header = Loc.T("Menu_ClearRecent"), Command = _viewModel.ClearRecentCommand });
         menu.IsOpen = true;
     }
 
@@ -134,11 +134,25 @@ public partial class MainWindow : Window
         void Add(string header, ICommand command, string? hint = null) =>
             menu.Items.Add(new MenuItem { Header = header, Command = command, InputGestureText = hint });
 
-        Add("Atajos de teclado", _viewModel.ShowShortcutsCommand, "F1");
-        Add("Carpeta de datos y registros", _viewModel.OpenDataFolderCommand);
+        Add(Loc.T("Menu_Shortcuts"), _viewModel.ShowShortcutsCommand, "F1");
+        Add(Loc.T("Link_DataFolder"), _viewModel.OpenDataFolderCommand);
         menu.Items.Add(new Separator());
-        Add("Buscar actualizaciones…", _viewModel.CheckForUpdatesCommand);
-        Add($"Acerca de {AppInfo.Name}", _viewModel.ShowAboutCommand);
+
+        // El idioma elegido se marca con un punto; el cambio se aplica al reiniciar.
+        void AddLanguage(string name, AppLanguage language) =>
+            menu.Items.Add(new MenuItem
+            {
+                Header = $"{Loc.T("Menu_Language")}: {name}{(_viewModel.Language == language ? "  ●" : "")}",
+                Command = _viewModel.SetLanguageCommand,
+                CommandParameter = language
+            });
+        AddLanguage(Loc.T("Lang_Auto"), AppLanguage.System);
+        AddLanguage(Loc.T("Lang_Spanish"), AppLanguage.Spanish);
+        AddLanguage(Loc.T("Lang_English"), AppLanguage.English);
+        menu.Items.Add(new Separator());
+
+        Add(Loc.T("Menu_CheckUpdates"), _viewModel.CheckForUpdatesCommand);
+        Add(Loc.F("Menu_About", AppInfo.Name), _viewModel.ShowAboutCommand);
         menu.IsOpen = true;
     }
 
@@ -168,15 +182,15 @@ public partial class MainWindow : Window
         void Add(string header, ICommand command, string? hint = null) =>
             menu.Items.Add(new MenuItem { Header = header, Command = command, InputGestureText = hint });
 
-        Add("Documento de Word (.docx)", _viewModel.ExportWordCommand);
-        Add("Libro de Excel (.xlsx)", _viewModel.ExportExcelCommand);
-        Add("Página web (.html)", _viewModel.ExportHtmlCommand);
+        Add(Loc.T("Menu_Word"), _viewModel.ExportWordCommand);
+        Add(Loc.T("Menu_Excel"), _viewModel.ExportExcelCommand);
+        Add(Loc.T("Menu_Html"), _viewModel.ExportHtmlCommand);
         menu.Items.Add(new Separator());
-        Add("CSV de esta sección (como la ves)", _viewModel.ExportCsvCommand);
-        Add("CSV de todas las secciones (.zip)", _viewModel.ExportCsvZipCommand);
+        Add(Loc.T("Menu_CsvSection"), _viewModel.ExportCsvCommand);
+        Add(Loc.T("Menu_CsvAll"), _viewModel.ExportCsvZipCommand);
         menu.Items.Add(new Separator());
-        Add("Snapshot para comparar (.json)", _viewModel.ExportJsonCommand, "Ctrl+Shift+E");
-        Add("Contexto para IA (.md)", _viewModel.ExportMarkdownCommand, "Ctrl+E");
+        Add(Loc.T("Menu_Json"), _viewModel.ExportJsonCommand, "Ctrl+Shift+E");
+        Add(Loc.T("Menu_Markdown"), _viewModel.ExportMarkdownCommand, "Ctrl+E");
         menu.IsOpen = true;
     }
 

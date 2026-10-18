@@ -1,6 +1,7 @@
 <Application x:Class="PBIExplorer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:PBIExplorer.Views"
              xmlns:local="clr-namespace:PBIExplorer">
     <Application.Resources>
         <ResourceDictionary>
@@ -428,7 +429,7 @@
                                     BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="8">
                                 <Grid>
-                                    <TextBlock x:Name="Placeholder" Text="Buscar en todas las secciones…"
+                                    <TextBlock x:Name="Placeholder" Text="{views:Loc Search_Placeholder}"
                                                Margin="{TemplateBinding Padding}" VerticalAlignment="Center"
                                                Foreground="{DynamicResource InkFaint}" IsHitTestVisible="False"
                                                Visibility="Collapsed" />
