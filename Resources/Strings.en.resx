@@ -5,6 +5,34 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Ai_Title" xml:space="preserve"><value>Power BI dashboard — {0}</value></data>
+  <data name="Ai_Intro" xml:space="preserve"><value>This document describes the full structure of a Power BI dashboard (tables, DAX measures, relationships, and which visual on each page uses which field) so an AI can analyze it and answer questions about its design, model quality or data coverage. **It contains no real data or row values** — only metadata (names, types, formulas, relationships).</value></data>
+  <data name="Ai_Highlights" xml:space="preserve"><value>Highlights</value></data>
+  <data name="Ai_DataModel" xml:space="preserve"><value>Data model</value></data>
+  <data name="Ai_Tables" xml:space="preserve"><value>Tables</value></data>
+  <data name="Ai_TablesHeader" xml:space="preserve"><value>| Table | Columns | Measures | Hidden | Description |</value></data>
+  <data name="Ai_Yes" xml:space="preserve"><value>yes</value></data>
+  <data name="Ai_No" xml:space="preserve"><value>no</value></data>
+  <data name="Ai_ColumnsByTable" xml:space="preserve"><value>Columns by table</value></data>
+  <data name="Ai_ColumnsHeader" xml:space="preserve"><value>| Column | Data type | Source | Hidden |</value></data>
+  <data name="Ai_CalcColumn" xml:space="preserve"><value>Calculated column `{0}[{1}]`:</value></data>
+  <data name="Ai_Measures" xml:space="preserve"><value>DAX measures</value></data>
+  <data name="Ai_Folder" xml:space="preserve"><value> _(folder: {0})_</value></data>
+  <data name="Ai_HiddenTag" xml:space="preserve"><value> · hidden</value></data>
+  <data name="Ai_Relationships" xml:space="preserve"><value>Relationships</value></data>
+  <data name="Ai_RelationshipsHeader" xml:space="preserve"><value>| From | To | Cardinality | Cross-filter | Active |</value></data>
+  <data name="Ai_ReportStructure" xml:space="preserve"><value>Report structure (pages and visuals)</value></data>
+  <data name="Ai_VisualsHeader" xml:space="preserve"><value>| Visual | Title | Field type | Table | Field |</value></data>
+  <data name="Ai_Filters" xml:space="preserve"><value>Applied filters</value></data>
+  <data name="Ai_FiltersIntro" xml:space="preserve"><value>Filters set at report level (all pages), per page, and per visual. The condition summary is best-effort: for simple categorical filters it shows the included/excluded values; for more complex types (TopN, relative date, advanced) it only shows the type — confirm the exact detail in Power BI Desktop.</value></data>
+  <data name="Ai_FilterReport" xml:space="preserve"><value>Report level (all pages)</value></data>
+  <data name="Ai_FilterHeader" xml:space="preserve"><value>| Field | Filter type | Condition |</value></data>
+  <data name="Ai_FilterPage" xml:space="preserve"><value>Page: {0}</value></data>
+  <data name="Ai_FilterVisual" xml:space="preserve"><value>Per visual</value></data>
+  <data name="Ai_FilterVisualHeader" xml:space="preserve"><value>| Page | Visual | Field | Filter type | Condition |</value></data>
+  <data name="Ai_Unused" xml:space="preserve"><value>Objects with no detected use (cleanup candidates)</value></data>
+  <data name="Ai_UnusedIntro" xml:space="preserve"><value>Cross-checking which field each report visual uses, which DAX formula depends on which, which columns back a relationship and which Power Query query feeds which, these objects are not used anywhere. A helper table, parameter or function that feeds a table in use counts as used. Before deleting anything, confirm that no slicer, bookmark or natural-language Q&amp;A uses it either.</value></data>
+  <data name="Ai_UnusedHeader" xml:space="preserve"><value>| Type | Table | Name |</value></data>
   <data name="Usage_Unused" xml:space="preserve"><value>Unused — candidate for removal</value></data>
   <data name="Usage_InternalOnly" xml:space="preserve"><value>Internal use only</value></data>
   <data name="Usage_InUse" xml:space="preserve"><value>In use</value></data>

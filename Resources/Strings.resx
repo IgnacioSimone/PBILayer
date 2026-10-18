@@ -5,6 +5,34 @@
   <resheader name="version"><value>2.0</value></resheader>
   <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
   <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Ai_Title" xml:space="preserve"><value>Tablero de Power BI — {0}</value></data>
+  <data name="Ai_Intro" xml:space="preserve"><value>Este documento describe la estructura completa de un tablero de Power BI (tablas, medidas DAX, relaciones, y qué visual de cada página usa qué campo) para que una IA pueda analizarlo y responder preguntas sobre su diseño, calidad del modelo o cobertura de datos. **No contiene datos reales ni valores de fila alguna** — solo metadata (nombres, tipos, fórmulas, relaciones).</value></data>
+  <data name="Ai_Highlights" xml:space="preserve"><value>Puntos destacados</value></data>
+  <data name="Ai_DataModel" xml:space="preserve"><value>Modelo de datos</value></data>
+  <data name="Ai_Tables" xml:space="preserve"><value>Tablas</value></data>
+  <data name="Ai_TablesHeader" xml:space="preserve"><value>| Tabla | Columnas | Medidas | Oculta | Descripción |</value></data>
+  <data name="Ai_Yes" xml:space="preserve"><value>sí</value></data>
+  <data name="Ai_No" xml:space="preserve"><value>no</value></data>
+  <data name="Ai_ColumnsByTable" xml:space="preserve"><value>Columnas por tabla</value></data>
+  <data name="Ai_ColumnsHeader" xml:space="preserve"><value>| Columna | Tipo de dato | Origen | Oculta |</value></data>
+  <data name="Ai_CalcColumn" xml:space="preserve"><value>Columna calculada `{0}[{1}]`:</value></data>
+  <data name="Ai_Measures" xml:space="preserve"><value>Medidas DAX</value></data>
+  <data name="Ai_Folder" xml:space="preserve"><value> _(carpeta: {0})_</value></data>
+  <data name="Ai_HiddenTag" xml:space="preserve"><value> · oculta</value></data>
+  <data name="Ai_Relationships" xml:space="preserve"><value>Relaciones</value></data>
+  <data name="Ai_RelationshipsHeader" xml:space="preserve"><value>| Desde | Hacia | Cardinalidad | Filtro cruzado | Activa |</value></data>
+  <data name="Ai_ReportStructure" xml:space="preserve"><value>Estructura del reporte (páginas y visuales)</value></data>
+  <data name="Ai_VisualsHeader" xml:space="preserve"><value>| Visual | Título | Tipo de campo | Tabla | Campo |</value></data>
+  <data name="Ai_Filters" xml:space="preserve"><value>Filtros aplicados</value></data>
+  <data name="Ai_FiltersIntro" xml:space="preserve"><value>Filtros configurados a nivel reporte (todas las páginas), por página, y por visual. El resumen de la condición es best-effort: para filtros categóricos simples muestra los valores incluidos/excluidos; para tipos más complejos (TopN, fecha relativa, avanzados) solo indica el tipo — confirmar el detalle exacto en Power BI Desktop.</value></data>
+  <data name="Ai_FilterReport" xml:space="preserve"><value>Nivel reporte (todas las páginas)</value></data>
+  <data name="Ai_FilterHeader" xml:space="preserve"><value>| Campo | Tipo de filtro | Condición |</value></data>
+  <data name="Ai_FilterPage" xml:space="preserve"><value>Página: {0}</value></data>
+  <data name="Ai_FilterVisual" xml:space="preserve"><value>Por visual</value></data>
+  <data name="Ai_FilterVisualHeader" xml:space="preserve"><value>| Página | Visual | Campo | Tipo de filtro | Condición |</value></data>
+  <data name="Ai_Unused" xml:space="preserve"><value>Objetos sin uso detectado (candidatos a limpieza)</value></data>
+  <data name="Ai_UnusedIntro" xml:space="preserve"><value>Cruzando qué campo usa cada visual del reporte, qué fórmula DAX depende de qué otra, qué columnas sostienen una relación y qué consulta de Power Query alimenta a cuál, estos objetos no aparecen usados en ningún lado. Una tabla auxiliar, un parámetro o una función que alimenta a una tabla en uso cuenta como usado. Antes de borrar algo, confirmá que no lo use tampoco una segmentación, un marcador, o Q&amp;A en lenguaje natural.</value></data>
+  <data name="Ai_UnusedHeader" xml:space="preserve"><value>| Tipo | Tabla | Nombre |</value></data>
   <data name="Usage_Unused" xml:space="preserve"><value>Sin uso — candidata a eliminar</value></data>
   <data name="Usage_InternalOnly" xml:space="preserve"><value>Solo uso interno</value></data>
   <data name="Usage_InUse" xml:space="preserve"><value>En uso</value></data>

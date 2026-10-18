@@ -1,0 +1,28 @@
+Ai_Title	Tablero de Power BI — {0}	Power BI dashboard — {0}
+Ai_Intro	Este documento describe la estructura completa de un tablero de Power BI (tablas, medidas DAX, relaciones, y qué visual de cada página usa qué campo) para que una IA pueda analizarlo y responder preguntas sobre su diseño, calidad del modelo o cobertura de datos. **No contiene datos reales ni valores de fila alguna** — solo metadata (nombres, tipos, fórmulas, relaciones).	This document describes the full structure of a Power BI dashboard (tables, DAX measures, relationships, and which visual on each page uses which field) so an AI can analyze it and answer questions about its design, model quality or data coverage. **It contains no real data or row values** — only metadata (names, types, formulas, relationships).
+Ai_Highlights	Puntos destacados	Highlights
+Ai_DataModel	Modelo de datos	Data model
+Ai_Tables	Tablas	Tables
+Ai_TablesHeader	| Tabla | Columnas | Medidas | Oculta | Descripción |	| Table | Columns | Measures | Hidden | Description |
+Ai_Yes	sí	yes
+Ai_No	no	no
+Ai_ColumnsByTable	Columnas por tabla	Columns by table
+Ai_ColumnsHeader	| Columna | Tipo de dato | Origen | Oculta |	| Column | Data type | Source | Hidden |
+Ai_CalcColumn	Columna calculada `{0}[{1}]`:	Calculated column `{0}[{1}]`:
+Ai_Measures	Medidas DAX	DAX measures
+Ai_Folder	 _(carpeta: {0})_	 _(folder: {0})_
+Ai_HiddenTag	 · oculta	 · hidden
+Ai_Relationships	Relaciones	Relationships
+Ai_RelationshipsHeader	| Desde | Hacia | Cardinalidad | Filtro cruzado | Activa |	| From | To | Cardinality | Cross-filter | Active |
+Ai_ReportStructure	Estructura del reporte (páginas y visuales)	Report structure (pages and visuals)
+Ai_VisualsHeader	| Visual | Título | Tipo de campo | Tabla | Campo |	| Visual | Title | Field type | Table | Field |
+Ai_Filters	Filtros aplicados	Applied filters
+Ai_FiltersIntro	Filtros configurados a nivel reporte (todas las páginas), por página, y por visual. El resumen de la condición es best-effort: para filtros categóricos simples muestra los valores incluidos/excluidos; para tipos más complejos (TopN, fecha relativa, avanzados) solo indica el tipo — confirmar el detalle exacto en Power BI Desktop.	Filters set at report level (all pages), per page, and per visual. The condition summary is best-effort: for simple categorical filters it shows the included/excluded values; for more complex types (TopN, relative date, advanced) it only shows the type — confirm the exact detail in Power BI Desktop.
+Ai_FilterReport	Nivel reporte (todas las páginas)	Report level (all pages)
+Ai_FilterHeader	| Campo | Tipo de filtro | Condición |	| Field | Filter type | Condition |
+Ai_FilterPage	Página: {0}	Page: {0}
+Ai_FilterVisual	Por visual	Per visual
+Ai_FilterVisualHeader	| Página | Visual | Campo | Tipo de filtro | Condición |	| Page | Visual | Field | Filter type | Condition |
+Ai_Unused	Objetos sin uso detectado (candidatos a limpieza)	Objects with no detected use (cleanup candidates)
+Ai_UnusedIntro	Cruzando qué campo usa cada visual del reporte, qué fórmula DAX depende de qué otra, qué columnas sostienen una relación y qué consulta de Power Query alimenta a cuál, estos objetos no aparecen usados en ningún lado. Una tabla auxiliar, un parámetro o una función que alimenta a una tabla en uso cuenta como usado. Antes de borrar algo, confirmá que no lo use tampoco una segmentación, un marcador, o Q&A en lenguaje natural.	Cross-checking which field each report visual uses, which DAX formula depends on which, which columns back a relationship and which Power Query query feeds which, these objects are not used anywhere. A helper table, parameter or function that feeds a table in use counts as used. Before deleting anything, confirm that no slicer, bookmark or natural-language Q&A uses it either.
+Ai_UnusedHeader	| Tipo | Tabla | Nombre |	| Type | Table | Name |

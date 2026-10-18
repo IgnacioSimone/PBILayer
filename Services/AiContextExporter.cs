@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text;
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -24,25 +25,21 @@ public static class AiContextExporter
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"# Tablero de Power BI — {sourceName}");
+        sb.AppendLine($"# {Loc.F("Ai_Title", sourceName)}");
         sb.AppendLine();
-        sb.AppendLine("Este documento describe la estructura completa de un tablero de Power BI " +
-                       "(tablas, medidas DAX, relaciones, y qué visual de cada página usa qué campo) " +
-                       "para que una IA pueda analizarlo y responder preguntas sobre su diseño, calidad " +
-                       "del modelo o cobertura de datos. **No contiene datos reales ni valores de fila " +
-                       "alguna** — solo metadata (nombres, tipos, fórmulas, relaciones).");
+        sb.AppendLine(Loc.T("Ai_Intro"));
         sb.AppendLine();
 
         if (!string.IsNullOrWhiteSpace(summary.OverviewText))
         {
-            sb.AppendLine("## Resumen");
+            sb.AppendLine($"## {Loc.T("Export_Summary")}");
             sb.AppendLine();
             sb.AppendLine(summary.OverviewText);
             sb.AppendLine();
 
             if (summary.Highlights.Count > 0)
             {
-                sb.AppendLine("### Puntos destacados");
+                sb.AppendLine($"### {Loc.T("Ai_Highlights")}");
                 sb.AppendLine();
                 foreach (var h in summary.Highlights) sb.AppendLine($"- {h}");
                 sb.AppendLine();
@@ -51,34 +48,34 @@ public static class AiContextExporter
 
         if (model.Tables.Count > 0)
         {
-            sb.AppendLine("## Modelo de datos");
+            sb.AppendLine($"## {Loc.T("Ai_DataModel")}");
             sb.AppendLine();
-            sb.AppendLine("### Tablas");
+            sb.AppendLine($"### {Loc.T("Ai_Tables")}");
             sb.AppendLine();
-            sb.AppendLine("| Tabla | Columnas | Medidas | Oculta | Descripción |");
+            sb.AppendLine(Loc.T("Ai_TablesHeader"));
             sb.AppendLine("|---|---|---|---|---|");
             foreach (var t in model.Tables)
-                sb.AppendLine($"| {Esc(t.Name)} | {t.ColumnCount} | {t.MeasureCount} | {(t.IsHidden ? "sí" : "no")} | {Esc(SensitiveTextGuard.Mask(t.Description))} |");
+                sb.AppendLine($"| {Esc(t.Name)} | {t.ColumnCount} | {t.MeasureCount} | {(t.IsHidden ? Loc.T("Ai_Yes") : Loc.T("Ai_No"))} | {Esc(SensitiveTextGuard.Mask(t.Description))} |");
             sb.AppendLine();
 
             if (model.Columns.Count > 0)
             {
-                sb.AppendLine("### Columnas por tabla");
+                sb.AppendLine($"### {Loc.T("Ai_ColumnsByTable")}");
                 sb.AppendLine();
                 foreach (var tableGroup in model.Columns.GroupBy(c => c.Table))
                 {
                     sb.AppendLine($"**{tableGroup.Key}**");
                     sb.AppendLine();
-                    sb.AppendLine("| Columna | Tipo de dato | Origen | Oculta |");
+                    sb.AppendLine(Loc.T("Ai_ColumnsHeader"));
                     sb.AppendLine("|---|---|---|---|");
                     foreach (var c in tableGroup)
-                        sb.AppendLine($"| {Esc(c.Name)} | {Esc(c.DataType)} | {Esc(c.ColumnType)} | {(c.IsHidden ? "sí" : "no")} |");
+                        sb.AppendLine($"| {Esc(c.Name)} | {Esc(c.DataTypeText)} | {Esc(c.ColumnTypeText)} | {(c.IsHidden ? Loc.T("Ai_Yes") : Loc.T("Ai_No"))} |");
                     sb.AppendLine();
 
                     var calculated = tableGroup.Where(c => !string.IsNullOrWhiteSpace(c.Expression)).ToList();
                     foreach (var c in calculated)
                     {
-                        sb.AppendLine($"Columna calculada `{tableGroup.Key}[{c.Name}]`:");
+                        sb.AppendLine(Loc.F("Ai_CalcColumn", tableGroup.Key, c.Name));
                         sb.AppendLine("```dax");
                         sb.AppendLine(SensitiveTextGuard.Mask(c.Expression));
                         sb.AppendLine("```");
@@ -89,7 +86,7 @@ public static class AiContextExporter
 
             if (model.Measures.Count > 0)
             {
-                sb.AppendLine("### Medidas DAX");
+                sb.AppendLine($"### {Loc.T("Ai_Measures")}");
                 sb.AppendLine();
                 foreach (var tableGroup in model.Measures.GroupBy(m => m.Table))
                 {
@@ -97,8 +94,8 @@ public static class AiContextExporter
                     sb.AppendLine();
                     foreach (var m in tableGroup)
                     {
-                        var folder = string.IsNullOrWhiteSpace(m.DisplayFolder) ? "" : $" _(carpeta: {m.DisplayFolder})_";
-                        var hidden = m.IsHidden ? " · oculta" : "";
+                        var folder = string.IsNullOrWhiteSpace(m.DisplayFolder) ? "" : Loc.F("Ai_Folder", m.DisplayFolder);
+                        var hidden = m.IsHidden ? Loc.T("Ai_HiddenTag") : "";
                         sb.AppendLine($"- `{m.Name}`{folder}{hidden}");
                         sb.AppendLine("  ```dax");
                         foreach (var line in SensitiveTextGuard.Mask(m.Expression).Replace("\r\n", "\n").Split('\n'))
@@ -111,12 +108,12 @@ public static class AiContextExporter
 
             if (model.Relationships.Count > 0)
             {
-                sb.AppendLine("### Relaciones");
+                sb.AppendLine($"### {Loc.T("Ai_Relationships")}");
                 sb.AppendLine();
-                sb.AppendLine("| Desde | Hacia | Cardinalidad | Filtro cruzado | Activa |");
+                sb.AppendLine(Loc.T("Ai_RelationshipsHeader"));
                 sb.AppendLine("|---|---|---|---|---|");
                 foreach (var r in model.Relationships)
-                    sb.AppendLine($"| {Esc(r.FromTable)}.{Esc(r.FromColumn)} | {Esc(r.ToTable)}.{Esc(r.ToColumn)} | {r.Cardinality} | {r.CrossFilterBehavior} | {(r.IsActive ? "sí" : "no")} |");
+                    sb.AppendLine($"| {Esc(r.FromTable)}.{Esc(r.FromColumn)} | {Esc(r.ToTable)}.{Esc(r.ToColumn)} | {r.CardinalityText} | {r.CrossFilterText} | {(r.IsActive ? Loc.T("Ai_Yes") : Loc.T("Ai_No"))} |");
                 sb.AppendLine();
             }
 
@@ -126,7 +123,7 @@ public static class AiContextExporter
                 sb.AppendLine();
                 foreach (var pq in model.PowerQueries)
                 {
-                    sb.AppendLine($"**{pq.Kind}: {pq.Name}**");
+                    sb.AppendLine($"**{pq.KindText}: {pq.Name}**");
                     if (!string.IsNullOrWhiteSpace(pq.Description)) sb.AppendLine($"_{Esc(SensitiveTextGuard.Mask(pq.Description))}_");
                     sb.AppendLine("```m");
                     sb.AppendLine(SensitiveTextGuard.Mask(pq.MCode));
@@ -138,7 +135,7 @@ public static class AiContextExporter
 
         if (visuals.Count > 0)
         {
-            sb.AppendLine("## Estructura del reporte (páginas y visuales)");
+            sb.AppendLine($"## {Loc.T("Ai_ReportStructure")}");
             sb.AppendLine();
             foreach (var pageGroup in visuals.GroupBy(v => v.Page))
             {
@@ -148,30 +145,27 @@ public static class AiContextExporter
                 var pageSummary = summary.Pages.FirstOrDefault(p => p.PageName == pageGroup.Key);
                 if (pageSummary is not null) sb.AppendLine(pageSummary.Description).AppendLine();
 
-                sb.AppendLine("| Visual | Título | Tipo de campo | Tabla | Campo |");
+                sb.AppendLine(Loc.T("Ai_VisualsHeader"));
                 sb.AppendLine("|---|---|---|---|---|");
                 foreach (var v in pageGroup)
-                    sb.AppendLine($"| {Esc(v.VisualType)} | {Esc(SensitiveTextGuard.Mask(v.Title))} | {Esc(v.FieldKind)} | {Esc(v.Table)} | {Esc(v.Field)} |");
+                    sb.AppendLine($"| {Esc(v.VisualType)} | {Esc(SensitiveTextGuard.Mask(v.Title))} | {Esc(v.FieldKindText)} | {Esc(v.Table)} | {Esc(v.Field)} |");
                 sb.AppendLine();
             }
         }
 
         if (filters is { Count: > 0 })
         {
-            sb.AppendLine("## Filtros aplicados");
+            sb.AppendLine($"## {Loc.T("Ai_Filters")}");
             sb.AppendLine();
-            sb.AppendLine("Filtros configurados a nivel reporte (todas las páginas), por página, y por visual. " +
-                          "El resumen de la condición es best-effort: para filtros categóricos simples muestra los " +
-                          "valores incluidos/excluidos; para tipos más complejos (TopN, fecha relativa, avanzados) " +
-                          "solo indica el tipo — confirmar el detalle exacto en Power BI Desktop.");
+            sb.AppendLine(Loc.T("Ai_FiltersIntro"));
             sb.AppendLine();
 
             var reportFilters = filters.Where(f => f.Scope == "Reporte").ToList();
             if (reportFilters.Count > 0)
             {
-                sb.AppendLine("### Nivel reporte (todas las páginas)");
+                sb.AppendLine($"### {Loc.T("Ai_FilterReport")}");
                 sb.AppendLine();
-                sb.AppendLine("| Campo | Tipo de filtro | Condición |");
+                sb.AppendLine(Loc.T("Ai_FilterHeader"));
                 sb.AppendLine("|---|---|---|");
                 foreach (var f in reportFilters)
                     sb.AppendLine($"| {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
@@ -180,9 +174,9 @@ public static class AiContextExporter
 
             foreach (var pageGroup in filters.Where(f => f.Scope == "Página").GroupBy(f => f.Page))
             {
-                sb.AppendLine($"### Página: {pageGroup.Key}");
+                sb.AppendLine($"### {Loc.F("Ai_FilterPage", pageGroup.Key)}");
                 sb.AppendLine();
-                sb.AppendLine("| Campo | Tipo de filtro | Condición |");
+                sb.AppendLine(Loc.T("Ai_FilterHeader"));
                 sb.AppendLine("|---|---|---|");
                 foreach (var f in pageGroup)
                     sb.AppendLine($"| {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
@@ -192,9 +186,9 @@ public static class AiContextExporter
             var visualFilters = filters.Where(f => f.Scope == "Visual").ToList();
             if (visualFilters.Count > 0)
             {
-                sb.AppendLine("### Por visual");
+                sb.AppendLine($"### {Loc.T("Ai_FilterVisual")}");
                 sb.AppendLine();
-                sb.AppendLine("| Página | Visual | Campo | Tipo de filtro | Condición |");
+                sb.AppendLine(Loc.T("Ai_FilterVisualHeader"));
                 sb.AppendLine("|---|---|---|---|---|");
                 foreach (var f in visualFilters)
                     sb.AppendLine($"| {Esc(f.Page)} | {Esc(SensitiveTextGuard.Mask(f.VisualText))} | {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
@@ -205,18 +199,14 @@ public static class AiContextExporter
         var unused = usage?.Where(u => u.IsUnused).ToList();
         if (unused is { Count: > 0 })
         {
-            sb.AppendLine("## Objetos sin uso detectado (candidatos a limpieza)");
+            sb.AppendLine($"## {Loc.T("Ai_Unused")}");
             sb.AppendLine();
-            sb.AppendLine("Cruzando qué campo usa cada visual del reporte, qué fórmula DAX depende de qué otra, " +
-                          "qué columnas sostienen una relación y qué consulta de Power Query alimenta a cuál, estos " +
-                          "objetos no aparecen usados en ningún lado. Una tabla auxiliar, un parámetro o una función " +
-                          "que alimenta a una tabla en uso cuenta como usado. Antes de borrar algo, confirmá que no " +
-                          "lo use tampoco una segmentación, un marcador, o Q&A en lenguaje natural.");
+            sb.AppendLine(Loc.T("Ai_UnusedIntro"));
             sb.AppendLine();
-            sb.AppendLine("| Tipo | Tabla | Nombre |");
+            sb.AppendLine(Loc.T("Ai_UnusedHeader"));
             sb.AppendLine("|---|---|---|");
             foreach (var u in unused)
-                sb.AppendLine($"| {Esc(u.Kind)} | {Esc(u.Table)} | {Esc(u.Name)} |");
+                sb.AppendLine($"| {Esc(u.KindText)} | {Esc(u.Table)} | {Esc(u.Name)} |");
             sb.AppendLine();
         }
 
