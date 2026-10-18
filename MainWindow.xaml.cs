@@ -127,9 +127,9 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private void Window_Drop(object sender, DragEventArgs e)
+    private async void Window_Drop(object sender, DragEventArgs e)
     {
         if (e.Data.GetData(DataFormats.FileDrop) is string[] { Length: > 0 } files)
-            _viewModel.OpenFile(files[0]);
+            await _viewModel.OpenFileAsync(files[0]);
     }
 }

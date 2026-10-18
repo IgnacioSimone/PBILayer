@@ -9,6 +9,9 @@ public interface IPowerBiBackend
     Task<ModelSnapshot> ReadModelAsync(string server, string database);
     string? GetOpenReportName();
     Task<string?> FindOpenPbixAsync(TimeSpan budget);
+
+    /// <summary>Modelo abierto en Power BI Desktop para ese reporte (o el único abierto si no se indica nombre).</summary>
+    Task<DesktopModel?> FindDesktopModelAsync(string? reportName);
     (List<VisualFieldUsage> Visuals, List<FilterInfo> Filters) ParseReport(string path);
 }
 
@@ -23,6 +26,18 @@ public sealed class PowerBiBackend : IPowerBiBackend
 
     public Task<string?> FindOpenPbixAsync(TimeSpan budget) =>
         Task.Run(() => PbixLocator.FindOpenPbix(budget));
+
+    public Task<DesktopModel?> FindDesktopModelAsync(string? reportName) =>
+        Task.Run(() =>
+        {
+            try { return DesktopModelLocator.FindFor(reportName); }
+            catch (Exception ex)
+            {
+                // WMI o permisos: sin esto la app igual funciona, solo que sin autodetección.
+                Infrastructure.AppLog.Write($"No se pudo buscar el modelo de Power BI Desktop: {ex.Message}");
+                return null;
+            }
+        });
 
     public (List<VisualFieldUsage>, List<FilterInfo>) ParseReport(string path)
     {
