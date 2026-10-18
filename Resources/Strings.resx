@@ -241,6 +241,66 @@
   <data name="Compare_EmptyTitle" xml:space="preserve"><value>Elegí un snapshot para comparar</value></data>
   <data name="Compare_EmptyBody" xml:space="preserve"><value>Elegí un archivo .json exportado antes de este mismo tablero para ver qué cambió desde entonces.</value></data>
   <data name="Compare_EmptyAction" xml:space="preserve"><value>Elegir snapshot .json…</value></data>
+  <data name="Summary_Model" xml:space="preserve"><value>Este modelo tiene {0} tablas ({1} visibles), {2} medidas y {3} relaciones entre tablas. </value></data>
+  <data name="Summary_Report_One" xml:space="preserve"><value>El reporte tiene {0} página con, en total, aproximadamente {1} visuales.</value></data>
+  <data name="Summary_Report_Many" xml:space="preserve"><value>El reporte tiene {0} páginas con, en total, aproximadamente {1} visuales.</value></data>
+  <data name="Summary_NothingLoaded" xml:space="preserve"><value>Todavía no hay nada cargado — conectate a un modelo desde Power BI Desktop y/o abrí el archivo .pbix.</value></data>
+  <data name="Summary_BusiestTable" xml:space="preserve"><value>La tabla con más medidas es &quot;{0}&quot; ({1} medidas) — probablemente el centro de la lógica de negocio del modelo.</value></data>
+  <data name="Summary_RichestTable" xml:space="preserve"><value>La tabla con más columnas es &quot;{0}&quot; ({1} columnas).</value></data>
+  <data name="Summary_MostConnected" xml:space="preserve"><value>&quot;{0}&quot; es la tabla más conectada del modelo ({1} relaciones) — parece ser la tabla central/hechos.</value></data>
+  <data name="Summary_Orphans_One" xml:space="preserve"><value>{0} tabla visible no tiene ninguna relación — puede ser una tabla de parámetros, desconectada a propósito, o un resabio sin usar.</value></data>
+  <data name="Summary_Orphans_Many" xml:space="preserve"><value>{0} tablas visibles no tienen ninguna relación — pueden ser tablas de parámetros, desconectadas a propósito, o resabios sin usar.</value></data>
+  <data name="Summary_Hidden_One" xml:space="preserve"><value>{0} medida está oculta — normalmente son cálculos intermedios usados por otras medidas, no pensados para mostrarse directamente.</value></data>
+  <data name="Summary_Hidden_Many" xml:space="preserve"><value>{0} medidas están ocultas — normalmente son cálculos intermedios usados por otras medidas, no pensados para mostrarse directamente.</value></data>
+  <data name="Summary_Page_One" xml:space="preserve"><value>Tiene {0} visual</value></data>
+  <data name="Summary_Page_Many" xml:space="preserve"><value>Tiene {0} visuales</value></data>
+  <data name="Summary_PageMeasures" xml:space="preserve"><value> Muestra principalmente: {0}.</value></data>
+  <data name="Summary_PageFilters" xml:space="preserve"><value> Se puede filtrar por: {0}.</value></data>
+  <data name="Summary_PageSources" xml:space="preserve"><value> Usa datos de: {0}.</value></data>
+  <data name="Summary_TypeCount" xml:space="preserve"><value>{0} × {1}</value></data>
+  <data name="Summary_CustomVisual" xml:space="preserve"><value>visual personalizado</value></data>
+  <data name="Summary_CustomVisualNamed" xml:space="preserve"><value>visual personalizado &quot;{0}&quot;</value></data>
+  <data name="Vis_card" xml:space="preserve"><value>tarjeta</value></data>
+  <data name="Vis_multiRowCard" xml:space="preserve"><value>tarjetas múltiples</value></data>
+  <data name="Vis_slicer" xml:space="preserve"><value>segmentador</value></data>
+  <data name="Vis_table" xml:space="preserve"><value>tabla</value></data>
+  <data name="Vis_pivotTable" xml:space="preserve"><value>tabla dinámica</value></data>
+  <data name="Vis_matrix" xml:space="preserve"><value>matriz</value></data>
+  <data name="Vis_columnChart" xml:space="preserve"><value>gráfico de columnas</value></data>
+  <data name="Vis_barChart" xml:space="preserve"><value>gráfico de barras</value></data>
+  <data name="Vis_lineChart" xml:space="preserve"><value>gráfico de líneas</value></data>
+  <data name="Vis_areaChart" xml:space="preserve"><value>gráfico de área</value></data>
+  <data name="Vis_pieChart" xml:space="preserve"><value>gráfico circular</value></data>
+  <data name="Vis_donutChart" xml:space="preserve"><value>gráfico de dona</value></data>
+  <data name="Vis_funnel" xml:space="preserve"><value>embudo</value></data>
+  <data name="Vis_gauge" xml:space="preserve"><value>medidor</value></data>
+  <data name="Vis_scatterChart" xml:space="preserve"><value>dispersión</value></data>
+  <data name="Vis_treemap" xml:space="preserve"><value>árbol jerárquico</value></data>
+  <data name="Vis_map" xml:space="preserve"><value>mapa</value></data>
+  <data name="Vis_filledMap" xml:space="preserve"><value>mapa coroplético</value></data>
+  <data name="Vis_pageNavigator" xml:space="preserve"><value>navegador de páginas</value></data>
+  <data name="Vis_bookmarkNavigator" xml:space="preserve"><value>navegador de marcadores</value></data>
+  <data name="Vis_textbox" xml:space="preserve"><value>texto</value></data>
+  <data name="Vis_image" xml:space="preserve"><value>imagen</value></data>
+  <data name="Vis_shape" xml:space="preserve"><value>forma</value></data>
+  <data name="Vis_actionButton" xml:space="preserve"><value>botón</value></data>
+  <data name="Vis_waterfallChart" xml:space="preserve"><value>cascada</value></data>
+  <data name="Vis_ribbonChart" xml:space="preserve"><value>cinta</value></data>
+  <data name="Vis_keyDriversVisual" xml:space="preserve"><value>impulsores clave</value></data>
+  <data name="Vis_decompositionTreeVisual" xml:space="preserve"><value>árbol de descomposición</value></data>
+  <data name="Vis_qnaVisual" xml:space="preserve"><value>preguntas y respuestas</value></data>
+  <data name="Export_Summary" xml:space="preserve"><value>Resumen</value></data>
+  <data name="Export_GeneratedAt" xml:space="preserve"><value>Generado el {0:dd/MM/yyyy HH:mm} con PBI Context</value></data>
+  <data name="Export_DocGeneratedAt" xml:space="preserve"><value>Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Context</value></data>
+  <data name="Export_DocTitle" xml:space="preserve"><value>{0} — Documentación</value></data>
+  <data name="Export_NoRows" xml:space="preserve"><value>Sin filas.</value></data>
+  <data name="Export_PrivacyNote" xml:space="preserve"><value>Solo metadata del modelo y del reporte: no incluye filas de datos. Emails, DNI, CUIT y rutas locales están enmascarados.</value></data>
+  <data name="App_UnexpectedError" xml:space="preserve"><value>Ocurrió un error inesperado:
+\
+\{0}
+\
+\Detalle completo en:
+\{1}</value></data>
   <data name="Term_Measure" xml:space="preserve"><value>Medida</value></data>
   <data name="Term_Column" xml:space="preserve"><value>Columna</value></data>
   <data name="Term_Table" xml:space="preserve"><value>Tabla</value></data>

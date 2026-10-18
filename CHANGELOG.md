@@ -7,6 +7,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). L
 Versión grande: la app pasa de herramienta externa de un solo uso a una aplicación completa.
 
 ### Agregado
+- Interfaz y exportaciones (Word, Excel, HTML, CSV) en español e inglés; idioma automático según Windows, con selector en el menú Ayuda (se aplica al reiniciar).
 - **Funciona sola**: al abrirla detecta el tablero abierto en Power BI Desktop y lee su modelo, sin pasar por *Herramientas externas*. Al abrir un `.pbix` que no está en Power BI Desktop, lo abre ahí y espera a que cargue.
 - **Búsqueda global** (Ctrl+F) sin distinguir acentos, con contador de resultados por sección.
 - **Panel de detalle** de medidas, columnas y consultas M: código DAX/M con colores, botón Copiar y dependencias navegables ("depende de" / "usada por").

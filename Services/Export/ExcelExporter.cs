@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -31,7 +32,7 @@ public static class ExcelExporter
         uint nextId = 1;
         var usedNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-        AddSheet(workbookPart, sheets, UniqueName("Resumen", usedNames), nextId++, SummarySheet(document));
+        AddSheet(workbookPart, sheets, UniqueName(Loc.T("Export_Summary"), usedNames), nextId++, SummarySheet(document));
         foreach (var table in document.Tables)
             AddSheet(workbookPart, sheets, UniqueName(table.Title, usedNames), nextId++, TableSheet(table));
 
@@ -51,7 +52,7 @@ public static class ExcelExporter
         var data = new SheetData();
         var row = 1u;
         data.Append(Row(row++, (document.SourceName, StyleTitle)));
-        data.Append(Row(row++, ($"Generado el {document.GeneratedAt:dd/MM/yyyy HH:mm} con PBI Context", StyleDefault)));
+        data.Append(Row(row++, (Loc.F("Export_GeneratedAt", document.GeneratedAt), StyleDefault)));
         data.Append(Row(row++, (ExportText.PrivacyNote, StyleDefault)));
         row++;
         foreach (var fact in document.Summary)

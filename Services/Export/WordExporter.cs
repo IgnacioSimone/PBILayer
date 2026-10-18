@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -23,17 +24,17 @@ public static class WordExporter
 
         var body = new Body();
         body.Append(Paragraph(document.SourceName, "Title"));
-        body.Append(Paragraph($"Documentación generada el {document.GeneratedAt:dd/MM/yyyy HH:mm} con PBI Context", "Subtitle"));
+        body.Append(Paragraph(Loc.F("Export_DocGeneratedAt", document.GeneratedAt), "Subtitle"));
         body.Append(Paragraph(ExportText.PrivacyNote, "Note"));
 
-        body.Append(Paragraph("Resumen", "Heading1"));
+        body.Append(Paragraph(Loc.T("Export_Summary"), "Heading1"));
         body.Append(SummaryTable(document.Summary));
 
         foreach (var table in document.Tables)
         {
             body.Append(Paragraph(table.Title, "Heading1", pageBreakBefore: true));
             if (!string.IsNullOrEmpty(table.Note)) body.Append(Paragraph(table.Note, "Note"));
-            body.Append(table.Rows.Count == 0 ? Paragraph("Sin filas.", "Note") : DataTable(table));
+            body.Append(table.Rows.Count == 0 ? Paragraph(Loc.T("Export_NoRows"), "Note") : DataTable(table));
         }
 
         body.Append(new SectionProperties(
