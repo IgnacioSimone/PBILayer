@@ -1,11 +1,26 @@
 <svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect x="3" y="3" width="122" height="122" rx="29" fill="#121313"/>
   <rect x="3.75" y="3.75" width="120.5" height="120.5" rx="28.25" stroke="white" stroke-opacity=".12" stroke-width="1.5"/>
+  <defs>
+    <linearGradient id="bar-shade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".52" stop-color="#F5F2E8"/>
+      <stop offset="1" stop-color="#918D7F"/>
+    </linearGradient>
+  </defs>
   <path d="m24 41 40-21 40 21-40 21-40-21Z" fill="#F6C944"/>
   <path d="m24 51 40 21 40-21v12L64 84 24 63V51Z" fill="#D9A71E"/>
   <path d="m24 70 40 21 40-21v12l-40 21-40-21V70Z" fill="#F6C944"/>
-  <path d="M34 72V58l10 5.25v14L34 72Z" fill="white"/>
-  <path d="M49 80V56l10 5.25v24L49 80Z" fill="white"/>
-  <path d="M64 88V50l10-5.25v38L64 88Z" fill="white"/>
-  <path d="M79 80V56l10-5.25v24L79 80Z" fill="white"/>
+  <path d="M34 72V58l10 5.25v14L34 72Z" fill="url(#bar-shade)"/>
+  <path d="M49 80V56l10 5.25v24L49 80Z" fill="url(#bar-shade)"/>
+  <path d="M64 88V50l10-5.25v38L64 88Z" fill="url(#bar-shade)"/>
+  <path d="M79 80V56l10-5.25v24L79 80Z" fill="url(#bar-shade)"/>
+  <g fill="#F6C944" font-family="monospace" font-size="5" font-weight="700">
+    <text x="17" y="90">01</text>
+    <text x="20" y="99" opacity=".7">{}</text>
+    <text x="15" y="109" opacity=".4">CSV</text>
+    <text x="101" y="90">10</text>
+    <text x="98" y="99" opacity=".7">[]</text>
+    <text x="96" y="109" opacity=".4">XML</text>
+  </g>
 </svg>
