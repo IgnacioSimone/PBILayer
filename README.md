@@ -1,6 +1,6 @@
 # PBI Context
 
-Herramienta externa para Power BI Desktop que documenta un modelo (medidas DAX, tablas,
+Aplicación de escritorio para Windows (también se registra como herramienta externa de Power BI Desktop) que documenta un modelo (medidas DAX, tablas,
 columnas, relaciones, consultas Power Query) y su reporte (qué visual usa qué campo, en
 qué página), con exportación a Word, Excel, HTML, CSV, JSON y Markdown para IA.
 
@@ -12,8 +12,10 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
 
 ## Qué lee y qué no lee (privacidad)
 
-- Se conecta al modelo que Power BI Desktop ya tiene abierto en memoria, usando el
-  mecanismo oficial de [herramientas externas](https://learn.microsoft.com/power-bi/transform-model/desktop-external-tools).
+- Se conecta al modelo que Power BI Desktop ya tiene abierto en memoria: o bien lanzada desde la pestaña
+  [Herramientas externas](https://learn.microsoft.com/power-bi/transform-model/desktop-external-tools),
+  o bien sola, detectando el tablero abierto (por el proceso de Power BI Desktop y los archivos de su
+  carpeta de trabajo). Si abrís un `.pbix` que no está abierto en Power BI Desktop, lo abre ahí para poder leer su modelo.
 - Solo consulta las vistas de metadata del motor (`$SYSTEM.TMSCHEMA_*`): nombres de
   tablas/columnas/medidas, fórmulas DAX, código M de Power Query, relaciones. **Nunca
   ejecuta una consulta `EVALUATE` ni de ningún otro tipo sobre las tablas de datos** —
@@ -30,17 +32,40 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
   Aun así, revisá el archivo exportado antes de compartirlo — ninguna heurística
   automática reemplaza una revisión humana si tu modelo tiene texto libre con datos
   personales embebidos a mano en una fórmula.
-- No hay telemetría, no hay llamadas de red, no hay actualizaciones automáticas.
+- **No hay telemetría.** La única conexión de red posible es **buscar actualizaciones**: está apagada por
+  defecto, solo se activa si lo elegís (la app te pregunta una vez, y se cambia en *Acerca de*), hace una
+  consulta por día a la API pública de GitHub (`releases/latest`) sin enviar nada tuyo, del modelo ni del
+  tablero, y baja el instalador solo desde GitHub y verificando su SHA-256 antes de ejecutarlo.
 
 ## Instalación
 
-1. Descargá o compilá la app (`dotnet publish -c Release -r win-x64 --self-contained true -o publish`).
-2. Ejecutá `install.ps1` (te pedirá permisos de administrador la primera vez, porque
-   Power BI Desktop solo lee herramientas externas registradas en una carpeta de
-   sistema). El script copia la app a tu perfil de usuario y registra el acceso directo
-   en Power BI Desktop — no requiere reinstalar Power BI ni tocar nada más.
-3. Abrí cualquier tablero en Power BI Desktop → pestaña **Herramientas externas** →
-   **PBI Context**.
+### Instalador (recomendado)
+
+1. Bajá `PBIContext-Setup-<versión>.exe` de la página de [Releases](https://github.com/IgnacioSimone/PBIContext/releases)
+   y ejecutalo. Pide permisos de administrador porque registra la herramienta externa en una carpeta de
+   sistema que lee Power BI Desktop. Instala en `Program Files`, crea el acceso directo del menú Inicio y,
+   si había una copia vieja en `%LOCALAPPDATA%\PBIContext`, la reemplaza sin tocar tus preferencias.
+2. Abrí **PBI Context** desde el menú Inicio (busca solo el tablero abierto en Power BI Desktop) o desde
+   Power BI Desktop → pestaña **Herramientas externas** → **PBI Context**.
+
+Instalación silenciosa: `PBIContext-Setup-<versión>.exe /VERYSILENT /NORESTART`.
+Los archivos publicados traen un `.sha256`; podés verificar la descarga con `Get-FileHash`.
+El instalador **no está firmado digitalmente**, así que Windows SmartScreen puede mostrar un aviso la primera vez.
+
+### Desde el código fuente
+
+1. Instalá el SDK de .NET 8 e [Inno Setup 6](https://jrsoftware.org/isinfo.php) (`winget install JRSoftware.InnoSetup`).
+2. `./build-installer.ps1` corre los tests, publica la app y arma `installer_output\PBIContext-Setup-<versión>.exe`
+   junto con su `.sha256`. (`install.ps1` queda como alternativa sin instalador: copia la publicación a tu perfil.)
+3. Para publicar una versión: subí `<Version>` en `PBIExplorer.csproj`, agregá sus notas en `CHANGELOG.md`, y
+   empujá la etiqueta `vX.Y.Z`: el workflow `release.yml` arma el instalador y crea la release en GitHub.
+
+## Actualizaciones
+
+En **Acerca de** (botón `?` de la barra lateral) se ve la versión, se busca una versión nueva y se activa o
+no la búsqueda automática. Si hay una versión nueva con instalador y hash publicados, **Descargar e instalar**
+la baja, verifica el SHA-256 y lanza el instalador. Ojo: esto solo funciona si las releases son accesibles
+públicamente; con un repositorio privado la app informa que no hay versiones para consultar.
 
 ## Licencia y dependencias de terceros
 

@@ -67,6 +67,9 @@ public class MainViewModelTests
             return SaveFileResult;
         }
         public void RevealInExplorer(string path) => Revealed.Add(path);
+        public List<string> Installers { get; } = new();
+        public void RunInstallerAndExit(string path) => Installers.Add(path);
+
         public List<string> Copied { get; } = new();
         public void CopyText(string text) => Copied.Add(text);
 
@@ -83,6 +86,8 @@ public class MainViewModelTests
     private static MainViewModel Create(FakeBackend? backend = null, FakeDialogs? dialogs = null, AppSettings? settings = null)
     {
         // Sin auto-descarte: los tests inspeccionan los avisos y no deben competir con un timer.
+        // UpdatePromptShown: sin esto la primera vez agrega un aviso ("¿buscar actualizaciones?") que estorba a los demás tests.
+        settings ??= new AppSettings { UpdatePromptShown = true };
         return new MainViewModel(backend ?? new FakeBackend(), dialogs ?? new FakeDialogs(), settings)
         {
             ToastDuration = Timeout.InfiniteTimeSpan,

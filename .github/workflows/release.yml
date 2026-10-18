@@ -1,0 +1,58 @@
+name: Release
+
+# Al empujar una etiqueta vX.Y.Z arma el instalador y publica la release con el .exe y su SHA-256
+# (la app los usa para actualizarse y verificar la descarga).
+#
+#   git tag v2.1.0
+#   git push origin v2.1.0
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: La etiqueta tiene que coincidir con la versión del proyecto
+        shell: pwsh
+        run: |
+          $tag = '${{ github.ref_name }}'.TrimStart('v')
+          $csproj = [xml](Get-Content PBIExplorer.csproj)
+          $version = ($csproj.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1).Trim()
+          if ($tag -ne $version) { throw "La etiqueta v$tag no coincide con <Version> $version en PBIExplorer.csproj." }
+          "VERSION=$version" | Out-File -FilePath $env:GITHUB_ENV -Append -Encoding utf8
+
+      - name: Instalar Inno Setup
+        shell: pwsh
+        run: choco install innosetup -y --no-progress
+
+      - name: Armar el instalador (corre los tests antes)
+        shell: pwsh
+        run: ./build-installer.ps1
+
+      - name: Novedades de esta versión (del CHANGELOG)
+        shell: pwsh
+        run: |
+          $text = Get-Content CHANGELOG.md -Raw
+          $pattern = "(?s)## \[$([regex]::Escape($env:VERSION))\][^\r\n]*\r?\n(.*?)(?=\r?\n## \[|\z)"
+          $match = [regex]::Match($text, $pattern)
+          $notes = if ($match.Success) { $match.Groups[1].Value.Trim() } else { "Versión $env:VERSION." }
+          Set-Content release-notes.md $notes -Encoding utf8
+
+      - name: Publicar la release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PBI Context ${{ env.VERSION }}
+          body_path: release-notes.md
+          files: |
+            installer_output/PBIContext-Setup-${{ env.VERSION }}.exe
+            installer_output/PBIContext-Setup-${{ env.VERSION }}.exe.sha256

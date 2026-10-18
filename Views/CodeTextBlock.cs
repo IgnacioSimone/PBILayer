@@ -17,8 +17,8 @@ public sealed class CodeTextBlock : TextBlock
     public static readonly DependencyProperty CodeProperty = DependencyProperty.Register(
         nameof(Code), typeof(string), typeof(CodeTextBlock), new PropertyMetadata(null, OnChanged));
 
-    public static readonly DependencyProperty LanguageProperty = DependencyProperty.Register(
-        nameof(Language), typeof(CodeLanguage), typeof(CodeTextBlock), new PropertyMetadata(CodeLanguage.Dax, OnChanged));
+    public static readonly DependencyProperty SyntaxProperty = DependencyProperty.Register(
+        nameof(Syntax), typeof(CodeLanguage), typeof(CodeTextBlock), new PropertyMetadata(CodeLanguage.Dax, OnChanged));
 
     public CodeTextBlock()
     {
@@ -36,10 +36,11 @@ public sealed class CodeTextBlock : TextBlock
         set => SetValue(CodeProperty, value);
     }
 
-    public CodeLanguage Language
+    /// <summary>DAX o M. (No se llama "Language" porque FrameworkElement ya tiene una propiedad así, para el idioma del texto.)</summary>
+    public CodeLanguage Syntax
     {
-        get => (CodeLanguage)GetValue(LanguageProperty);
-        set => SetValue(LanguageProperty, value);
+        get => (CodeLanguage)GetValue(SyntaxProperty);
+        set => SetValue(SyntaxProperty, value);
     }
 
     private static void OnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e) =>
@@ -57,7 +58,7 @@ public sealed class CodeTextBlock : TextBlock
             return;
         }
 
-        foreach (var token in CodeTokenizer.Tokenize(code, Language))
+        foreach (var token in CodeTokenizer.Tokenize(code, Syntax))
         {
             var run = new Run(token.Text);
             if (BrushFor(token.Kind) is { } brush) run.Foreground = brush;

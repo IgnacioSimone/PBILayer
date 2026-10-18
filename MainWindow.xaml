@@ -5,6 +5,7 @@
         xmlns:vm="clr-namespace:PBIExplorer.ViewModels"
         Title="PBI Context" Height="820" Width="1420" MinWidth="1040" MinHeight="620"
         WindowStartupLocation="CenterScreen"
+        Icon="pack://application:,,,/Assets/PBIContext.ico"
         Style="{StaticResource {x:Type Window}}"
         AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop">
 
@@ -195,8 +196,8 @@
                         </StackPanel>
                     </Button>
                     <Button Grid.Column="1" Style="{StaticResource LinkButton}"
-                            Command="{Binding ShowShortcutsCommand}" ToolTip="Atajos de teclado (F1)"
-                            AutomationProperties.Name="Atajos de teclado">
+                            x:Name="HelpMenuButton" Click="HelpMenuButton_Click" ToolTip="Ayuda, actualizaciones y acerca de"
+                            AutomationProperties.Name="Ayuda y acerca de">
                         <TextBlock Text="&#xE897;" FontFamily="{StaticResource FontIcon}" FontSize="14"
                                    Foreground="{DynamicResource InkDim}" />
                     </Button>

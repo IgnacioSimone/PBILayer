@@ -93,7 +93,7 @@
                     <Border Background="{DynamicResource SidebarBg}" CornerRadius="8" Padding="12,10"
                             BorderBrush="{DynamicResource Separator}" BorderThickness="1">
                         <ScrollViewer MaxHeight="340" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
-                            <views:CodeTextBlock Code="{Binding Code}" Language="{Binding Language}"
+                            <views:CodeTextBlock Code="{Binding Code}" Syntax="{Binding Language}"
                                                  TextWrapping="Wrap"
                                                  FontFamily="{StaticResource FontMono}" FontSize="12"
                                                  Foreground="{DynamicResource Ink}"

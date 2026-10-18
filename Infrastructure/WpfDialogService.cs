@@ -52,6 +52,22 @@ public sealed class WpfDialogService : IDialogService
         }
     }
 
+    public void RunInstallerAndExit(string path)
+    {
+        try
+        {
+            // /SILENT muestra solo una barra de progreso; /CLOSEAPPLICATIONS cierra esta app si sigue abierta.
+            Process.Start(new ProcessStartInfo(path, "/SILENT /NORESTART /CLOSEAPPLICATIONS") { UseShellExecute = true });
+            Application.Current.Shutdown();
+        }
+        catch (System.ComponentModel.Win32Exception ex)
+        {
+            // El usuario canceló el aviso de permisos de administrador: la app sigue abierta.
+            AppLog.Write($"No se lanzó el instalador: {ex.Message}");
+            throw new InvalidOperationException("No se pudo iniciar el instalador (¿se canceló el permiso de administrador?).", ex);
+        }
+    }
+
     public void OpenWithShell(string path)
     {
         try

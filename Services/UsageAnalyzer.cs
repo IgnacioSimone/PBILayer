@@ -53,7 +53,7 @@ public static class UsageAnalyzer
             }
             else
             {
-                var key = (reference.Table, reference.Field);
+                var key = (reference.Table!, reference.Field);
                 if (!columnUsedBy.TryGetValue(key, out var list))
                     columnUsedBy[key] = list = new List<string>();
                 if (!list.Contains(sourceLabel)) list.Add(sourceLabel);
