@@ -197,6 +197,25 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public async Task Power_query_detail_lists_query_dependencies_and_they_are_navigable()
+    {
+        var model = SampleModel();
+        model.PowerQueries.Add(new PowerQueryInfo { Name = "Ventas", Kind = "Tabla", MCode = "let Origen = Parametro in Origen" });
+        model.PowerQueries.Add(new PowerQueryInfo { Name = "Parametro", Kind = "Parámetro / función", MCode = "\"x\"" });
+        var vm = Create(new FakeBackend { Model = model });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+
+        vm.PowerQuery.SelectedItem = model.PowerQueries[0];
+        Assert.Equal(new[] { "Consulta «Parametro»" }, vm.PowerQuery.Detail!.DependsOn.Select(d => d.Label));
+
+        vm.PowerQuery.Detail.DependsOn[0].OpenCommand.Execute(null);
+
+        Assert.Equal("Parametro", vm.PowerQuery.SelectedItem!.Name);
+        Assert.Equal(new[] { "Consulta «Ventas»" }, vm.PowerQuery.Detail!.UsedBy.Select(d => d.Label));
+        Assert.Equal("Solo uso interno", vm.PowerQuery.Detail.StatusText);   // Ventas es una tabla que se usa (medidas)
+    }
+
+    [Fact]
     public async Task A_dependency_that_is_not_in_the_model_says_so()
     {
         var model = SampleModel();

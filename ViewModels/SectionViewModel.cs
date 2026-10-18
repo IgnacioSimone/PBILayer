@@ -142,10 +142,17 @@ public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<Relat
 
 public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>("Power Query (M)", "")
 {
-    protected override DetailViewModel? BuildDetail(PowerQueryInfo q, DetailContext context) =>
-        new(q.Name, $"Power Query · {q.Kind}", q.MCode, CodeLanguage.M,
+    protected override DetailViewModel? BuildDetail(PowerQueryInfo q, DetailContext context)
+    {
+        // Una consulta que carga una tabla comparte el veredicto de esa tabla; un parámetro,
+        // función o auxiliar sin carga tiene el suyo.
+        var isTable = q.Kind == "Tabla";
+        var usage = context.FindUsage(isTable ? "Tabla" : "Consulta", isTable ? q.Name : "", q.Name);
+
+        return new DetailViewModel(q.Name, $"Power Query · {q.Kind}", q.MCode, CodeLanguage.M,
             DetailFacts.Of(("Oculta", q.IsHidden ? "Sí" : null), ("Descripción", q.Description)),
-            usage: null, context);
+            usage, context);
+    }
 }
 public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>("Filtros", "");
 public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>("Visuales y campos", "");
@@ -156,7 +163,7 @@ public sealed class PerformanceSectionViewModel() : GridSectionViewModel<Perform
 
 public sealed partial class UsageSectionViewModel() : GridSectionViewModel<ObjectUsage>(
     "Uso y limpieza", "",
-    note: "Cruza visuales del reporte, dependencias DAX y relaciones. No sigue dependencias de Power Query entre consultas (M) — una tabla auxiliar que solo alimenta a otra vía M puede figurar como \"sin uso\" sin serlo. Confirmá antes de borrar.")
+    note: "Cruza visuales del reporte, dependencias DAX, relaciones y dependencias entre consultas de Power Query (una tabla auxiliar o un parámetro que alimenta a una tabla en uso cuenta como usado). No ve segmentaciones, marcadores ni Q&A: confirmá antes de borrar.")
 {
     private List<ObjectUsage> _all = new();
 
