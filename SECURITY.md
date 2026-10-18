@@ -10,7 +10,7 @@ Usá el botón **Report a vulnerability** de la pestaña *Security* de este repo
 
 - Solo lee **metadata** del modelo y del reporte (nombres, fórmulas, relaciones). Nunca consulta filas de datos.
 - No envía información a ningún servidor. La única conexión de red es la búsqueda de actualizaciones en las
-  releases de GitHub de este repositorio (se puede desactivar en *Acerca de*).
+  releases de GitHub de este repositorio. Está apagada por defecto: solo se activa si la elegís (se cambia en *Acerca de*).
 - Las exportaciones enmascaran correos, documentos de identidad, claves y rutas locales.
 
 ## Verificar la descarga
