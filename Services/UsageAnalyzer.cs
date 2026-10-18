@@ -99,6 +99,7 @@ public static class UsageAnalyzer
             result.Add(usage);
         }
 
+        var tableUsages = new Dictionary<string, ObjectUsage>();
         foreach (var t in model.Tables)
         {
             var ownObjectsUsed = result.Any(o => o.Table == t.Name && !o.IsUnused);
@@ -112,8 +113,67 @@ public static class UsageAnalyzer
                 UsedInDax = ownObjectsUsed
             };
             result.Add(usage);
+            tableUsages[t.Name] = usage;
         }
 
+        AnalyzeQueries(model, result, tableUsages);
         return result;
+    }
+
+    /// <summary>
+    /// Dependencias entre consultas de Power Query. Una tabla auxiliar, un parámetro o una función
+    /// que alimenta a una tabla que sí se usa NO es basura aunque ningún visual ni fórmula DAX la
+    /// toque: sin esto figuraría "sin uso" y borrarla rompería la tabla que sí se usa.
+    /// Una consulta "vive" si es una tabla en uso, o si la necesita otra consulta que vive; el
+    /// cálculo se repite hasta que no aparece ninguna nueva (cadenas de auxiliares).
+    /// </summary>
+    private static void AnalyzeQueries(ModelSnapshot model, List<ObjectUsage> result, Dictionary<string, ObjectUsage> tableUsages)
+    {
+        if (model.PowerQueries.Count == 0) return;
+
+        var queries = model.PowerQueries
+            .Where(q => !string.IsNullOrEmpty(q.Name))
+            .GroupBy(q => q.Name, StringComparer.Ordinal)
+            .ToDictionary(g => g.Key, g => string.Join("\n", g.Select(q => q.MCode)), StringComparer.Ordinal);
+        var names = queries.Keys.ToHashSet(StringComparer.Ordinal);
+
+        var dependsOn = queries.ToDictionary(q => q.Key, q => MReferenceParser.ExtractReferences(q.Value, names, q.Key), StringComparer.Ordinal);
+        var usedBy = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        foreach (var (query, refs) in dependsOn)
+        foreach (var reference in refs)
+        {
+            if (!usedBy.TryGetValue(reference, out var list)) usedBy[reference] = list = new List<string>();
+            list.Add(query);
+        }
+
+        // Las consultas que no son una tabla del modelo (parámetros, funciones, auxiliares sin carga)
+        // también se pueden limpiar, así que tienen su propia fila.
+        var helperUsages = new Dictionary<string, ObjectUsage>(StringComparer.Ordinal);
+        foreach (var name in names.Where(n => !tableUsages.ContainsKey(n)))
+        {
+            var usage = new ObjectUsage { Kind = "Consulta", Table = "", Name = name };
+            helperUsages[name] = usage;
+            result.Add(usage);
+        }
+
+        // Raíces: tablas que ya se usan por visual, relación o DAX. Desde ahí se propaga hacia las
+        // consultas que necesitan.
+        var live = new HashSet<string>(
+            tableUsages.Where(t => !t.Value.IsUnused && names.Contains(t.Key)).Select(t => t.Key),
+            StringComparer.Ordinal);
+        var pending = new Queue<string>(live);
+        while (pending.Count > 0)
+        {
+            foreach (var needed in dependsOn[pending.Dequeue()])
+                if (live.Add(needed)) pending.Enqueue(needed);
+        }
+
+        foreach (var name in names)
+        {
+            var usage = tableUsages.TryGetValue(name, out var t) ? t : helperUsages[name];
+            usage.UsedInQuery = usedBy.TryGetValue(name, out var referrers) && referrers.Any(live.Contains);
+            usage.DependsOn.AddRange(dependsOn[name].Select(UsageLabels.Query));
+            if (usedBy.TryGetValue(name, out var all)) usage.UsedBy.AddRange(all.Select(UsageLabels.Query));
+        }
     }
 }

@@ -208,10 +208,10 @@ public static class AiContextExporter
             sb.AppendLine("## Objetos sin uso detectado (candidatos a limpieza)");
             sb.AppendLine();
             sb.AppendLine("Cruzando qué campo usa cada visual del reporte, qué fórmula DAX depende de qué otra, " +
-                          "y qué columnas sostienen una relación, estos objetos no aparecen usados en ningún lado. " +
-                          "**No sigue dependencias de Power Query entre consultas (M)** — una tabla auxiliar que solo " +
-                          "alimenta a otra vía M puede figurar acá sin serlo de verdad. Antes de borrar algo, confirmá " +
-                          "que no lo use tampoco una segmentación, un marcador, o Q&A en lenguaje natural.");
+                          "qué columnas sostienen una relación y qué consulta de Power Query alimenta a cuál, estos " +
+                          "objetos no aparecen usados en ningún lado. Una tabla auxiliar, un parámetro o una función " +
+                          "que alimenta a una tabla en uso cuenta como usado. Antes de borrar algo, confirmá que no " +
+                          "lo use tampoco una segmentación, un marcador, o Q&A en lenguaje natural.");
             sb.AppendLine();
             sb.AppendLine("| Tipo | Tabla | Nombre |");
             sb.AppendLine("|---|---|---|");

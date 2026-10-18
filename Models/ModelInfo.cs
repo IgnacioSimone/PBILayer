@@ -75,19 +75,20 @@ public class PowerQueryInfo
 
 public class ObjectUsage
 {
-    public string Kind { get; set; } = "";   // "Medida", "Columna", "Tabla"
+    public string Kind { get; set; } = "";   // "Medida", "Columna", "Tabla", "Consulta" (parámetro / función / auxiliar de Power Query)
     public string Table { get; set; } = "";
     public string Name { get; set; } = "";
     public bool UsedInVisual { get; set; }
     public bool UsedInRelationship { get; set; }
     public bool UsedInDax { get; set; }      // otra medida/columna calculada depende de este objeto
+    public bool UsedInQuery { get; set; }    // otra consulta de Power Query que sí se usa depende de este objeto
     public List<string> DependsOn { get; } = new();  // objetos que ESTE usa en su fórmula
     public List<string> UsedBy { get; } = new();     // objetos que usan a ESTE en su fórmula
 
-    public bool IsUnused => !UsedInVisual && !UsedInRelationship && !UsedInDax;
+    public bool IsUnused => !UsedInVisual && !UsedInRelationship && !UsedInDax && !UsedInQuery;
 
     public string Status => IsUnused ? "Sin uso — candidata a eliminar"
-        : !UsedInVisual && (UsedInDax || UsedInRelationship) ? "Solo uso interno"
+        : !UsedInVisual && (UsedInDax || UsedInRelationship || UsedInQuery) ? "Solo uso interno"
         : "En uso";
 
     public string DependsOnText => DependsOn.Count > 0 ? string.Join(", ", DependsOn) : "";

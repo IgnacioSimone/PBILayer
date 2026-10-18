@@ -21,8 +21,19 @@
 
     <DockPanel>
     <!-- Panel de detalle de la fila seleccionada (solo en las secciones que lo tienen) -->
-    <views:DetailView DockPanel.Dock="Right" Width="400" DataContext="{Binding Detail}"
-                      Visibility="{Binding Detail, Converter={StaticResource NullToCollapsed}}" />
+    <views:DetailView DockPanel.Dock="Right" Width="400" DataContext="{Binding Detail}">
+        <views:DetailView.Style>
+            <Style TargetType="views:DetailView">
+                <!-- Sin detalle (DataContext null) el panel no ocupa lugar. Se decide acá, sobre el propio
+                     DataContext: un Binding a "Detail" desde este elemento buscaría en el detalle mismo. -->
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </views:DetailView.Style>
+    </views:DetailView>
 
     <Grid>
         <Grid.RowDefinitions>

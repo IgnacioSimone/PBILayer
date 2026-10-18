@@ -593,6 +593,18 @@ public sealed partial class MainViewModel : ObservableObject
     /// "Tabla[Columna]" va a Columnas, con esa fila seleccionada y su detalle abierto.</summary>
     private void NavigateTo(string label)
     {
+        if (UsageLabels.TryParseQuery(label, out var queryName))
+        {
+            var query = _model.PowerQueries.FirstOrDefault(q => q.Name == queryName);
+            if (query is not null)
+            {
+                GlobalSearchText = "";
+                SelectedSection = PowerQuery;
+                PowerQuery.SelectedItem = query;
+                return;
+            }
+        }
+
         var open = label.IndexOf('[');
         if (open >= 0 && label.EndsWith(']'))
         {
