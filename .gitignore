@@ -10,3 +10,4 @@ PBIExplorer.pbitool.json
 # Instalador: salida y archivo generado por build-installer.ps1
 installer_output/
 installer/icon-data.inc
+

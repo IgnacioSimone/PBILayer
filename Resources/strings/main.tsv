@@ -85,7 +85,7 @@ Status_NoModelNeeded	Sin modelo: hace falta tener el tablero abierto en Power BI
 Export_MarkdownSuggested	Contexto_IA_{0}.md	AI_Context_{0}.md
 Export_JsonSuggested	Snapshot_{0}.json	Snapshot_{0}.json
 Export_DocSuggested	Documentacion_{0}.{1}	Documentation_{0}.{1}
-Export_MarkdownSaved	Contexto guardado. Adjuntá ese .md en el chat con tu asistente de IA.	Context saved. Attach that .md to a chat with your AI assistant.
+Export_MarkdownSaved	Contexto guardado. Adjuntá ese .md en un chat con tu asistente de IA.	Context saved. Attach that .md to a chat with your AI assistant.
 Export_JsonSaved	Snapshot guardado. Usalo más adelante en "Comparar versiones".	Snapshot saved. Use it later in "Compare versions".
 Toast_Reveal	Mostrar	Show
 Toast_FileFailed	No se pudo generar el archivo. {0}	Could not generate the file. {0}

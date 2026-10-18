@@ -173,7 +173,7 @@
   <data name="Export_MarkdownSuggested" xml:space="preserve"><value>Contexto_IA_{0}.md</value></data>
   <data name="Export_JsonSuggested" xml:space="preserve"><value>Snapshot_{0}.json</value></data>
   <data name="Export_DocSuggested" xml:space="preserve"><value>Documentacion_{0}.{1}</value></data>
-  <data name="Export_MarkdownSaved" xml:space="preserve"><value>Contexto guardado. Adjuntá ese .md en el chat con tu asistente de IA.</value></data>
+  <data name="Export_MarkdownSaved" xml:space="preserve"><value>Contexto guardado. Adjuntá ese .md en un chat con tu asistente de IA.</value></data>
   <data name="Export_JsonSaved" xml:space="preserve"><value>Snapshot guardado. Usalo más adelante en &quot;Comparar versiones&quot;.</value></data>
   <data name="Toast_Reveal" xml:space="preserve"><value>Mostrar</value></data>
   <data name="Toast_FileFailed" xml:space="preserve"><value>No se pudo generar el archivo. {0}</value></data>
