@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Windows.Data;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 using PBIExplorer.Services;
 using PBIExplorer.Services.Export;
@@ -69,7 +70,7 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
     /// <summary>Columnas que se exportan; vacío = esta sección no se exporta.</summary>
     protected virtual IReadOnlyList<ExportColumn<T>> ExportColumns => Array.Empty<ExportColumn<T>>();
 
-    protected static string YesNo(bool value) => value ? "Sí" : "No";
+    protected static string YesNo(bool value) => Loc.T(value ? "Common_Yes" : "Common_No");
 
     public bool HasExportData => ExportColumns.Count > 0 && AllItems.Any();
 
@@ -120,14 +121,14 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
 
     /// <summary>"340 filas" o, con una búsqueda activa, "12 de 340".</summary>
     public string CountText => IsFiltered
-        ? $"{VisibleCount:N0} de {TotalCount:N0}"
-        : TotalCount == 1 ? "1 fila" : $"{TotalCount:N0} filas";
+        ? Loc.F("Count_Of", VisibleCount.ToString("N0"), TotalCount.ToString("N0"))
+        : TotalCount == 1 ? Loc.T("Count_OneRow") : Loc.F("Count_Rows", TotalCount.ToString("N0"));
 
     private bool IsFiltered => !string.IsNullOrWhiteSpace(SearchText);
 
     /// <summary>Mensaje cuando la búsqueda activa no encuentra nada en esta sección (vacío si no aplica).</summary>
     public string? NoResultsText => IsFiltered && VisibleCount == 0 && TotalCount > 0
-        ? $"Sin resultados para \"{SearchText.Trim()}\""
+        ? Loc.F("NoResults", SearchText.Trim())
         : null;
 
     /// <summary>Reemplaza el contenido entero; el filtro de texto ya escrito se reaplica.</summary>
@@ -154,69 +155,69 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
     }
 }
 
-public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInfo>("Medidas DAX", "")
+public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInfo>(Loc.T("Section_Measures"), "")
 {
     protected override IReadOnlyList<ExportColumn<MeasureInfo>> ExportColumns { get; } = new ExportColumn<MeasureInfo>[]
     {
-        new("Tabla", m => m.Table), new("Medida", m => m.Name), new("Carpeta", m => m.DisplayFolder),
-        new("DAX", m => m.Expression, IsCode: true), new("Formato", m => m.FormatString),
-        new("Oculta", m => YesNo(m.IsHidden)), new("Descripción", m => m.Description)
+        new(Loc.T("Col_Table"), m => m.Table), new(Loc.T("Col_Measure"), m => m.Name), new(Loc.T("Col_Folder"), m => m.DisplayFolder),
+        new(Loc.T("Col_Dax"), m => m.Expression, IsCode: true), new(Loc.T("Col_Format"), m => m.FormatString),
+        new(Loc.T("Col_Hidden"), m => YesNo(m.IsHidden)), new(Loc.T("Col_Description"), m => m.Description)
     };
 
     protected override DetailViewModel? BuildDetail(MeasureInfo m, DetailContext context) =>
-        new(m.Name, $"Medida · {m.Table}", m.Expression, CodeLanguage.Dax,
-            DetailFacts.Of(("Carpeta", m.DisplayFolder), ("Formato", m.FormatString),
-                ("Oculta", m.IsHidden ? "Sí" : null), ("Descripción", m.Description)),
+        new(m.Name, Loc.F("Detail_MeasureSubtitle", m.Table), m.Expression, CodeLanguage.Dax,
+            DetailFacts.Of((Loc.T("Col_Folder"), m.DisplayFolder), (Loc.T("Col_Format"), m.FormatString),
+                (Loc.T("Col_Hidden"), m.IsHidden ? Loc.T("Common_Yes") : null), (Loc.T("Col_Description"), m.Description)),
             context.FindUsage("Medida", m.Table, m.Name), context);
 }
 
-public sealed class TablesSectionViewModel() : GridSectionViewModel<TableInfo>("Tablas", "")
+public sealed class TablesSectionViewModel() : GridSectionViewModel<TableInfo>(Loc.T("Section_Tables"), "")
 {
     protected override IReadOnlyList<ExportColumn<TableInfo>> ExportColumns { get; } = new ExportColumn<TableInfo>[]
     {
-        new("Tabla", t => t.Name), new("Columnas", t => t.ColumnCount.ToString()), new("Medidas", t => t.MeasureCount.ToString()),
-        new("Descripción", t => t.Description), new("Oculta", t => YesNo(t.IsHidden))
+        new(Loc.T("Col_Table"), t => t.Name), new(Loc.T("Col_Columns"), t => t.ColumnCount.ToString()), new(Loc.T("Col_Measures"), t => t.MeasureCount.ToString()),
+        new(Loc.T("Col_Description"), t => t.Description), new(Loc.T("Col_Hidden"), t => YesNo(t.IsHidden))
     };
 }
 
-public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>("Columnas", "")
+public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>(Loc.T("Section_Columns"), "")
 {
     protected override IReadOnlyList<ExportColumn<ColumnInfo>> ExportColumns { get; } = new ExportColumn<ColumnInfo>[]
     {
-        new("Tabla", c => c.Table), new("Columna", c => c.Name), new("Tipo de dato", c => c.DataType),
-        new("Origen", c => c.ColumnType), new("Carpeta", c => c.DisplayFolder),
-        new("DAX / columna origen", c => c.DaxOrSource, IsCode: true),
-        new("Oculta", c => YesNo(c.IsHidden)), new("Descripción", c => c.Description)
+        new(Loc.T("Col_Table"), c => c.Table), new(Loc.T("Col_Column"), c => c.Name), new(Loc.T("Col_DataType"), c => c.DataTypeText),
+        new(Loc.T("Col_Source"), c => c.ColumnTypeText), new(Loc.T("Col_Folder"), c => c.DisplayFolder),
+        new(Loc.T("Col_DaxOrSource"), c => c.DaxOrSource, IsCode: true),
+        new(Loc.T("Col_Hidden"), c => YesNo(c.IsHidden)), new(Loc.T("Col_Description"), c => c.Description)
     };
 
     protected override DetailViewModel? BuildDetail(ColumnInfo c, DetailContext context)
     {
         var calculated = !string.IsNullOrWhiteSpace(c.Expression);
-        return new DetailViewModel(c.Name, $"Columna · {c.Table}", calculated ? c.Expression : null, CodeLanguage.Dax,
-            DetailFacts.Of(("Tipo de dato", c.DataType), ("Origen", c.ColumnType),
-                ("Columna de origen", calculated ? null : c.SourceColumn), ("Carpeta", c.DisplayFolder),
-                ("Oculta", c.IsHidden ? "Sí" : null), ("Descripción", c.Description)),
+        return new DetailViewModel(c.Name, Loc.F("Detail_ColumnSubtitle", c.Table), calculated ? c.Expression : null, CodeLanguage.Dax,
+            DetailFacts.Of((Loc.T("Col_DataType"), c.DataTypeText), (Loc.T("Col_Source"), c.ColumnTypeText),
+                (Loc.T("Col_SourceColumn"), calculated ? null : c.SourceColumn), (Loc.T("Col_Folder"), c.DisplayFolder),
+                (Loc.T("Col_Hidden"), c.IsHidden ? Loc.T("Common_Yes") : null), (Loc.T("Col_Description"), c.Description)),
             context.FindUsage("Columna", c.Table, c.Name), context);
     }
 }
 
-public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<RelationshipInfo>("Relaciones", "")
+public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<RelationshipInfo>(Loc.T("Section_Relationships"), "")
 {
     protected override IReadOnlyList<ExportColumn<RelationshipInfo>> ExportColumns { get; } = new ExportColumn<RelationshipInfo>[]
     {
-        new("Desde tabla", r => r.FromTable), new("Desde columna", r => r.FromColumn),
-        new("Hacia tabla", r => r.ToTable), new("Hacia columna", r => r.ToColumn),
-        new("Cardinalidad", r => r.Cardinality), new("Filtro cruzado", r => r.CrossFilterBehavior),
-        new("Activa", r => YesNo(r.IsActive))
+        new(Loc.T("Col_FromTable"), r => r.FromTable), new(Loc.T("Col_FromColumn"), r => r.FromColumn),
+        new(Loc.T("Col_ToTable"), r => r.ToTable), new(Loc.T("Col_ToColumn"), r => r.ToColumn),
+        new(Loc.T("Col_Cardinality"), r => r.CardinalityText), new(Loc.T("Col_CrossFilter"), r => r.CrossFilterText),
+        new(Loc.T("Col_Active"), r => YesNo(r.IsActive))
     };
 }
 
-public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>("Power Query (M)", "")
+public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>(Loc.T("Section_PowerQuery"), "")
 {
     protected override IReadOnlyList<ExportColumn<PowerQueryInfo>> ExportColumns { get; } = new ExportColumn<PowerQueryInfo>[]
     {
-        new("Nombre", q => q.Name), new("Tipo", q => q.Kind), new("Código M", q => q.MCode, IsCode: true),
-        new("Oculta", q => YesNo(q.IsHidden)), new("Descripción", q => q.Description)
+        new(Loc.T("Col_Name"), q => q.Name), new(Loc.T("Col_Kind"), q => q.KindText), new(Loc.T("Col_MCode"), q => q.MCode, IsCode: true),
+        new(Loc.T("Col_Hidden"), q => YesNo(q.IsHidden)), new(Loc.T("Col_Description"), q => q.Description)
     };
 
     protected override DetailViewModel? BuildDetail(PowerQueryInfo q, DetailContext context)
@@ -226,43 +227,43 @@ public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQue
         var isTable = q.Kind == "Tabla";
         var usage = context.FindUsage(isTable ? "Tabla" : "Consulta", isTable ? q.Name : "", q.Name);
 
-        return new DetailViewModel(q.Name, $"Power Query · {q.Kind}", q.MCode, CodeLanguage.M,
-            DetailFacts.Of(("Oculta", q.IsHidden ? "Sí" : null), ("Descripción", q.Description)),
+        return new DetailViewModel(q.Name, Loc.F("Detail_QuerySubtitle", q.KindText), q.MCode, CodeLanguage.M,
+            DetailFacts.Of((Loc.T("Col_Hidden"), q.IsHidden ? Loc.T("Common_Yes") : null), (Loc.T("Col_Description"), q.Description)),
             usage, context);
     }
 }
-public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>("Filtros", "")
+public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>(Loc.T("Section_Filters"), "")
 {
     protected override IReadOnlyList<ExportColumn<FilterInfo>> ExportColumns { get; } = new ExportColumn<FilterInfo>[]
     {
-        new("Nivel", f => f.Scope), new("Página", f => f.Page), new("Visual", f => f.VisualText),
-        new("Tipo", f => f.FieldKind), new("Campo", f => f.TargetText), new("Tipo de filtro", f => f.FilterType),
-        new("Condición", f => f.Summary, IsCode: true)
+        new(Loc.T("Col_Level"), f => f.ScopeText), new(Loc.T("Col_Page"), f => f.Page), new(Loc.T("Col_Visual"), f => f.VisualText),
+        new(Loc.T("Col_Kind"), f => f.FieldKindText), new(Loc.T("Col_Field"), f => f.TargetText), new(Loc.T("Col_FilterType"), f => f.FilterType),
+        new(Loc.T("Col_Condition"), f => f.Summary, IsCode: true)
     };
 }
-public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>("Visuales y campos", "")
+public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>(Loc.T("Section_Visuals"), "")
 {
     protected override IReadOnlyList<ExportColumn<VisualFieldUsage>> ExportColumns { get; } = new ExportColumn<VisualFieldUsage>[]
     {
-        new("Página", v => v.Page), new("Visual", v => v.VisualType), new("Título", v => v.Title),
-        new("Tipo", v => v.FieldKind), new("Tabla", v => v.Table), new("Campo", v => v.Field)
+        new(Loc.T("Col_Page"), v => v.Page), new(Loc.T("Col_Visual"), v => v.VisualType), new(Loc.T("Col_Title"), v => v.Title),
+        new(Loc.T("Col_Kind"), v => v.FieldKindText), new(Loc.T("Col_Table"), v => v.Table), new(Loc.T("Col_Field"), v => v.Field)
     };
 }
 
 public sealed class PerformanceSectionViewModel() : GridSectionViewModel<PerformanceWarning>(
-    "Rendimiento", "",
-    note: "Heurísticas sobre patrones conocidos como antipatrón (relaciones bidireccionales o muchos a muchos, columnas calculadas, CALCULATE anidado). Esta herramienta nunca consulta filas reales, así que no puede medir cardinalidad ni tiempo de query real — son pistas para revisar, no un profiler.")
+    Loc.T("Section_Performance"), "",
+    note: Loc.T("Note_Performance"))
 {
     protected override IReadOnlyList<ExportColumn<PerformanceWarning>> ExportColumns { get; } = new ExportColumn<PerformanceWarning>[]
     {
-        new("Severidad", w => w.Severity.ToString()), new("Categoría", w => w.Category), new("Tabla", w => w.Table),
-        new("Objeto", w => w.Subject), new("Detalle", w => w.Message)
+        new(Loc.T("Col_Severity"), w => w.SeverityText), new(Loc.T("Col_Category"), w => w.Category), new(Loc.T("Col_Table"), w => w.Table),
+        new(Loc.T("Col_Object"), w => w.Subject), new(Loc.T("Col_Detail"), w => w.Message)
     };
 }
 
 public sealed partial class UsageSectionViewModel() : GridSectionViewModel<ObjectUsage>(
-    "Uso y limpieza", "",
-    note: "Cruza visuales del reporte, dependencias DAX, relaciones y dependencias entre consultas de Power Query (una tabla auxiliar o un parámetro que alimenta a una tabla en uso cuenta como usado). No ve segmentaciones, marcadores ni Q&A: confirmá antes de borrar.")
+    Loc.T("Section_Usage"), "",
+    note: Loc.T("Note_Usage"))
 {
     private List<ObjectUsage> _all = new();
 
@@ -273,8 +274,8 @@ public sealed partial class UsageSectionViewModel() : GridSectionViewModel<Objec
 
     protected override IReadOnlyList<ExportColumn<ObjectUsage>> ExportColumns { get; } = new ExportColumn<ObjectUsage>[]
     {
-        new("Tipo", u => u.Kind), new("Tabla", u => u.Table), new("Nombre", u => u.Name), new("Estado", u => u.Status),
-        new("Depende de", u => u.DependsOnText), new("Usado por", u => u.UsedByText)
+        new(Loc.T("Col_Kind"), u => u.KindText), new(Loc.T("Col_Table"), u => u.Table), new(Loc.T("Col_Name"), u => u.Name), new(Loc.T("Col_Status"), u => u.Status),
+        new(Loc.T("Col_DependsOn"), u => u.DependsOnText), new(Loc.T("Col_UsedBy"), u => u.UsedByText)
     };
 
     [ObservableProperty] private bool _onlyUnused;
@@ -293,18 +294,17 @@ public sealed partial class UsageSectionViewModel() : GridSectionViewModel<Objec
 public sealed partial class CompareSectionViewModel : GridSectionViewModel<ModelDiffEntry>
 {
     public CompareSectionViewModel() : base(
-        "Comparar versiones", "",
-        note: "Compara el modelo conectado ahora contra un snapshot .json exportado antes (botón \"Exportar JSON\") del mismo tablero — pensado para auditar qué cambió entre una versión y otra.")
+        Loc.T("Section_Compare"), "",
+        note: Loc.T("Note_Compare"))
     {
-        SetEmpty(true, "Elegí un snapshot para comparar",
-            "Elegí un archivo .json exportado antes de este mismo tablero para ver qué cambió desde entonces.");
+        SetEmpty(true, Loc.T("Compare_EmptyTitle"), Loc.T("Compare_EmptyBody"));
         EmptyIcon = "";
-        EmptyActionText = "Elegir snapshot .json…";
+        EmptyActionText = Loc.T("Compare_EmptyAction");
     }
 
     protected override IReadOnlyList<ExportColumn<ModelDiffEntry>> ExportColumns { get; } = new ExportColumn<ModelDiffEntry>[]
     {
-        new("Cambio", d => d.KindText), new("Categoría", d => d.Category), new("Objeto", d => d.Name), new("Detalle", d => d.Detail)
+        new(Loc.T("Col_Change"), d => d.KindText), new(Loc.T("Col_Category"), d => d.Category), new(Loc.T("Col_Object"), d => d.Name), new(Loc.T("Col_Detail"), d => d.Detail)
     };
 
     public override void SetItems(IEnumerable<ModelDiffEntry> items)

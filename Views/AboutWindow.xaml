@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:views="clr-namespace:PBIExplorer.Views"
-        Title="Acerca de PBI Context" Width="540" SizeToContent="Height" MaxHeight="800"
+        Title="{views:Loc About_Title}" Width="540" SizeToContent="Height" MaxHeight="800"
         ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
         Icon="pack://application:,,,/Assets/PBIContext.ico"
         Style="{StaticResource {x:Type Window}}">
@@ -29,12 +29,12 @@
             </DockPanel>
 
             <TextBlock Margin="0,18,0,0" TextWrapping="Wrap" FontSize="12.5" Foreground="{DynamicResource InkDim}"
-                       Text="Documenta un modelo de Power BI y su reporte: medidas DAX, tablas, columnas, relaciones, Power Query, qué visual usa qué campo y qué objetos no se usan en ningún lado." />
+                       Text="{views:Loc About_Description}" />
 
             <!-- Actualizaciones -->
             <Border Style="{StaticResource Card}" Margin="0,22,0,0" Padding="18,16">
                 <StackPanel DataContext="{Binding Updates}">
-                    <TextBlock Text="ACTUALIZACIONES" FontFamily="{StaticResource FontSmall}" FontSize="10.5" FontWeight="SemiBold"
+                    <TextBlock Text="{views:Loc About_UpdatesHeader}" FontFamily="{StaticResource FontSmall}" FontSize="10.5" FontWeight="SemiBold"
                                Foreground="{DynamicResource InkFaint}" />
                     <TextBlock Text="{Binding StatusText}" Margin="0,8,0,0" TextWrapping="Wrap" FontSize="13"
                                Foreground="{DynamicResource Ink}" AutomationProperties.LiveSetting="Polite" />
@@ -52,43 +52,43 @@
                     </Border>
 
                     <StackPanel Orientation="Horizontal" Margin="0,14,0,0">
-                        <Button Content="Buscar ahora" Style="{StaticResource SoftButton}" Margin="0,0,8,0"
+                        <Button Content="{views:Loc Btn_CheckNow}" Style="{StaticResource SoftButton}" Margin="0,0,8,0"
                                 Command="{Binding CheckNowCommand}" />
-                        <Button Content="Descargar e instalar" Style="{StaticResource AccentButton}" Margin="0,0,8,0"
+                        <Button Content="{views:Loc Btn_InstallUpdate}" Style="{StaticResource AccentButton}" Margin="0,0,8,0"
                                 Command="{Binding InstallCommand}"
                                 Visibility="{Binding CanInstall, Converter={StaticResource BoolToVisibility}}" />
-                        <Button Content="Ver la versión en GitHub" Style="{StaticResource SoftButton}" Margin="0"
+                        <Button Content="{views:Loc Btn_ViewRelease}" Style="{StaticResource SoftButton}" Margin="0"
                                 Command="{Binding OpenReleasePageCommand}"
                                 Visibility="{Binding IsUpdateAvailable, Converter={StaticResource BoolToVisibility}}" />
                     </StackPanel>
 
                     <CheckBox Margin="0,14,0,0" IsChecked="{Binding AutoCheck}" FontSize="12.5" Foreground="{DynamicResource InkDim}"
-                              ToolTip="Es la única conexión de red de la app. No envía ningún dato tuyo, del modelo ni del tablero.">
+                              ToolTip="{views:Loc About_AutoCheckTip}">
                         <TextBlock TextWrapping="Wrap" Margin="2,0,0,0"
-                                   Text="Buscar actualizaciones automáticamente al abrir (una consulta a GitHub por día, sin enviar datos)" />
+                                   Text="{views:Loc About_AutoCheck}" />
                     </CheckBox>
                 </StackPanel>
             </Border>
 
             <!-- Privacidad -->
-            <TextBlock Text="PRIVACIDAD" FontFamily="{StaticResource FontSmall}" FontSize="10.5" FontWeight="SemiBold"
+            <TextBlock Text="{views:Loc Privacy_Title}" FontFamily="{StaticResource FontSmall}" FontSize="10.5" FontWeight="SemiBold"
                        Foreground="{DynamicResource InkFaint}" Margin="0,22,0,0" />
             <TextBlock Text="{Binding Privacy}" TextWrapping="Wrap" FontSize="12.5" Foreground="{DynamicResource InkDim}" Margin="0,6,0,0" />
             <TextBlock Text="{Binding Disclaimer}" TextWrapping="Wrap" FontSize="12" Foreground="{DynamicResource InkFaint}" Margin="0,8,0,0" />
 
             <!-- Enlaces -->
             <WrapPanel Margin="-10,18,0,0">
-                <Button Content="Repositorio" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
+                <Button Content="{views:Loc Link_Repo}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
                         CommandParameter="https://github.com/IgnacioSimone/PBIContext" />
-                <Button Content="Licencia MIT" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
+                <Button Content="{views:Loc Link_License}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
                         CommandParameter="https://github.com/IgnacioSimone/PBIContext/blob/master/LICENSE" />
-                <Button Content="Novedades de cada versión" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
+                <Button Content="{views:Loc Link_Changelog}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
                         CommandParameter="https://github.com/IgnacioSimone/PBIContext/blob/master/CHANGELOG.md" />
-                <Button Content="Carpeta de datos y registros" Style="{StaticResource LinkButton}" Command="{Binding OpenDataFolderCommand}"
+                <Button Content="{views:Loc Link_DataFolder}" Style="{StaticResource LinkButton}" Command="{Binding OpenDataFolderCommand}"
                         ToolTip="{Binding DataFolder}" />
             </WrapPanel>
 
-            <Button Content="Cerrar" Style="{StaticResource AccentButton}" HorizontalAlignment="Right" Margin="0,18,0,0"
+            <Button Content="{views:Loc Btn_Close}" Style="{StaticResource AccentButton}" HorizontalAlignment="Right" Margin="0,18,0,0"
                     IsDefault="True" IsCancel="True" MinWidth="96" />
         </StackPanel>
     </ScrollViewer>

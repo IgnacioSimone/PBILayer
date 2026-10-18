@@ -7,13 +7,13 @@
     <Style x:Key="UsageStatusCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
         <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Status}" Value="Sin uso — candidata a eliminar">
+            <DataTrigger Binding="{Binding State}" Value="Unused">
                 <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="Solo uso interno">
+            <DataTrigger Binding="{Binding State}" Value="InternalOnly">
                 <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding Status}" Value="En uso">
+            <DataTrigger Binding="{Binding State}" Value="InUse">
                 <Setter Property="Foreground" Value="{DynamicResource StatusGood}" />
             </DataTrigger>
         </Style.Triggers>
@@ -34,13 +34,13 @@
     <Style x:Key="DiffKindCell" TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
         <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
-            <DataTrigger Binding="{Binding KindText}" Value="Agregado">
+            <DataTrigger Binding="{Binding Kind}" Value="Agregado">
                 <Setter Property="Foreground" Value="{DynamicResource StatusGood}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding KindText}" Value="Eliminado">
+            <DataTrigger Binding="{Binding Kind}" Value="Eliminado">
                 <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
             </DataTrigger>
-            <DataTrigger Binding="{Binding KindText}" Value="Modificado">
+            <DataTrigger Binding="{Binding Kind}" Value="Modificado">
                 <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
             </DataTrigger>
         </Style.Triggers>
@@ -53,56 +53,56 @@
 
     <DataTemplate DataType="{x:Type vm:MeasuresSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Table}" Width="160" />
-            <DataGridTextColumn Header="MEDIDA" Binding="{Binding Name}" Width="230" />
-            <DataGridTextColumn Header="CARPETA" Binding="{Binding DisplayFolder}" Width="150" />
-            <DataGridTextColumn Header="DAX" Binding="{Binding Expression}" Width="420"
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Table}" Width="160" />
+            <DataGridTextColumn Header="{views:Loc Col_Measure, Upper=True}" Binding="{Binding Name}" Width="230" />
+            <DataGridTextColumn Header="{views:Loc Col_Folder, Upper=True}" Binding="{Binding DisplayFolder}" Width="150" />
+            <DataGridTextColumn Header="{views:Loc Col_Dax, Upper=True}" Binding="{Binding Expression}" Width="420"
                                 FontFamily="{StaticResource FontMono}" FontSize="11.5" />
-            <DataGridTextColumn Header="FORMATO" Binding="{Binding FormatString}" Width="110" />
-            <DataGridCheckBoxColumn Header="OCULTA" Binding="{Binding IsHidden}" Width="72" />
+            <DataGridTextColumn Header="{views:Loc Col_Format, Upper=True}" Binding="{Binding FormatString}" Width="110" />
+            <DataGridCheckBoxColumn Header="{views:Loc Col_Hidden, Upper=True}" Binding="{Binding IsHidden}" Width="72" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:TablesSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Name}" Width="300" />
-            <DataGridTextColumn Header="COLUMNAS" Binding="{Binding ColumnCount}" Width="110" />
-            <DataGridTextColumn Header="MEDIDAS" Binding="{Binding MeasureCount}" Width="110" />
-            <DataGridTextColumn Header="DESCRIPCIÓN" Binding="{Binding Description}" Width="320" />
-            <DataGridCheckBoxColumn Header="OCULTA" Binding="{Binding IsHidden}" Width="72" />
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Name}" Width="300" />
+            <DataGridTextColumn Header="{views:Loc Col_Columns, Upper=True}" Binding="{Binding ColumnCount}" Width="110" />
+            <DataGridTextColumn Header="{views:Loc Col_Measures, Upper=True}" Binding="{Binding MeasureCount}" Width="110" />
+            <DataGridTextColumn Header="{views:Loc Col_Description, Upper=True}" Binding="{Binding Description}" Width="320" />
+            <DataGridCheckBoxColumn Header="{views:Loc Col_Hidden, Upper=True}" Binding="{Binding IsHidden}" Width="72" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:ColumnsSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Table}" Width="210" />
-            <DataGridTextColumn Header="COLUMNA" Binding="{Binding Name}" Width="230" />
-            <DataGridTextColumn Header="TIPO DE DATO" Binding="{Binding DataType}" Width="140" />
-            <DataGridTextColumn Header="ORIGEN" Binding="{Binding ColumnType}" Width="140" />
-            <DataGridTextColumn Header="CARPETA" Binding="{Binding DisplayFolder}" Width="130" />
-            <DataGridTextColumn Header="DAX / COLUMNA ORIGEN" Binding="{Binding DaxOrSource}" Width="380"
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Table}" Width="210" />
+            <DataGridTextColumn Header="{views:Loc Col_Column, Upper=True}" Binding="{Binding Name}" Width="230" />
+            <DataGridTextColumn Header="{views:Loc Col_DataType, Upper=True}" Binding="{Binding DataTypeText}" Width="140" />
+            <DataGridTextColumn Header="{views:Loc Col_Source, Upper=True}" Binding="{Binding ColumnTypeText}" Width="140" />
+            <DataGridTextColumn Header="{views:Loc Col_Folder, Upper=True}" Binding="{Binding DisplayFolder}" Width="130" />
+            <DataGridTextColumn Header="{views:Loc Col_DaxOrSource, Upper=True}" Binding="{Binding DaxOrSource}" Width="380"
                                 FontFamily="{StaticResource FontMono}" FontSize="11.5" />
-            <DataGridCheckBoxColumn Header="OCULTA" Binding="{Binding IsHidden}" Width="72" />
+            <DataGridCheckBoxColumn Header="{views:Loc Col_Hidden, Upper=True}" Binding="{Binding IsHidden}" Width="72" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:RelationshipsSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="DESDE" Binding="{Binding FromTable}" Width="180" />
-            <DataGridTextColumn Header="COLUMNA" Binding="{Binding FromColumn}" Width="180" />
-            <DataGridTextColumn Header="HACIA" Binding="{Binding ToTable}" Width="180" />
-            <DataGridTextColumn Header="COLUMNA" Binding="{Binding ToColumn}" Width="180" />
-            <DataGridTextColumn Header="CARDINALIDAD" Binding="{Binding Cardinality}" Width="150" />
-            <DataGridTextColumn Header="FILTRO CRUZADO" Binding="{Binding CrossFilterBehavior}" Width="180" />
-            <DataGridCheckBoxColumn Header="ACTIVA" Binding="{Binding IsActive}" Width="72" />
+            <DataGridTextColumn Header="{views:Loc Col_From, Upper=True}" Binding="{Binding FromTable}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_Column, Upper=True}" Binding="{Binding FromColumn}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_To, Upper=True}" Binding="{Binding ToTable}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_Column, Upper=True}" Binding="{Binding ToColumn}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_Cardinality, Upper=True}" Binding="{Binding CardinalityText}" Width="150" />
+            <DataGridTextColumn Header="{views:Loc Col_CrossFilter, Upper=True}" Binding="{Binding CrossFilterText}" Width="180" />
+            <DataGridCheckBoxColumn Header="{views:Loc Col_Active, Upper=True}" Binding="{Binding IsActive}" Width="72" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:PowerQuerySectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="220" />
-            <DataGridTextColumn Header="TIPO" Binding="{Binding Kind}" Width="140" />
-            <DataGridTextColumn Header="CÓDIGO M" Binding="{Binding MCode}" Width="500"
+            <DataGridTextColumn Header="{views:Loc Col_Name, Upper=True}" Binding="{Binding Name}" Width="220" />
+            <DataGridTextColumn Header="{views:Loc Col_Kind, Upper=True}" Binding="{Binding KindText}" Width="140" />
+            <DataGridTextColumn Header="{views:Loc Col_MCode, Upper=True}" Binding="{Binding MCode}" Width="500"
                                 FontFamily="{StaticResource FontMono}" FontSize="11.5" />
         </views:GridSectionView>
     </DataTemplate>
@@ -110,64 +110,64 @@
     <DataTemplate DataType="{x:Type vm:UsageSectionViewModel}">
         <views:GridSectionView>
             <views:GridSectionView.HeaderContent>
-                <CheckBox Content="Mostrar solo objetos sin uso"
+                <CheckBox Content="{views:Loc Usage_OnlyUnused}"
                           FontFamily="{StaticResource FontText}" FontSize="12.5"
                           Foreground="{DynamicResource InkDim}" VerticalAlignment="Center"
                           IsChecked="{Binding OnlyUnused}" />
             </views:GridSectionView.HeaderContent>
-            <DataGridTextColumn Header="TIPO" Binding="{Binding Kind}" Width="90" />
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Table}" Width="170" />
-            <DataGridTextColumn Header="NOMBRE" Binding="{Binding Name}" Width="220" />
-            <DataGridTextColumn Header="ESTADO" Binding="{Binding Status}" Width="200"
+            <DataGridTextColumn Header="{views:Loc Col_Kind, Upper=True}" Binding="{Binding KindText}" Width="90" />
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Table}" Width="170" />
+            <DataGridTextColumn Header="{views:Loc Col_Name, Upper=True}" Binding="{Binding Name}" Width="220" />
+            <DataGridTextColumn Header="{views:Loc Col_Status, Upper=True}" Binding="{Binding Status}" Width="200"
                                 CellStyle="{StaticResource UsageStatusCell}" />
-            <DataGridTextColumn Header="DEPENDE DE" Binding="{Binding DependsOnText}" Width="260"
+            <DataGridTextColumn Header="{views:Loc Col_DependsOn, Upper=True}" Binding="{Binding DependsOnText}" Width="260"
                                 FontFamily="{StaticResource FontMono}" FontSize="11" />
-            <DataGridTextColumn Header="USADO POR" Binding="{Binding UsedByText}" Width="260"
+            <DataGridTextColumn Header="{views:Loc Col_UsedBy, Upper=True}" Binding="{Binding UsedByText}" Width="260"
                                 FontFamily="{StaticResource FontMono}" FontSize="11" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:VisualsSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="PÁGINA" Binding="{Binding Page}" Width="200" />
-            <DataGridTextColumn Header="VISUAL" Binding="{Binding VisualType}" Width="240" />
-            <DataGridTextColumn Header="TÍTULO" Binding="{Binding Title}" Width="200" />
-            <DataGridTextColumn Header="TIPO" Binding="{Binding FieldKind}" Width="100" />
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Table}" Width="180" />
-            <DataGridTextColumn Header="CAMPO" Binding="{Binding Field}" Width="220" />
+            <DataGridTextColumn Header="{views:Loc Col_Page, Upper=True}" Binding="{Binding Page}" Width="200" />
+            <DataGridTextColumn Header="{views:Loc Col_Visual, Upper=True}" Binding="{Binding VisualType}" Width="240" />
+            <DataGridTextColumn Header="{views:Loc Col_Title, Upper=True}" Binding="{Binding Title}" Width="200" />
+            <DataGridTextColumn Header="{views:Loc Col_Kind, Upper=True}" Binding="{Binding FieldKindText}" Width="100" />
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Table}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_Field, Upper=True}" Binding="{Binding Field}" Width="220" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:FiltersSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="NIVEL" Binding="{Binding Scope}" Width="90" />
-            <DataGridTextColumn Header="PÁGINA" Binding="{Binding Page}" Width="150" />
-            <DataGridTextColumn Header="VISUAL" Binding="{Binding VisualText}" Width="180" />
-            <DataGridTextColumn Header="TIPO" Binding="{Binding FieldKind}" Width="90" />
-            <DataGridTextColumn Header="CAMPO" Binding="{Binding TargetText}" Width="220" />
-            <DataGridTextColumn Header="TIPO DE FILTRO" Binding="{Binding FilterType}" Width="130" />
-            <DataGridTextColumn Header="CONDICIÓN" Binding="{Binding Summary}" Width="360" />
+            <DataGridTextColumn Header="{views:Loc Col_Level, Upper=True}" Binding="{Binding ScopeText}" Width="90" />
+            <DataGridTextColumn Header="{views:Loc Col_Page, Upper=True}" Binding="{Binding Page}" Width="150" />
+            <DataGridTextColumn Header="{views:Loc Col_Visual, Upper=True}" Binding="{Binding VisualText}" Width="180" />
+            <DataGridTextColumn Header="{views:Loc Col_Kind, Upper=True}" Binding="{Binding FieldKindText}" Width="90" />
+            <DataGridTextColumn Header="{views:Loc Col_Field, Upper=True}" Binding="{Binding TargetText}" Width="220" />
+            <DataGridTextColumn Header="{views:Loc Col_FilterType, Upper=True}" Binding="{Binding FilterType}" Width="130" />
+            <DataGridTextColumn Header="{views:Loc Col_Condition, Upper=True}" Binding="{Binding Summary}" Width="360" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:PerformanceSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="SEVERIDAD" Binding="{Binding Severity}" Width="90"
+            <DataGridTextColumn Header="{views:Loc Col_Severity, Upper=True}" Binding="{Binding SeverityText}" Width="90"
                                 CellStyle="{StaticResource SeverityCell}" />
-            <DataGridTextColumn Header="CATEGORÍA" Binding="{Binding Category}" Width="190" />
-            <DataGridTextColumn Header="TABLA" Binding="{Binding Table}" Width="150" />
-            <DataGridTextColumn Header="OBJETO" Binding="{Binding Subject}" Width="220" />
-            <DataGridTextColumn Header="DETALLE" Binding="{Binding Message}" Width="420" />
+            <DataGridTextColumn Header="{views:Loc Col_Category, Upper=True}" Binding="{Binding Category}" Width="190" />
+            <DataGridTextColumn Header="{views:Loc Col_Table, Upper=True}" Binding="{Binding Table}" Width="150" />
+            <DataGridTextColumn Header="{views:Loc Col_Object, Upper=True}" Binding="{Binding Subject}" Width="220" />
+            <DataGridTextColumn Header="{views:Loc Col_Detail, Upper=True}" Binding="{Binding Message}" Width="420" />
         </views:GridSectionView>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type vm:CompareSectionViewModel}">
         <views:GridSectionView>
-            <DataGridTextColumn Header="CAMBIO" Binding="{Binding KindText}" Width="110"
+            <DataGridTextColumn Header="{views:Loc Col_Change, Upper=True}" Binding="{Binding KindText}" Width="110"
                                 CellStyle="{StaticResource DiffKindCell}" />
-            <DataGridTextColumn Header="CATEGORÍA" Binding="{Binding Category}" Width="120" />
-            <DataGridTextColumn Header="OBJETO" Binding="{Binding Name}" Width="260" />
-            <DataGridTextColumn Header="DETALLE" Binding="{Binding Detail}" Width="420" />
+            <DataGridTextColumn Header="{views:Loc Col_Category, Upper=True}" Binding="{Binding Category}" Width="120" />
+            <DataGridTextColumn Header="{views:Loc Col_Object, Upper=True}" Binding="{Binding Name}" Width="260" />
+            <DataGridTextColumn Header="{views:Loc Col_Detail, Upper=True}" Binding="{Binding Detail}" Width="420" />
         </views:GridSectionView>
     </DataTemplate>
 </ResourceDictionary>

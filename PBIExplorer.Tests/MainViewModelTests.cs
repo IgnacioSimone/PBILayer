@@ -67,6 +67,9 @@ public class MainViewModelTests
             return SaveFileResult;
         }
         public void RevealInExplorer(string path) => Revealed.Add(path);
+        public int Restarts { get; private set; }
+        public void RestartApplication() => Restarts++;
+
         public List<string> Installers { get; } = new();
         public void RunInstallerAndExit(string path) => Installers.Add(path);
 

@@ -17,16 +17,15 @@ public sealed partial class AboutViewModel
     public UpdateViewModel Updates { get; }
 
     public string Name => AppInfo.Name;
-    public string VersionLine => $"Versión {AppInfo.VersionText}";
-    public string Author => $"© 2026 {AppInfo.Author} · Licencia {AppInfo.LicenseName}";
+    public string VersionLine => Loc.F("About_Version", AppInfo.VersionText);
+    public string Author => Loc.F("About_Author", AppInfo.Author, AppInfo.LicenseName);
     public string DataFolder => AppInfo.DataDirectory;
 
     public string Disclaimer =>
-        "Herramienta independiente, sin afiliación a Microsoft. Power BI es marca de Microsoft.";
+        Loc.T("About_Disclaimer");
 
     public string Privacy =>
-        "Solo lee metadata del modelo y del reporte: nunca consulta una fila de datos. No tiene telemetría. " +
-        "La única conexión posible es buscar actualizaciones en GitHub, y solo si la activás.";
+        Loc.T("About_Privacy");
 
     /// <summary>Abre un enlace del proyecto. Solo se abren los que apuntan al repositorio de la app.</summary>
     [RelayCommand]

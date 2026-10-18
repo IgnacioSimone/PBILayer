@@ -1,0 +1,31 @@
+# Términos del modelo de Power BI que la app guarda siempre en español (valores canónicos: así los snapshots .json
+# de cualquier idioma son comparables) y muestra traducidos. Clave: Term_<...>.
+Term_Measure	Medida	Measure
+Term_Column	Columna	Column
+Term_Table	Tabla	Table
+Term_Query	Consulta	Query
+Term_Hierarchy	Jerarquía	Hierarchy
+Term_Report	Reporte	Report
+Term_Page	Página	Page
+Term_Visual	Visual	Visual
+Term_TypeAuto	Automático	Automatic
+Term_TypeText	Texto	Text
+Term_TypeInteger	Número entero	Whole number
+Term_TypeDecimal	Número decimal	Decimal number
+Term_TypeDateTime	Fecha/Hora	Date/Time
+Term_TypeFixedDecimal	Decimal fijo	Fixed decimal
+Term_TypeBoolean	Booleano	Boolean
+Term_TypeBinary	Binario	Binary
+Term_TypeUnknown	Desconocido	Unknown
+Term_TypeVariant	Variante	Variant
+Term_ColData	De datos	Data
+Term_ColCalculated	Calculada	Calculated
+Term_ColRowNumber	RowNumber (interna)	RowNumber (internal)
+Term_ColFromCalcTable	De tabla calculada	From calculated table
+Term_FilterOneWay	Único sentido	Single direction
+Term_FilterBoth	Ambos sentidos	Both directions
+Term_CardOneToMany	Uno a muchos	One to many
+Term_CardManyToOne	Muchos a uno	Many to one
+Term_CardManyToMany	Muchos a muchos	Many to many
+Term_CardOneToOne	Uno a uno	One to one
+Term_QueryParamFunction	Parámetro / función	Parameter / function

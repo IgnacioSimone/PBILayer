@@ -74,6 +74,7 @@ public sealed class UpdateTests : IDisposable
         public void CopyText(string text) { }
         public void RevealInExplorer(string path) { }
         public void RunInstallerAndExit(string path) => Installers.Add(path);
+        public void RestartApplication() { }
         public void OpenWithShell(string path) => Opened.Add(path);
     }
 

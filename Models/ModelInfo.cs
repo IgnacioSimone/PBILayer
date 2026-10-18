@@ -1,3 +1,7 @@
+using System.Text.Json.Serialization;
+using PBIExplorer.Infrastructure;
+using PBIExplorer.Services;
+
 namespace PBIExplorer.Models;
 
 /// <summary>Todo lo que se pudo leer del modelo, más las secciones que fallaron.
@@ -38,6 +42,10 @@ public class ColumnInfo
 
     /// <summary>Una columna calculada muestra su DAX; una normal, la columna física de origen.</summary>
     public string DaxOrSource => string.IsNullOrWhiteSpace(Expression) ? SourceColumn : Expression;
+
+    // DataType y ColumnType se guardan en español (valor canónico); estos son los que se muestran.
+    [JsonIgnore] public string DataTypeText => Terms.Display(DataType);
+    [JsonIgnore] public string ColumnTypeText => Terms.Display(ColumnType);
 }
 
 public class MeasureInfo
@@ -60,6 +68,9 @@ public class RelationshipInfo
     public string CrossFilterBehavior { get; set; } = "";
     public bool IsActive { get; set; }
     public string Cardinality { get; set; } = "";
+
+    [JsonIgnore] public string CardinalityText => Terms.Display(Cardinality);
+    [JsonIgnore] public string CrossFilterText => Terms.Display(CrossFilterBehavior);
 }
 
 public class PowerQueryInfo
@@ -71,6 +82,8 @@ public class PowerQueryInfo
     public string MCode { get; set; } = "";
     public bool IsHidden { get; set; }
     public string Description { get; set; } = "";
+
+    [JsonIgnore] public string KindText => Terms.Display(Kind);
 }
 
 public class ObjectUsage
@@ -85,14 +98,33 @@ public class ObjectUsage
     public List<string> DependsOn { get; } = new();  // objetos que ESTE usa en su fórmula
     public List<string> UsedBy { get; } = new();     // objetos que usan a ESTE en su fórmula
 
+    [JsonIgnore]
     public bool IsUnused => !UsedInVisual && !UsedInRelationship && !UsedInDax && !UsedInQuery;
 
-    public string Status => IsUnused ? "Sin uso — candidata a eliminar"
-        : !UsedInVisual && (UsedInDax || UsedInRelationship || UsedInQuery) ? "Solo uso interno"
-        : "En uso";
+    /// <summary>Veredicto de uso. Es un valor, no un texto, para que las pantallas coloreen por estado sin depender del idioma.</summary>
+    [JsonIgnore]
+    public UsageState State => IsUnused ? UsageState.Unused
+        : !UsedInVisual && (UsedInDax || UsedInRelationship || UsedInQuery) ? UsageState.InternalOnly
+        : UsageState.InUse;
 
-    public string DependsOnText => DependsOn.Count > 0 ? string.Join(", ", DependsOn) : "";
-    public string UsedByText => UsedBy.Count > 0 ? string.Join(", ", UsedBy) : "";
+    [JsonIgnore]
+    public string Status => State switch
+    {
+        UsageState.Unused => Loc.T("Usage_Unused"),
+        UsageState.InternalOnly => Loc.T("Usage_InternalOnly"),
+        _ => Loc.T("Usage_InUse")
+    };
+
+    [JsonIgnore] public string KindText => Terms.Display(Kind);
+    [JsonIgnore] public string DependsOnText => DependsOn.Count > 0 ? string.Join(", ", DependsOn.Select(UsageLabels.Display)) : "";
+    [JsonIgnore] public string UsedByText => UsedBy.Count > 0 ? string.Join(", ", UsedBy.Select(UsageLabels.Display)) : "";
+}
+
+public enum UsageState
+{
+    InUse,
+    InternalOnly,
+    Unused
 }
 
 public class VisualFieldUsage
@@ -103,6 +135,8 @@ public class VisualFieldUsage
     public string FieldKind { get; set; } = ""; // Medida / Columna
     public string Table { get; set; } = "";
     public string Field { get; set; } = "";
+
+    [JsonIgnore] public string FieldKindText => Terms.Display(FieldKind);
 }
 
 public class FilterInfo
@@ -118,6 +152,9 @@ public class FilterInfo
     public string FilterType { get; set; } = "";    // Categorical / TopN / Advanced / RelativeDate / ...
     public string Summary { get; set; } = "";       // condición en texto, best-effort
 
-    public string TargetText => $"{Table}[{Field}]";
-    public string VisualText => Scope == "Visual" ? (string.IsNullOrEmpty(VisualTitle) ? VisualType : VisualTitle) : "";
+    [JsonIgnore] public string ScopeText => Terms.Display(Scope);
+    [JsonIgnore] public string FieldKindText => Terms.Display(FieldKind);
+
+    [JsonIgnore] public string TargetText => $"{Table}[{Field}]";
+    [JsonIgnore] public string VisualText => Scope == "Visual" ? (string.IsNullOrEmpty(VisualTitle) ? VisualType : VisualTitle) : "";
 }

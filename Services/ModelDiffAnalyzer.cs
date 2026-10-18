@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -13,9 +14,9 @@ public class ModelDiffEntry
 
     public string KindText => Kind switch
     {
-        DiffKind.Agregado => "Agregado",
-        DiffKind.Eliminado => "Eliminado",
-        _ => "Modificado"
+        DiffKind.Agregado => Loc.T("Diff_Added"),
+        DiffKind.Eliminado => Loc.T("Diff_Removed"),
+        _ => Loc.T("Diff_Modified")
     };
 }
 
@@ -33,75 +34,75 @@ public static class ModelDiffAnalyzer
     {
         var entries = new List<ModelDiffEntry>();
 
-        CompareByKey(entries, "Tabla",
+        CompareByKey(entries, Terms.Display("Tabla"),
             ByKeyFirstWins(older.Tables, t => t.Name),
             ByKeyFirstWins(newer.Tables, t => t.Name),
             (a, b) =>
             {
                 var changes = new List<string>();
-                if (a.IsHidden != b.IsHidden) changes.Add(b.IsHidden ? "ahora oculta" : "ahora visible");
-                if (a.Description != b.Description) changes.Add("cambió la descripción");
+                if (a.IsHidden != b.IsHidden) changes.Add(Loc.T(b.IsHidden ? "Diff_NowHidden" : "Diff_NowVisible"));
+                if (a.Description != b.Description) changes.Add(Loc.T("Diff_DescriptionChanged"));
                 return changes;
             });
 
-        CompareByKey(entries, "Medida",
+        CompareByKey(entries, Terms.Display("Medida"),
             ByKeyFirstWins(older.Measures, m => $"{m.Table}[{m.Name}]"),
             ByKeyFirstWins(newer.Measures, m => $"{m.Table}[{m.Name}]"),
             (a, b) =>
             {
                 var changes = new List<string>();
-                if (a.Expression != b.Expression) changes.Add("cambió el DAX");
-                if (a.FormatString != b.FormatString) changes.Add($"formato \"{a.FormatString}\" → \"{b.FormatString}\"");
-                if (a.IsHidden != b.IsHidden) changes.Add(b.IsHidden ? "ahora oculta" : "ahora visible");
-                if (a.DisplayFolder != b.DisplayFolder) changes.Add($"carpeta \"{a.DisplayFolder}\" → \"{b.DisplayFolder}\"");
+                if (a.Expression != b.Expression) changes.Add(Loc.T("Diff_DaxChanged"));
+                if (a.FormatString != b.FormatString) changes.Add(Loc.F("Diff_FormatChanged", a.FormatString, b.FormatString));
+                if (a.IsHidden != b.IsHidden) changes.Add(Loc.T(b.IsHidden ? "Diff_NowHidden" : "Diff_NowVisible"));
+                if (a.DisplayFolder != b.DisplayFolder) changes.Add(Loc.F("Diff_FolderChanged", a.DisplayFolder, b.DisplayFolder));
                 return changes;
             });
 
-        CompareByKey(entries, "Columna",
+        CompareByKey(entries, Terms.Display("Columna"),
             ByKeyFirstWins(older.Columns, c => $"{c.Table}[{c.Name}]"),
             ByKeyFirstWins(newer.Columns, c => $"{c.Table}[{c.Name}]"),
             (a, b) =>
             {
                 var changes = new List<string>();
-                if (a.DataType != b.DataType) changes.Add($"tipo de dato \"{a.DataType}\" → \"{b.DataType}\"");
-                if (a.ColumnType != b.ColumnType) changes.Add($"tipo de columna \"{a.ColumnType}\" → \"{b.ColumnType}\"");
-                if (a.Expression != b.Expression) changes.Add("cambió el DAX de la columna calculada");
-                if (a.IsHidden != b.IsHidden) changes.Add(b.IsHidden ? "ahora oculta" : "ahora visible");
+                if (a.DataType != b.DataType) changes.Add(Loc.F("Diff_DataTypeChanged", Terms.Display(a.DataType), Terms.Display(b.DataType)));
+                if (a.ColumnType != b.ColumnType) changes.Add(Loc.F("Diff_ColumnTypeChanged", Terms.Display(a.ColumnType), Terms.Display(b.ColumnType)));
+                if (a.Expression != b.Expression) changes.Add(Loc.T("Diff_ColumnDaxChanged"));
+                if (a.IsHidden != b.IsHidden) changes.Add(Loc.T(b.IsHidden ? "Diff_NowHidden" : "Diff_NowVisible"));
                 return changes;
             });
 
-        CompareByKey(entries, "Relación",
+        CompareByKey(entries, Loc.T("Diff_Cat_Relationship"),
             ByKeyFirstWins(older.Relationships, r => $"{r.FromTable}[{r.FromColumn}]→{r.ToTable}[{r.ToColumn}]"),
             ByKeyFirstWins(newer.Relationships, r => $"{r.FromTable}[{r.FromColumn}]→{r.ToTable}[{r.ToColumn}]"),
             (a, b) =>
             {
                 var changes = new List<string>();
-                if (a.Cardinality != b.Cardinality) changes.Add($"cardinalidad \"{a.Cardinality}\" → \"{b.Cardinality}\"");
-                if (a.CrossFilterBehavior != b.CrossFilterBehavior) changes.Add($"filtro cruzado \"{a.CrossFilterBehavior}\" → \"{b.CrossFilterBehavior}\"");
-                if (a.IsActive != b.IsActive) changes.Add(b.IsActive ? "ahora activa" : "ahora inactiva");
+                if (a.Cardinality != b.Cardinality) changes.Add(Loc.F("Diff_CardinalityChanged", Terms.Display(a.Cardinality), Terms.Display(b.Cardinality)));
+                if (a.CrossFilterBehavior != b.CrossFilterBehavior) changes.Add(Loc.F("Diff_CrossFilterChanged", Terms.Display(a.CrossFilterBehavior), Terms.Display(b.CrossFilterBehavior)));
+                if (a.IsActive != b.IsActive) changes.Add(Loc.T(b.IsActive ? "Diff_NowActive" : "Diff_NowInactive"));
                 return changes;
             });
 
-        CompareByKey(entries, "Power Query",
+        CompareByKey(entries, Loc.T("Diff_Cat_PowerQuery"),
             ByKeyFirstWins(older.PowerQueries, p => p.Name),
             ByKeyFirstWins(newer.PowerQueries, p => p.Name),
             (a, b) =>
             {
                 var changes = new List<string>();
-                if (a.MCode != b.MCode) changes.Add("cambió el código M");
+                if (a.MCode != b.MCode) changes.Add(Loc.T("Diff_MCodeChanged"));
                 return changes;
             });
 
         if (olderFilters is not null || newerFilters is not null)
         {
-            CompareByKey(entries, "Filtro",
+            CompareByKey(entries, Loc.T("Diff_Cat_Filter"),
                 ByKeyFirstWins(olderFilters ?? new List<FilterInfo>(), FilterKey),
                 ByKeyFirstWins(newerFilters ?? new List<FilterInfo>(), FilterKey),
                 (a, b) =>
                 {
                     var changes = new List<string>();
-                    if (a.FilterType != b.FilterType) changes.Add($"tipo \"{a.FilterType}\" → \"{b.FilterType}\"");
-                    if (a.Summary != b.Summary) changes.Add($"condición \"{a.Summary}\" → \"{b.Summary}\"");
+                    if (a.FilterType != b.FilterType) changes.Add(Loc.F("Diff_FilterTypeChanged", a.FilterType, b.FilterType));
+                    if (a.Summary != b.Summary) changes.Add(Loc.F("Diff_ConditionChanged", a.Summary, b.Summary));
                     return changes;
                 });
         }
@@ -129,10 +130,10 @@ public static class ModelDiffAnalyzer
         Func<T, T, List<string>> diffFields)
     {
         foreach (var key in newer.Keys.Except(older.Keys))
-            entries.Add(new ModelDiffEntry { Kind = DiffKind.Agregado, Category = category, Name = key, Detail = "nuevo en esta versión" });
+            entries.Add(new ModelDiffEntry { Kind = DiffKind.Agregado, Category = category, Name = key, Detail = Loc.T("Diff_NewInVersion") });
 
         foreach (var key in older.Keys.Except(newer.Keys))
-            entries.Add(new ModelDiffEntry { Kind = DiffKind.Eliminado, Category = category, Name = key, Detail = "ya no existe en esta versión" });
+            entries.Add(new ModelDiffEntry { Kind = DiffKind.Eliminado, Category = category, Name = key, Detail = Loc.T("Diff_GoneInVersion") });
 
         foreach (var key in newer.Keys.Intersect(older.Keys))
         {

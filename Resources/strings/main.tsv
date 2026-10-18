@@ -1,0 +1,110 @@
+# Ventana principal: avisos, estados, estados vacíos, resumen, exportación y ayuda.
+Toast_Copied	Copiado al portapapeles.	Copied to the clipboard.
+Visuals_EmptyAction	Elegir archivo .pbix…	Choose .pbix file…
+Visuals_SearchingTitle	Buscando el archivo del reporte…	Looking for the report file…
+Visuals_InsideFileBody	Los visuales y sus campos viven dentro del archivo .pbix, no en el modelo en memoria.	Visuals and their fields live inside the .pbix file, not in the in-memory model.
+Visuals_InsideFileBody2	Los visuales y sus campos viven dentro del archivo, no en el modelo en memoria.	Visuals and their fields live inside the file, not in the in-memory model.
+Status_NoConnection	Sin conexión — abrí esta herramienta desde Power BI Desktop.	Not connected — open this tool from Power BI Desktop.
+Theme_Light	Tema: claro	Theme: light
+Theme_Dark	Tema: oscuro	Theme: dark
+Theme_Auto	Tema: automático (Windows)	Theme: automatic (Windows)
+Status_SearchingDesktop	Buscando un tablero abierto en Power BI Desktop…	Looking for a report open in Power BI Desktop…
+Update_Prompt	¿Querés que PBI Context busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. Podés cambiarlo cuando quieras en Acerca de.	Do you want PBI Context to look for new versions by itself? It makes one query per day to GitHub and sends no data. You can change this at any time in About.
+Update_PromptAction	Activar	Turn on
+Update_NewVersionToast	Hay una versión nueva de PBI Context: {0}.	There is a new version of PBI Context: {0}.
+Update_NewVersionAction	Ver	View
+Status_Cancelled	Operación cancelada.	Operation cancelled.
+Toast_NothingToRefresh	No hay nada para actualizar: abrí un tablero en Power BI Desktop o elegí un .pbix.	Nothing to refresh: open a report in Power BI Desktop or choose a .pbix.
+Toast_Refreshed	Datos actualizados.	Data refreshed.
+Toast_ModelRead	Modelo de "{0}" leído desde Power BI Desktop.	Model of "{0}" read from Power BI Desktop.
+Status_OpeningInDesktop	Abriendo "{0}" en Power BI Desktop… con archivos grandes puede tardar unos minutos.	Opening "{0}" in Power BI Desktop… large files can take a few minutes.
+Toast_DesktopStillOpening	Power BI Desktop todavía no terminó de abrir "{0}". Cuando termine, tocá Actualizar (F5).	Power BI Desktop has not finished opening "{0}" yet. When it does, press Refresh (F5).
+Status_Connecting	Conectando a {0} …	Connecting to {0} …
+Warn_SectionsUnreadableDetail	Algunas secciones no se pudieron leer del motor de este modelo:\n\n{0}	Some sections could not be read from this model's engine:\n\n{0}
+Toast_SectionsUnreadable	Algunas secciones no se pudieron leer de este modelo.	Some sections could not be read from this model.
+Toast_ViewDetail	Ver detalle	View details
+Dialog_WarningsTitle	{0} — advertencias	{0} — warnings
+Status_ConnectionCancelled	Conexión cancelada.	Connection cancelled.
+Status_ConnectFailed	No se pudo conectar al modelo en vivo.	Could not connect to the live model.
+Toast_ConnectFailed	No se pudo conectar al modelo de Power BI Desktop. {0}	Could not connect to the Power BI Desktop model. {0}
+Toast_Retry	Reintentar	Retry
+Visuals_NoReportTitle	No se detectó ningún tablero abierto	No open report detected
+Visuals_NoReportBody	Abrí un tablero en Power BI Desktop y volvé a lanzar la herramienta, o elegí el archivo a mano.	Open a report in Power BI Desktop and launch the tool again, or choose the file manually.
+Visuals_FindingTitle	Buscando "{0}.pbix" en el disco…	Looking for "{0}.pbix" on disk…
+Visuals_SearchCancelledTitle	Búsqueda cancelada	Search cancelled
+Visuals_SearchCancelledBody	Elegí el archivo a mano cuando quieras.	Choose the file manually whenever you like.
+Visuals_NotFoundTitle	No encontré "{0}.pbix" automáticamente	Could not find "{0}.pbix" automatically
+Visuals_NotFoundBody	Puede estar en una carpeta fuera de la búsqueda. Elegilo a mano y se carga igual.	It may be in a folder outside the search. Choose it manually and it loads just the same.
+Visuals_NoVisualsTitle	Ese archivo no tiene visuales legibles	That file has no readable visuals
+Visuals_NoVisualsBody	Se probaron los dos formatos de reporte (PBIR y Layout clásico) y ninguno devolvió visuales.	Both report formats (PBIR and classic Layout) were tried and neither returned visuals.
+Status_ReportSummary	{0} · {1} páginas · {2} usos de campos	{0} · {1} pages · {2} field uses
+Visuals_ReadFailedTitle	No se pudo leer ese archivo	Could not read that file
+Toast_ReadFailed	No se pudo leer {0}. {1}	Could not read {0}. {1}
+Dialog_PbixFilter	Archivos Power BI (*.pbix)|*.pbix	Power BI files (*.pbix)|*.pbix
+Toast_RecentMissing	{0} ya no existe en esa ubicación.	{0} no longer exists at that location.
+Toast_UnsupportedFile	Solo se pueden abrir archivos .pbix (reporte) o .json (snapshot).	Only .pbix (report) or .json (snapshot) files can be opened.
+Dialog_SnapshotFilter	Snapshot de PBI Context (*.json)|*.json	PBI Context snapshot (*.json)|*.json
+Status_NoChanges	Sin cambios contra el snapshot de {0} del {1}.	No changes against the snapshot of {0} from {1}.
+Status_ChangesFound	{0} cambios contra el snapshot de {1} del {2}.	{0} changes against the snapshot of {1} from {2}.
+Toast_SnapshotReadFailed	No se pudo leer ese snapshot. {0}	Could not read that snapshot. {0}
+Toast_NotFound	No encontré {0} en el modelo (puede ser de una tabla oculta o de otra versión).	Could not find {0} in the model (it may belong to a hidden table or another version).
+Shortcuts_Text	Atajos de teclado\n\nCtrl+F\t\tBuscar en todas las secciones\nEsc\t\tLimpiar la búsqueda\nCtrl+O\t\tAbrir un .pbix\nCtrl+E\t\tExportar Markdown (contexto para IA)\nCtrl+Shift+E\tExportar JSON (snapshot)\nBotón Exportar\tWord, Excel, HTML, CSV de la sección o de todas\nF5\t\tActualizar los datos\nCtrl+1 … 9, 0\tIr a la sección 1 … 10\nCtrl+Av Pág / Re Pág\tSección siguiente / anterior\nCtrl+T\t\tCambiar tema\nF1\t\tEsta ayuda\n\nTambién podés arrastrar un .pbix o un snapshot .json a la ventana.	Keyboard shortcuts\n\nCtrl+F\t\tSearch all sections\nEsc\t\tClear the search\nCtrl+O\t\tOpen a .pbix\nCtrl+E\t\tExport Markdown (context for AI)\nCtrl+Shift+E\tExport JSON (snapshot)\nExport button\tWord, Excel, HTML, CSV of the section or of all\nF5\t\tRefresh the data\nCtrl+1 … 9, 0\tGo to section 1 … 10\nCtrl+Page Down / Up\tNext / previous section\nCtrl+T\t\tChange theme\nF1\t\tThis help\n\nYou can also drag a .pbix or a .json snapshot onto the window.
+Toast_ViewLog	Ver log	View log
+Tile_PowerQuery	Power Query	Power Query
+Tile_Pages	Páginas	Pages
+Tile_Visuals	Visuales	Visuals
+Tile_FieldUses	Usos de campos	Field uses
+Tile_Unused	Sin uso	Unused
+Tile_Hidden	{0} ocultas	{0} hidden
+Empty_NoMeasures	El modelo conectado no tiene medidas DAX.	The connected model has no DAX measures.
+Empty_NoTables	El modelo conectado no tiene tablas visibles.	The connected model has no visible tables.
+Empty_NoColumns	El modelo conectado no tiene columnas.	The connected model has no columns.
+Empty_NoRelationships	El modelo conectado no tiene relaciones definidas.	The connected model has no relationships defined.
+Empty_NoQueries	El modelo conectado no tiene consultas de Power Query.	The connected model has no Power Query queries.
+Empty_NothingToAnalyze	No hay medidas ni columnas para analizar todavía.	There are no measures or columns to analyze yet.
+Empty_NoFiltersTitle	Sin filtros detectados	No filters detected
+Empty_NoFiltersBody	No se encontraron filtros a nivel reporte, página o visual en este archivo — o el tablero de verdad no tiene ninguno configurado.	No report-, page- or visual-level filters were found in this file — or the report really has none configured.
+Empty_NoModelTitle	Sin modelo conectado	No model connected
+Empty_PerfConnect	Conectate a un modelo para analizar su rendimiento.	Connect to a model to analyze its performance.
+Empty_NoAlertsTitle	Sin alertas detectadas	No alerts detected
+Empty_NoAlertsBody	No se encontraron patrones conocidos de riesgo en este modelo.	No known risk patterns were found in this model.
+Empty_OpenInDesktop	Abrir en Power BI Desktop	Open in Power BI Desktop
+Empty_MissingModelTitle	Falta el modelo de este tablero	This report's model is missing
+Empty_MissingModelBody	Las tablas, columnas y medidas no se pueden leer del archivo .pbix (van comprimidas adentro): hay que tener el tablero abierto en Power BI Desktop.	Tables, columns and measures cannot be read from the .pbix file (they are compressed inside): the report has to be open in Power BI Desktop.
+Empty_NoModelBody	Abrí tu tablero en Power BI Desktop y esta app se engancha sola, o lanzala desde la pestaña Herramientas externas. Ahí se llenan medidas, tablas, columnas y relaciones.	Open your report in Power BI Desktop and this app attaches itself, or launch it from the External Tools tab. That is where measures, tables, columns and relationships get filled in.
+Empty_SectionEmptyTitle	Esta sección está vacía	This section is empty
+Status_Summary	Análisis local, basado en reglas — no usa IA ni sale a internet.	Local, rule-based analysis — it does not use AI or go online.
+Status_Usage	{0} de {1} objetos sin ningún uso detectado — cruza visuales, DAX y relaciones.	{0} of {1} objects with no detected use — cross-checks visuals, DAX and relationships.
+Status_NoFilters	Sin filtros detectados en el reporte, la página o los visuales.	No filters detected in the report, the page or the visuals.
+Status_Filters	{0} filtros — {1} de reporte, {2} de página, {3} de visual.	{0} filters — {1} report-level, {2} page-level, {3} visual-level.
+Status_NoPerfRisks	Heurísticas sobre metadata — sin patrones de riesgo detectados.	Metadata heuristics — no risk patterns detected.
+Status_PerfAlerts	{0} alertas — heurísticas sobre metadata, no un profiler real.	{0} alerts — metadata heuristics, not a real profiler.
+Status_Compare	Elegí un snapshot .json exportado antes para ver qué cambió.	Choose a .json snapshot exported earlier to see what changed.
+Status_ModelCounts	{0} tablas · {1} columnas · {2} medidas · {3} relaciones	{0} tables · {1} columns · {2} measures · {3} relationships
+Status_NoModelNeeded	Sin modelo: hace falta tener el tablero abierto en Power BI Desktop.	No model: the report needs to be open in Power BI Desktop.
+Export_MarkdownSuggested	Contexto_IA_{0}.md	AI_Context_{0}.md
+Export_JsonSuggested	Snapshot_{0}.json	Snapshot_{0}.json
+Export_DocSuggested	Documentacion_{0}.{1}	Documentation_{0}.{1}
+Export_MarkdownSaved	Contexto guardado. Adjuntá ese .md en el chat con Claude o ChatGPT.	Context saved. Attach that .md to a chat with Claude or ChatGPT.
+Export_JsonSaved	Snapshot guardado. Usalo más adelante en "Comparar versiones".	Snapshot saved. Use it later in "Compare versions".
+Toast_Reveal	Mostrar	Show
+Toast_FileFailed	No se pudo generar el archivo. {0}	Could not generate the file. {0}
+Export_WordFilter	Documento de Word (*.docx)|*.docx	Word document (*.docx)|*.docx
+Export_ExcelFilter	Libro de Excel (*.xlsx)|*.xlsx	Excel workbook (*.xlsx)|*.xlsx
+Export_HtmlFilter	Página web (*.html)|*.html	Web page (*.html)|*.html
+Export_ZipFilter	CSV de todas las secciones (*.zip)|*.zip	CSV of all sections (*.zip)|*.zip
+Export_CsvFilter	CSV (*.csv)|*.csv	CSV (*.csv)|*.csv
+Export_WordLabel	el documento de Word	the Word document
+Export_ExcelLabel	el libro de Excel	the Excel workbook
+Export_HtmlLabel	la página HTML	the HTML page
+Export_CsvZipLabel	los CSV	the CSV files
+Export_CsvLabel	el CSV	the CSV file
+Export_CsvNeedsSection	Elegí una sección con una tabla (Medidas, Columnas, Relaciones…) para exportarla a CSV.	Choose a section with a table (Measures, Columns, Relationships…) to export it to CSV.
+Export_CsvRows	{0} filas guardadas.	{0} rows saved.
+Export_CsvRowsFiltered	{0} filas guardadas (las de la búsqueda actual).	{0} rows saved (the ones matching the current search).
+Export_SectionsSaved	{0} secciones guardadas.	{0} sections saved.
+Status_Generating	Generando {0}…	Generating {0}…
+Toast_ExportFailed	No se pudo generar {0}. {1}	Could not generate {0}. {1}
+Toast_Busy	Todavía se está cargando el tablero; probá de nuevo en un momento (o cancelá la carga).	The report is still loading; try again in a moment (or cancel the load).
+Toast_NothingLoaded	No hay nada cargado todavía — conectate a un modelo o abrí un .pbix primero.	Nothing is loaded yet — connect to a model or open a .pbix first.
+Default_SourceName	modelo	model

@@ -1,0 +1,42 @@
+# Veredictos de uso, alertas de rendimiento y comparación de versiones.
+Usage_Unused	Sin uso — candidata a eliminar	Unused — candidate for removal
+Usage_InternalOnly	Solo uso interno	Internal use only
+Usage_InUse	En uso	In use
+
+Severity_High	Alta	High
+Severity_Medium	Media	Medium
+Severity_Low	Baja	Low
+
+Perf_Bidirectional_Cat	Relación bidireccional	Bidirectional relationship
+Perf_Bidirectional_Msg	El filtro cruzado en ambos sentidos evalúa más rutas de propagación de las necesarias y puede generar ambigüedad de filtro. Confirmá que de verdad haga falta que el filtro viaje en las dos direcciones.	Cross-filtering in both directions evaluates more propagation paths than necessary and can create filter ambiguity. Confirm that the filter really needs to travel in both directions.
+Perf_ManyToMany_Cat	Relación muchos a muchos	Many-to-many relationship
+Perf_ManyToMany_Msg	Las relaciones muchos a muchos suelen ser más caras de evaluar que uno a muchos — confirmá que sea intencional y no un error de modelado (por ejemplo, una tabla puente que falta).	Many-to-many relationships are usually more expensive to evaluate than one-to-many — confirm it is intentional and not a modeling mistake (for example, a missing bridge table).
+Perf_CalcColumns_Cat	Columnas calculadas	Calculated columns
+Perf_CalcColumns_Msg	{0} columnas calculadas en esta tabla. Cada una ocupa espacio en el modelo y se recalcula en cada refresh — si el cálculo se puede resolver en Power Query (M) al cargar los datos, o como medida en vez de columna, suele ser más liviano.	{0} calculated columns in this table. Each one takes up space in the model and is recalculated on every refresh — if the calculation can be done in Power Query (M) when loading the data, or as a measure instead of a column, it is usually lighter.
+Perf_NestedCalc_Cat	CALCULATE anidado	Nested CALCULATE
+Perf_NestedCalc_Msg	{0} niveles de CALCULATE/CALCULATETABLE anidados. Cada nivel agrega una transición de contexto — a partir de 3 conviene revisar si se puede simplificar con variables (VAR) o menos anidamiento.	{0} levels of nested CALCULATE/CALCULATETABLE. Each level adds a context transition — from 3 on it is worth checking whether it can be simplified with variables (VAR) or less nesting.
+
+Diff_Added	Agregado	Added
+Diff_Removed	Eliminado	Removed
+Diff_Modified	Modificado	Modified
+Diff_Cat_Relationship	Relación	Relationship
+Diff_Cat_PowerQuery	Power Query	Power Query
+Diff_Cat_Filter	Filtro	Filter
+Diff_NowHidden	ahora oculta	now hidden
+Diff_NowVisible	ahora visible	now visible
+Diff_DescriptionChanged	cambió la descripción	description changed
+Diff_DaxChanged	cambió el DAX	DAX changed
+Diff_FormatChanged	formato "{0}" → "{1}"	format "{0}" → "{1}"
+Diff_FolderChanged	carpeta "{0}" → "{1}"	folder "{0}" → "{1}"
+Diff_DataTypeChanged	tipo de dato "{0}" → "{1}"	data type "{0}" → "{1}"
+Diff_ColumnTypeChanged	tipo de columna "{0}" → "{1}"	column type "{0}" → "{1}"
+Diff_ColumnDaxChanged	cambió el DAX de la columna calculada	calculated column DAX changed
+Diff_CardinalityChanged	cardinalidad "{0}" → "{1}"	cardinality "{0}" → "{1}"
+Diff_CrossFilterChanged	filtro cruzado "{0}" → "{1}"	cross-filter "{0}" → "{1}"
+Diff_NowActive	ahora activa	now active
+Diff_NowInactive	ahora inactiva	now inactive
+Diff_MCodeChanged	cambió el código M	M code changed
+Diff_FilterTypeChanged	tipo "{0}" → "{1}"	type "{0}" → "{1}"
+Diff_ConditionChanged	condición "{0}" → "{1}"	condition "{0}" → "{1}"
+Diff_NewInVersion	nuevo en esta versión	new in this version
+Diff_GoneInVersion	ya no existe en esta versión	no longer exists in this version

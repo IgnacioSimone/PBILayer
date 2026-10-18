@@ -16,6 +16,9 @@ public interface IDialogService
     /// <summary>Abre el Explorador de Windows con el archivo seleccionado.</summary>
     void RevealInExplorer(string path);
 
+    /// <summary>Cierra la aplicación y la vuelve a abrir (para aplicar un cambio de idioma).</summary>
+    void RestartApplication();
+
     /// <summary>Lanza el instalador de una actualización (ya verificado) y cierra la aplicación.</summary>
     void RunInstallerAndExit(string path);
 

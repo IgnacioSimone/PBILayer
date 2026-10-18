@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- GENERADO por Resources\generate-resx.ps1 a partir de Resources\strings\*.tsv. No editar a mano. -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Usage_Unused" xml:space="preserve"><value>Unused — candidate for removal</value></data>
+  <data name="Usage_InternalOnly" xml:space="preserve"><value>Internal use only</value></data>
+  <data name="Usage_InUse" xml:space="preserve"><value>In use</value></data>
+  <data name="Severity_High" xml:space="preserve"><value>High</value></data>
+  <data name="Severity_Medium" xml:space="preserve"><value>Medium</value></data>
+  <data name="Severity_Low" xml:space="preserve"><value>Low</value></data>
+  <data name="Perf_Bidirectional_Cat" xml:space="preserve"><value>Bidirectional relationship</value></data>
+  <data name="Perf_Bidirectional_Msg" xml:space="preserve"><value>Cross-filtering in both directions evaluates more propagation paths than necessary and can create filter ambiguity. Confirm that the filter really needs to travel in both directions.</value></data>
+  <data name="Perf_ManyToMany_Cat" xml:space="preserve"><value>Many-to-many relationship</value></data>
+  <data name="Perf_ManyToMany_Msg" xml:space="preserve"><value>Many-to-many relationships are usually more expensive to evaluate than one-to-many — confirm it is intentional and not a modeling mistake (for example, a missing bridge table).</value></data>
+  <data name="Perf_CalcColumns_Cat" xml:space="preserve"><value>Calculated columns</value></data>
+  <data name="Perf_CalcColumns_Msg" xml:space="preserve"><value>{0} calculated columns in this table. Each one takes up space in the model and is recalculated on every refresh — if the calculation can be done in Power Query (M) when loading the data, or as a measure instead of a column, it is usually lighter.</value></data>
+  <data name="Perf_NestedCalc_Cat" xml:space="preserve"><value>Nested CALCULATE</value></data>
+  <data name="Perf_NestedCalc_Msg" xml:space="preserve"><value>{0} levels of nested CALCULATE/CALCULATETABLE. Each level adds a context transition — from 3 on it is worth checking whether it can be simplified with variables (VAR) or less nesting.</value></data>
+  <data name="Diff_Added" xml:space="preserve"><value>Added</value></data>
+  <data name="Diff_Removed" xml:space="preserve"><value>Removed</value></data>
+  <data name="Diff_Modified" xml:space="preserve"><value>Modified</value></data>
+  <data name="Diff_Cat_Relationship" xml:space="preserve"><value>Relationship</value></data>
+  <data name="Diff_Cat_PowerQuery" xml:space="preserve"><value>Power Query</value></data>
+  <data name="Diff_Cat_Filter" xml:space="preserve"><value>Filter</value></data>
+  <data name="Diff_NowHidden" xml:space="preserve"><value>now hidden</value></data>
+  <data name="Diff_NowVisible" xml:space="preserve"><value>now visible</value></data>
+  <data name="Diff_DescriptionChanged" xml:space="preserve"><value>description changed</value></data>
+  <data name="Diff_DaxChanged" xml:space="preserve"><value>DAX changed</value></data>
+  <data name="Diff_FormatChanged" xml:space="preserve"><value>format &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_FolderChanged" xml:space="preserve"><value>folder &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_DataTypeChanged" xml:space="preserve"><value>data type &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_ColumnTypeChanged" xml:space="preserve"><value>column type &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_ColumnDaxChanged" xml:space="preserve"><value>calculated column DAX changed</value></data>
+  <data name="Diff_CardinalityChanged" xml:space="preserve"><value>cardinality &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_CrossFilterChanged" xml:space="preserve"><value>cross-filter &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_NowActive" xml:space="preserve"><value>now active</value></data>
+  <data name="Diff_NowInactive" xml:space="preserve"><value>now inactive</value></data>
+  <data name="Diff_MCodeChanged" xml:space="preserve"><value>M code changed</value></data>
+  <data name="Diff_FilterTypeChanged" xml:space="preserve"><value>type &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_ConditionChanged" xml:space="preserve"><value>condition &quot;{0}&quot; → &quot;{1}&quot;</value></data>
+  <data name="Diff_NewInVersion" xml:space="preserve"><value>new in this version</value></data>
+  <data name="Diff_GoneInVersion" xml:space="preserve"><value>no longer exists in this version</value></data>
+  <data name="Toast_Copied" xml:space="preserve"><value>Copied to the clipboard.</value></data>
+  <data name="Visuals_EmptyAction" xml:space="preserve"><value>Choose .pbix file…</value></data>
+  <data name="Visuals_SearchingTitle" xml:space="preserve"><value>Looking for the report file…</value></data>
+  <data name="Visuals_InsideFileBody" xml:space="preserve"><value>Visuals and their fields live inside the .pbix file, not in the in-memory model.</value></data>
+  <data name="Visuals_InsideFileBody2" xml:space="preserve"><value>Visuals and their fields live inside the file, not in the in-memory model.</value></data>
+  <data name="Status_NoConnection" xml:space="preserve"><value>Not connected — open this tool from Power BI Desktop.</value></data>
+  <data name="Theme_Light" xml:space="preserve"><value>Theme: light</value></data>
+  <data name="Theme_Dark" xml:space="preserve"><value>Theme: dark</value></data>
+  <data name="Theme_Auto" xml:space="preserve"><value>Theme: automatic (Windows)</value></data>
+  <data name="Status_SearchingDesktop" xml:space="preserve"><value>Looking for a report open in Power BI Desktop…</value></data>
+  <data name="Update_Prompt" xml:space="preserve"><value>Do you want PBI Context to look for new versions by itself? It makes one query per day to GitHub and sends no data. You can change this at any time in About.</value></data>
+  <data name="Update_PromptAction" xml:space="preserve"><value>Turn on</value></data>
+  <data name="Update_NewVersionToast" xml:space="preserve"><value>There is a new version of PBI Context: {0}.</value></data>
+  <data name="Update_NewVersionAction" xml:space="preserve"><value>View</value></data>
+  <data name="Status_Cancelled" xml:space="preserve"><value>Operation cancelled.</value></data>
+  <data name="Toast_NothingToRefresh" xml:space="preserve"><value>Nothing to refresh: open a report in Power BI Desktop or choose a .pbix.</value></data>
+  <data name="Toast_Refreshed" xml:space="preserve"><value>Data refreshed.</value></data>
+  <data name="Toast_ModelRead" xml:space="preserve"><value>Model of &quot;{0}&quot; read from Power BI Desktop.</value></data>
+  <data name="Status_OpeningInDesktop" xml:space="preserve"><value>Opening &quot;{0}&quot; in Power BI Desktop… large files can take a few minutes.</value></data>
+  <data name="Toast_DesktopStillOpening" xml:space="preserve"><value>Power BI Desktop has not finished opening &quot;{0}&quot; yet. When it does, press Refresh (F5).</value></data>
+  <data name="Status_Connecting" xml:space="preserve"><value>Connecting to {0} …</value></data>
+  <data name="Warn_SectionsUnreadableDetail" xml:space="preserve"><value>Some sections could not be read from this model&apos;s engine:
+\
+\{0}</value></data>
+  <data name="Toast_SectionsUnreadable" xml:space="preserve"><value>Some sections could not be read from this model.</value></data>
+  <data name="Toast_ViewDetail" xml:space="preserve"><value>View details</value></data>
+  <data name="Dialog_WarningsTitle" xml:space="preserve"><value>{0} — warnings</value></data>
+  <data name="Status_ConnectionCancelled" xml:space="preserve"><value>Connection cancelled.</value></data>
+  <data name="Status_ConnectFailed" xml:space="preserve"><value>Could not connect to the live model.</value></data>
+  <data name="Toast_ConnectFailed" xml:space="preserve"><value>Could not connect to the Power BI Desktop model. {0}</value></data>
+  <data name="Toast_Retry" xml:space="preserve"><value>Retry</value></data>
+  <data name="Visuals_NoReportTitle" xml:space="preserve"><value>No open report detected</value></data>
+  <data name="Visuals_NoReportBody" xml:space="preserve"><value>Open a report in Power BI Desktop and launch the tool again, or choose the file manually.</value></data>
+  <data name="Visuals_FindingTitle" xml:space="preserve"><value>Looking for &quot;{0}.pbix&quot; on disk…</value></data>
+  <data name="Visuals_SearchCancelledTitle" xml:space="preserve"><value>Search cancelled</value></data>
+  <data name="Visuals_SearchCancelledBody" xml:space="preserve"><value>Choose the file manually whenever you like.</value></data>
+  <data name="Visuals_NotFoundTitle" xml:space="preserve"><value>Could not find &quot;{0}.pbix&quot; automatically</value></data>
+  <data name="Visuals_NotFoundBody" xml:space="preserve"><value>It may be in a folder outside the search. Choose it manually and it loads just the same.</value></data>
+  <data name="Visuals_NoVisualsTitle" xml:space="preserve"><value>That file has no readable visuals</value></data>
+  <data name="Visuals_NoVisualsBody" xml:space="preserve"><value>Both report formats (PBIR and classic Layout) were tried and neither returned visuals.</value></data>
+  <data name="Status_ReportSummary" xml:space="preserve"><value>{0} · {1} pages · {2} field uses</value></data>
+  <data name="Visuals_ReadFailedTitle" xml:space="preserve"><value>Could not read that file</value></data>
+  <data name="Toast_ReadFailed" xml:space="preserve"><value>Could not read {0}. {1}</value></data>
+  <data name="Dialog_PbixFilter" xml:space="preserve"><value>Power BI files (*.pbix)|*.pbix</value></data>
+  <data name="Toast_RecentMissing" xml:space="preserve"><value>{0} no longer exists at that location.</value></data>
+  <data name="Toast_UnsupportedFile" xml:space="preserve"><value>Only .pbix (report) or .json (snapshot) files can be opened.</value></data>
+  <data name="Dialog_SnapshotFilter" xml:space="preserve"><value>PBI Context snapshot (*.json)|*.json</value></data>
+  <data name="Status_NoChanges" xml:space="preserve"><value>No changes against the snapshot of {0} from {1}.</value></data>
+  <data name="Status_ChangesFound" xml:space="preserve"><value>{0} changes against the snapshot of {1} from {2}.</value></data>
+  <data name="Toast_SnapshotReadFailed" xml:space="preserve"><value>Could not read that snapshot. {0}</value></data>
+  <data name="Toast_NotFound" xml:space="preserve"><value>Could not find {0} in the model (it may belong to a hidden table or another version).</value></data>
+  <data name="Shortcuts_Text" xml:space="preserve"><value>Keyboard shortcuts
+\
+\Ctrl+F	\	\Search all sections
+\Esc	\	\Clear the search
+\Ctrl+O	\	\Open a .pbix
+\Ctrl+E	\	\Export Markdown (context for AI)
+\Ctrl+Shift+E	\Export JSON (snapshot)
+\Export button	\Word, Excel, HTML, CSV of the section or of all
+\F5	\	\Refresh the data
+\Ctrl+1 … 9, 0	\Go to section 1 … 10
+\Ctrl+Page Down / Up	\Next / previous section
+\Ctrl+T	\	\Change theme
+\F1	\	\This help
+\
+\You can also drag a .pbix or a .json snapshot onto the window.</value></data>
+  <data name="Toast_ViewLog" xml:space="preserve"><value>View log</value></data>
+  <data name="Tile_PowerQuery" xml:space="preserve"><value>Power Query</value></data>
+  <data name="Tile_Pages" xml:space="preserve"><value>Pages</value></data>
+  <data name="Tile_Visuals" xml:space="preserve"><value>Visuals</value></data>
+  <data name="Tile_FieldUses" xml:space="preserve"><value>Field uses</value></data>
+  <data name="Tile_Unused" xml:space="preserve"><value>Unused</value></data>
+  <data name="Tile_Hidden" xml:space="preserve"><value>{0} hidden</value></data>
+  <data name="Empty_NoMeasures" xml:space="preserve"><value>The connected model has no DAX measures.</value></data>
+  <data name="Empty_NoTables" xml:space="preserve"><value>The connected model has no visible tables.</value></data>
+  <data name="Empty_NoColumns" xml:space="preserve"><value>The connected model has no columns.</value></data>
+  <data name="Empty_NoRelationships" xml:space="preserve"><value>The connected model has no relationships defined.</value></data>
+  <data name="Empty_NoQueries" xml:space="preserve"><value>The connected model has no Power Query queries.</value></data>
+  <data name="Empty_NothingToAnalyze" xml:space="preserve"><value>There are no measures or columns to analyze yet.</value></data>
+  <data name="Empty_NoFiltersTitle" xml:space="preserve"><value>No filters detected</value></data>
+  <data name="Empty_NoFiltersBody" xml:space="preserve"><value>No report-, page- or visual-level filters were found in this file — or the report really has none configured.</value></data>
+  <data name="Empty_NoModelTitle" xml:space="preserve"><value>No model connected</value></data>
+  <data name="Empty_PerfConnect" xml:space="preserve"><value>Connect to a model to analyze its performance.</value></data>
+  <data name="Empty_NoAlertsTitle" xml:space="preserve"><value>No alerts detected</value></data>
+  <data name="Empty_NoAlertsBody" xml:space="preserve"><value>No known risk patterns were found in this model.</value></data>
+  <data name="Empty_OpenInDesktop" xml:space="preserve"><value>Open in Power BI Desktop</value></data>
+  <data name="Empty_MissingModelTitle" xml:space="preserve"><value>This report&apos;s model is missing</value></data>
+  <data name="Empty_MissingModelBody" xml:space="preserve"><value>Tables, columns and measures cannot be read from the .pbix file (they are compressed inside): the report has to be open in Power BI Desktop.</value></data>
+  <data name="Empty_NoModelBody" xml:space="preserve"><value>Open your report in Power BI Desktop and this app attaches itself, or launch it from the External Tools tab. That is where measures, tables, columns and relationships get filled in.</value></data>
+  <data name="Empty_SectionEmptyTitle" xml:space="preserve"><value>This section is empty</value></data>
+  <data name="Status_Summary" xml:space="preserve"><value>Local, rule-based analysis — it does not use AI or go online.</value></data>
+  <data name="Status_Usage" xml:space="preserve"><value>{0} of {1} objects with no detected use — cross-checks visuals, DAX and relationships.</value></data>
+  <data name="Status_NoFilters" xml:space="preserve"><value>No filters detected in the report, the page or the visuals.</value></data>
+  <data name="Status_Filters" xml:space="preserve"><value>{0} filters — {1} report-level, {2} page-level, {3} visual-level.</value></data>
+  <data name="Status_NoPerfRisks" xml:space="preserve"><value>Metadata heuristics — no risk patterns detected.</value></data>
+  <data name="Status_PerfAlerts" xml:space="preserve"><value>{0} alerts — metadata heuristics, not a real profiler.</value></data>
+  <data name="Status_Compare" xml:space="preserve"><value>Choose a .json snapshot exported earlier to see what changed.</value></data>
+  <data name="Status_ModelCounts" xml:space="preserve"><value>{0} tables · {1} columns · {2} measures · {3} relationships</value></data>
+  <data name="Status_NoModelNeeded" xml:space="preserve"><value>No model: the report needs to be open in Power BI Desktop.</value></data>
+  <data name="Export_MarkdownSuggested" xml:space="preserve"><value>AI_Context_{0}.md</value></data>
+  <data name="Export_JsonSuggested" xml:space="preserve"><value>Snapshot_{0}.json</value></data>
+  <data name="Export_DocSuggested" xml:space="preserve"><value>Documentation_{0}.{1}</value></data>
+  <data name="Export_MarkdownSaved" xml:space="preserve"><value>Context saved. Attach that .md to a chat with Claude or ChatGPT.</value></data>
+  <data name="Export_JsonSaved" xml:space="preserve"><value>Snapshot saved. Use it later in &quot;Compare versions&quot;.</value></data>
+  <data name="Toast_Reveal" xml:space="preserve"><value>Show</value></data>
+  <data name="Toast_FileFailed" xml:space="preserve"><value>Could not generate the file. {0}</value></data>
+  <data name="Export_WordFilter" xml:space="preserve"><value>Word document (*.docx)|*.docx</value></data>
+  <data name="Export_ExcelFilter" xml:space="preserve"><value>Excel workbook (*.xlsx)|*.xlsx</value></data>
+  <data name="Export_HtmlFilter" xml:space="preserve"><value>Web page (*.html)|*.html</value></data>
+  <data name="Export_ZipFilter" xml:space="preserve"><value>CSV of all sections (*.zip)|*.zip</value></data>
+  <data name="Export_CsvFilter" xml:space="preserve"><value>CSV (*.csv)|*.csv</value></data>
+  <data name="Export_WordLabel" xml:space="preserve"><value>the Word document</value></data>
+  <data name="Export_ExcelLabel" xml:space="preserve"><value>the Excel workbook</value></data>
+  <data name="Export_HtmlLabel" xml:space="preserve"><value>the HTML page</value></data>
+  <data name="Export_CsvZipLabel" xml:space="preserve"><value>the CSV files</value></data>
+  <data name="Export_CsvLabel" xml:space="preserve"><value>the CSV file</value></data>
+  <data name="Export_CsvNeedsSection" xml:space="preserve"><value>Choose a section with a table (Measures, Columns, Relationships…) to export it to CSV.</value></data>
+  <data name="Export_CsvRows" xml:space="preserve"><value>{0} rows saved.</value></data>
+  <data name="Export_CsvRowsFiltered" xml:space="preserve"><value>{0} rows saved (the ones matching the current search).</value></data>
+  <data name="Export_SectionsSaved" xml:space="preserve"><value>{0} sections saved.</value></data>
+  <data name="Status_Generating" xml:space="preserve"><value>Generating {0}…</value></data>
+  <data name="Toast_ExportFailed" xml:space="preserve"><value>Could not generate {0}. {1}</value></data>
+  <data name="Toast_Busy" xml:space="preserve"><value>The report is still loading; try again in a moment (or cancel the load).</value></data>
+  <data name="Toast_NothingLoaded" xml:space="preserve"><value>Nothing is loaded yet — connect to a model or open a .pbix first.</value></data>
+  <data name="Default_SourceName" xml:space="preserve"><value>model</value></data>
+  <data name="Status_PagesAndUses" xml:space="preserve"><value>{0} pages · {1} field uses</value></data>
+  <data name="Filter_TypeUnknown" xml:space="preserve"><value>unknown type</value></data>
+  <data name="Filter_TypeOnly" xml:space="preserve"><value>(type: {0})</value></data>
+  <data name="Filter_NotInterpreted" xml:space="preserve"><value>(type: {0} — condition not interpreted automatically)</value></data>
+  <data name="Filter_AndMore" xml:space="preserve"><value>{0} and {1} more</value></data>
+  <data name="Filter_Includes" xml:space="preserve"><value>includes: {0}</value></data>
+  <data name="Filter_Excludes" xml:space="preserve"><value>excludes: {0}</value></data>
+  <data name="Warn_RelationshipsUnresolved" xml:space="preserve"><value>Relationships: could not be resolved because Tables and/or Columns failed earlier (relationships depend on that information). It does not mean the model has no relationships.</value></data>
+  <data name="Section_Summary" xml:space="preserve"><value>Summary</value></data>
+  <data name="Section_Measures" xml:space="preserve"><value>DAX measures</value></data>
+  <data name="Section_Tables" xml:space="preserve"><value>Tables</value></data>
+  <data name="Section_Columns" xml:space="preserve"><value>Columns</value></data>
+  <data name="Section_Relationships" xml:space="preserve"><value>Relationships</value></data>
+  <data name="Section_PowerQuery" xml:space="preserve"><value>Power Query (M)</value></data>
+  <data name="Section_Usage" xml:space="preserve"><value>Usage &amp; cleanup</value></data>
+  <data name="Section_Visuals" xml:space="preserve"><value>Visuals &amp; fields</value></data>
+  <data name="Section_Filters" xml:space="preserve"><value>Filters</value></data>
+  <data name="Section_Performance" xml:space="preserve"><value>Performance</value></data>
+  <data name="Section_Compare" xml:space="preserve"><value>Compare versions</value></data>
+  <data name="Common_Yes" xml:space="preserve"><value>Yes</value></data>
+  <data name="Common_No" xml:space="preserve"><value>No</value></data>
+  <data name="Col_Table" xml:space="preserve"><value>Table</value></data>
+  <data name="Col_Measure" xml:space="preserve"><value>Measure</value></data>
+  <data name="Col_Folder" xml:space="preserve"><value>Folder</value></data>
+  <data name="Col_Dax" xml:space="preserve"><value>DAX</value></data>
+  <data name="Col_Format" xml:space="preserve"><value>Format</value></data>
+  <data name="Col_Hidden" xml:space="preserve"><value>Hidden</value></data>
+  <data name="Col_Description" xml:space="preserve"><value>Description</value></data>
+  <data name="Col_Columns" xml:space="preserve"><value>Columns</value></data>
+  <data name="Col_Measures" xml:space="preserve"><value>Measures</value></data>
+  <data name="Col_Column" xml:space="preserve"><value>Column</value></data>
+  <data name="Col_DataType" xml:space="preserve"><value>Data type</value></data>
+  <data name="Col_Source" xml:space="preserve"><value>Source</value></data>
+  <data name="Col_SourceColumn" xml:space="preserve"><value>Source column</value></data>
+  <data name="Col_DaxOrSource" xml:space="preserve"><value>DAX / source column</value></data>
+  <data name="Col_FromTable" xml:space="preserve"><value>From table</value></data>
+  <data name="Col_FromColumn" xml:space="preserve"><value>From column</value></data>
+  <data name="Col_ToTable" xml:space="preserve"><value>To table</value></data>
+  <data name="Col_ToColumn" xml:space="preserve"><value>To column</value></data>
+  <data name="Col_Cardinality" xml:space="preserve"><value>Cardinality</value></data>
+  <data name="Col_CrossFilter" xml:space="preserve"><value>Cross-filter</value></data>
+  <data name="Col_Active" xml:space="preserve"><value>Active</value></data>
+  <data name="Col_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Col_Kind" xml:space="preserve"><value>Type</value></data>
+  <data name="Col_MCode" xml:space="preserve"><value>M code</value></data>
+  <data name="Col_Level" xml:space="preserve"><value>Level</value></data>
+  <data name="Col_Page" xml:space="preserve"><value>Page</value></data>
+  <data name="Col_Visual" xml:space="preserve"><value>Visual</value></data>
+  <data name="Col_Field" xml:space="preserve"><value>Field</value></data>
+  <data name="Col_FilterType" xml:space="preserve"><value>Filter type</value></data>
+  <data name="Col_Condition" xml:space="preserve"><value>Condition</value></data>
+  <data name="Col_Title" xml:space="preserve"><value>Title</value></data>
+  <data name="Col_Severity" xml:space="preserve"><value>Severity</value></data>
+  <data name="Col_Category" xml:space="preserve"><value>Category</value></data>
+  <data name="Col_Object" xml:space="preserve"><value>Object</value></data>
+  <data name="Col_Detail" xml:space="preserve"><value>Detail</value></data>
+  <data name="Col_Status" xml:space="preserve"><value>Status</value></data>
+  <data name="Col_DependsOn" xml:space="preserve"><value>Depends on</value></data>
+  <data name="Col_UsedBy" xml:space="preserve"><value>Used by</value></data>
+  <data name="Col_Change" xml:space="preserve"><value>Change</value></data>
+  <data name="Detail_MeasureSubtitle" xml:space="preserve"><value>Measure · {0}</value></data>
+  <data name="Detail_ColumnSubtitle" xml:space="preserve"><value>Column · {0}</value></data>
+  <data name="Detail_QuerySubtitle" xml:space="preserve"><value>Power Query · {0}</value></data>
+  <data name="Count_Of" xml:space="preserve"><value>{0} of {1}</value></data>
+  <data name="Count_OneRow" xml:space="preserve"><value>1 row</value></data>
+  <data name="Count_Rows" xml:space="preserve"><value>{0} rows</value></data>
+  <data name="NoResults" xml:space="preserve"><value>No results for &quot;{0}&quot;</value></data>
+  <data name="Note_Performance" xml:space="preserve"><value>Heuristics based on known anti-patterns (bidirectional or many-to-many relationships, calculated columns, nested CALCULATE). This tool never queries real rows, so it cannot measure real cardinality or query time — they are hints to review, not a profiler.</value></data>
+  <data name="Note_Usage" xml:space="preserve"><value>Cross-checks report visuals, DAX dependencies, relationships and dependencies between Power Query queries (a helper table or parameter that feeds a table in use counts as used). It cannot see slicers, bookmarks or Q&amp;A: double-check before deleting.</value></data>
+  <data name="Note_Compare" xml:space="preserve"><value>Compares the model connected now against a .json snapshot exported earlier (the &quot;Export JSON&quot; option) from the same report — meant to audit what changed between one version and another.</value></data>
+  <data name="Compare_EmptyTitle" xml:space="preserve"><value>Choose a snapshot to compare</value></data>
+  <data name="Compare_EmptyBody" xml:space="preserve"><value>Choose a .json file exported earlier from this same report to see what has changed since then.</value></data>
+  <data name="Compare_EmptyAction" xml:space="preserve"><value>Choose snapshot .json…</value></data>
+  <data name="Term_Measure" xml:space="preserve"><value>Measure</value></data>
+  <data name="Term_Column" xml:space="preserve"><value>Column</value></data>
+  <data name="Term_Table" xml:space="preserve"><value>Table</value></data>
+  <data name="Term_Query" xml:space="preserve"><value>Query</value></data>
+  <data name="Term_Hierarchy" xml:space="preserve"><value>Hierarchy</value></data>
+  <data name="Term_Report" xml:space="preserve"><value>Report</value></data>
+  <data name="Term_Page" xml:space="preserve"><value>Page</value></data>
+  <data name="Term_Visual" xml:space="preserve"><value>Visual</value></data>
+  <data name="Term_TypeAuto" xml:space="preserve"><value>Automatic</value></data>
+  <data name="Term_TypeText" xml:space="preserve"><value>Text</value></data>
+  <data name="Term_TypeInteger" xml:space="preserve"><value>Whole number</value></data>
+  <data name="Term_TypeDecimal" xml:space="preserve"><value>Decimal number</value></data>
+  <data name="Term_TypeDateTime" xml:space="preserve"><value>Date/Time</value></data>
+  <data name="Term_TypeFixedDecimal" xml:space="preserve"><value>Fixed decimal</value></data>
+  <data name="Term_TypeBoolean" xml:space="preserve"><value>Boolean</value></data>
+  <data name="Term_TypeBinary" xml:space="preserve"><value>Binary</value></data>
+  <data name="Term_TypeUnknown" xml:space="preserve"><value>Unknown</value></data>
+  <data name="Term_TypeVariant" xml:space="preserve"><value>Variant</value></data>
+  <data name="Term_ColData" xml:space="preserve"><value>Data</value></data>
+  <data name="Term_ColCalculated" xml:space="preserve"><value>Calculated</value></data>
+  <data name="Term_ColRowNumber" xml:space="preserve"><value>RowNumber (internal)</value></data>
+  <data name="Term_ColFromCalcTable" xml:space="preserve"><value>From calculated table</value></data>
+  <data name="Term_FilterOneWay" xml:space="preserve"><value>Single direction</value></data>
+  <data name="Term_FilterBoth" xml:space="preserve"><value>Both directions</value></data>
+  <data name="Term_CardOneToMany" xml:space="preserve"><value>One to many</value></data>
+  <data name="Term_CardManyToOne" xml:space="preserve"><value>Many to one</value></data>
+  <data name="Term_CardManyToMany" xml:space="preserve"><value>Many to many</value></data>
+  <data name="Term_CardOneToOne" xml:space="preserve"><value>One to one</value></data>
+  <data name="Term_QueryParamFunction" xml:space="preserve"><value>Parameter / function</value></data>
+  <data name="Search_Placeholder" xml:space="preserve"><value>Search all sections…</value></data>
+  <data name="Toast_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Toast_CloseAria" xml:space="preserve"><value>Close notification</value></data>
+  <data name="App_Tagline" xml:space="preserve"><value>Model and report documentation</value></data>
+  <data name="Privacy_Title" xml:space="preserve"><value>PRIVACY</value></data>
+  <data name="Privacy_Short" xml:space="preserve"><value>Only metadata is read. A row of data is never queried.</value></data>
+  <data name="Theme_Tooltip" xml:space="preserve"><value>Change theme (Ctrl+T)</value></data>
+  <data name="Theme_Aria" xml:space="preserve"><value>Change theme</value></data>
+  <data name="Help_Tooltip" xml:space="preserve"><value>Help, updates and about</value></data>
+  <data name="Help_Aria" xml:space="preserve"><value>Help and about</value></data>
+  <data name="Nav_Aria" xml:space="preserve"><value>Sections</value></data>
+  <data name="Busy_Aria" xml:space="preserve"><value>Loading</value></data>
+  <data name="Btn_Cancel" xml:space="preserve"><value>Cancel</value></data>
+  <data name="Tip_Cancel" xml:space="preserve"><value>Cancel the current operation</value></data>
+  <data name="Btn_Refresh" xml:space="preserve"><value>Refresh</value></data>
+  <data name="Tip_Refresh" xml:space="preserve"><value>Read the model and report again (F5)</value></data>
+  <data name="Btn_OpenPbix" xml:space="preserve"><value>Open .pbix</value></data>
+  <data name="Tip_OpenPbix" xml:space="preserve"><value>Open a .pbix report (Ctrl+O)</value></data>
+  <data name="Tip_Recent" xml:space="preserve"><value>Recently opened reports</value></data>
+  <data name="Aria_Recent" xml:space="preserve"><value>Recent reports</value></data>
+  <data name="Btn_Export" xml:space="preserve"><value>Export</value></data>
+  <data name="Tip_Export" xml:space="preserve"><value>Export to Word, Excel, HTML, CSV or JSON</value></data>
+  <data name="Aria_Export" xml:space="preserve"><value>Export to other formats</value></data>
+  <data name="Btn_ExportMarkdown" xml:space="preserve"><value>Export Markdown</value></data>
+  <data name="Tip_ExportMarkdown" xml:space="preserve"><value>Save the context ready to paste into an AI chat (Ctrl+E)</value></data>
+  <data name="Tip_Search" xml:space="preserve"><value>Search all sections (Ctrl+F). Esc to clear.</value></data>
+  <data name="Summary_Empty" xml:space="preserve"><value>Connect to a model from Power BI Desktop and/or open the .pbix to see the numbers here.</value></data>
+  <data name="Copy_Cell" xml:space="preserve"><value>Copy cell</value></data>
+  <data name="Copy_Row" xml:space="preserve"><value>Copy row</value></data>
+  <data name="Copy_All" xml:space="preserve"><value>Copy all visible rows</value></data>
+  <data name="Usage_OnlyUnused" xml:space="preserve"><value>Show only unused objects</value></data>
+  <data name="Col_From" xml:space="preserve"><value>From</value></data>
+  <data name="Col_To" xml:space="preserve"><value>To</value></data>
+  <data name="Detail_Aria" xml:space="preserve"><value>Details</value></data>
+  <data name="Detail_GoToTip" xml:space="preserve"><value>Go to this object</value></data>
+  <data name="Detail_Close" xml:space="preserve"><value>Close the details</value></data>
+  <data name="Detail_Copy" xml:space="preserve"><value>Copy</value></data>
+  <data name="Detail_CopyTip" xml:space="preserve"><value>Copy the full code</value></data>
+  <data name="Detail_CodeHeader" xml:space="preserve"><value>CODE</value></data>
+  <data name="Detail_CodeAria" xml:space="preserve"><value>Code</value></data>
+  <data name="Detail_DependsOn" xml:space="preserve"><value>DEPENDS ON</value></data>
+  <data name="Detail_UsedBy" xml:space="preserve"><value>USED BY</value></data>
+  <data name="About_Title" xml:space="preserve"><value>About PBI Context</value></data>
+  <data name="About_Description" xml:space="preserve"><value>Documents a Power BI model and its report: DAX measures, tables, columns, relationships, Power Query, which visual uses which field and which objects are not used anywhere.</value></data>
+  <data name="About_UpdatesHeader" xml:space="preserve"><value>UPDATES</value></data>
+  <data name="Btn_CheckNow" xml:space="preserve"><value>Check now</value></data>
+  <data name="Btn_InstallUpdate" xml:space="preserve"><value>Download and install</value></data>
+  <data name="Btn_ViewRelease" xml:space="preserve"><value>View the release on GitHub</value></data>
+  <data name="About_AutoCheckTip" xml:space="preserve"><value>It is the app&apos;s only network connection. It sends none of your data, the model&apos;s or the report&apos;s.</value></data>
+  <data name="About_AutoCheck" xml:space="preserve"><value>Check for updates automatically on startup (one query to GitHub per day, no data sent)</value></data>
+  <data name="Link_Repo" xml:space="preserve"><value>Repository</value></data>
+  <data name="Link_License" xml:space="preserve"><value>MIT license</value></data>
+  <data name="Link_Changelog" xml:space="preserve"><value>What&apos;s new in each version</value></data>
+  <data name="Link_DataFolder" xml:space="preserve"><value>Data and logs folder</value></data>
+  <data name="Btn_Close" xml:space="preserve"><value>Close</value></data>
+  <data name="Menu_ClearRecent" xml:space="preserve"><value>Clear recent</value></data>
+  <data name="Menu_Word" xml:space="preserve"><value>Word document (.docx)</value></data>
+  <data name="Menu_Excel" xml:space="preserve"><value>Excel workbook (.xlsx)</value></data>
+  <data name="Menu_Html" xml:space="preserve"><value>Web page (.html)</value></data>
+  <data name="Menu_CsvSection" xml:space="preserve"><value>CSV of this section (as you see it)</value></data>
+  <data name="Menu_CsvAll" xml:space="preserve"><value>CSV of all sections (.zip)</value></data>
+  <data name="Menu_Json" xml:space="preserve"><value>Snapshot to compare (.json)</value></data>
+  <data name="Menu_Markdown" xml:space="preserve"><value>AI context (.md)</value></data>
+  <data name="Menu_Shortcuts" xml:space="preserve"><value>Keyboard shortcuts</value></data>
+  <data name="Menu_CheckUpdates" xml:space="preserve"><value>Check for updates…</value></data>
+  <data name="Menu_About" xml:space="preserve"><value>About {0}</value></data>
+  <data name="Menu_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Lang_Auto" xml:space="preserve"><value>Automatic (Windows)</value></data>
+  <data name="Lang_Spanish" xml:space="preserve"><value>Español</value></data>
+  <data name="Lang_English" xml:space="preserve"><value>English</value></data>
+  <data name="Lang_RestartPrompt" xml:space="preserve"><value>The language changes when PBI Context restarts.</value></data>
+  <data name="Lang_RestartAction" xml:space="preserve"><value>Restart now</value></data>
+  <data name="Update_Installed" xml:space="preserve"><value>Installed version: {0}</value></data>
+  <data name="Update_Busy" xml:space="preserve"><value>An operation is already in progress.</value></data>
+  <data name="Update_Checking" xml:space="preserve"><value>Checking for updates…</value></data>
+  <data name="Update_Available" xml:space="preserve"><value>A new version is available: {0}</value></data>
+  <data name="Update_UpToDate" xml:space="preserve"><value>You have the latest version.</value></data>
+  <data name="Update_NoReleases" xml:space="preserve"><value>There are no published versions to check (the repository may be private).</value></data>
+  <data name="Update_CheckFailed" xml:space="preserve"><value>Could not check: {0}</value></data>
+  <data name="Update_Downloading" xml:space="preserve"><value>Downloading the update…</value></data>
+  <data name="Update_Verified" xml:space="preserve"><value>Verified. Closing PBI Context to install…</value></data>
+  <data name="Update_Failed" xml:space="preserve"><value>Could not update: {0}</value></data>
+  <data name="About_Version" xml:space="preserve"><value>Version {0}</value></data>
+  <data name="About_Author" xml:space="preserve"><value>© 2026 {0} · {1} license</value></data>
+  <data name="About_Disclaimer" xml:space="preserve"><value>Independent tool, not affiliated with Microsoft. Power BI is a trademark of Microsoft.</value></data>
+  <data name="About_Privacy" xml:space="preserve"><value>It only reads model and report metadata: it never queries a row of data. It has no telemetry. The only possible connection is checking for updates on GitHub, and only if you turn it on.</value></data>
+  <data name="Install_NoInstallerPublished" xml:space="preserve"><value>This version did not publish the installer together with its hash; download it from the release page.</value></data>
+  <data name="Install_UntrustedUrl" xml:space="preserve"><value>The download does not point to GitHub; for safety it will not install by itself.</value></data>
+  <data name="Install_BadName" xml:space="preserve"><value>The published installer name is not valid.</value></data>
+  <data name="Install_BadChecksumFile" xml:space="preserve"><value>The published hash file does not contain a valid SHA-256.</value></data>
+  <data name="Install_HashMismatch" xml:space="preserve"><value>The download is corrupted: its SHA-256 does not match the published one. It was not installed.</value></data>
+  <data name="Install_RateLimit" xml:space="preserve"><value>GitHub rate-limited the requests for a while; try again later.</value></data>
+  <data name="Install_LaunchFailed" xml:space="preserve"><value>Could not start the installer (was the administrator permission cancelled?).</value></data>
+</root>

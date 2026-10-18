@@ -22,7 +22,7 @@ public sealed partial class MainViewModel : ObservableObject
     private List<FilterInfo> _filters = new();
     private List<ObjectUsage> _usage = new();
     private List<PerformanceWarning> _performance = new();
-    private string _sourceName = "modelo";
+    private string _sourceName = Loc.T("Default_SourceName");
 
     // Última conexión y último reporte: los usa F5 para volver a leer.
     private string? _server;
@@ -71,7 +71,7 @@ public sealed partial class MainViewModel : ObservableObject
             Copy = text =>
             {
                 _dialogs.CopyText(text);
-                Notify(ToastKind.Success, "Copiado al portapapeles.");
+                Notify(ToastKind.Success, Loc.T("Toast_Copied"));
             }
         };
         Measures.DetailContext = detailContext;
@@ -82,11 +82,10 @@ public sealed partial class MainViewModel : ObservableObject
         _theme = _settings.Theme;
 
         Visuals.EmptyIcon = "";
-        Visuals.EmptyActionText = "Elegir archivo .pbix…";
+        Visuals.EmptyActionText = Loc.T("Visuals_EmptyAction");
         Visuals.EmptyActionCommand = ChoosePbixCommand;
         Compare.EmptyActionCommand = ChooseSnapshotCommand;
-        ShowVisualsEmpty("Buscando el archivo del reporte…",
-            "Los visuales y sus campos viven dentro del archivo .pbix, no en el modelo en memoria.");
+        ShowVisualsEmpty(Loc.T("Visuals_SearchingTitle"), Loc.T("Visuals_InsideFileBody"));
 
         Filters.EmptyIcon = "";
         Performance.EmptyIcon = "";
@@ -120,7 +119,7 @@ public sealed partial class MainViewModel : ObservableObject
     public TimeSpan ToastDuration { get; set; } = TimeSpan.FromSeconds(6);
 
     [ObservableProperty] private SectionViewModel _selectedSection;
-    [ObservableProperty] private string _statusText = "Sin conexión — abrí esta herramienta desde Power BI Desktop.";
+    [ObservableProperty] private string _statusText = Loc.T("Status_NoConnection");
     [ObservableProperty] private string _globalSearchText = "";
 
     [ObservableProperty]
@@ -137,9 +136,9 @@ public sealed partial class MainViewModel : ObservableObject
 
     public string ThemeLabel => Theme switch
     {
-        ThemeMode.Light => "Tema: claro",
-        ThemeMode.Dark => "Tema: oscuro",
-        _ => "Tema: automático (Windows)"
+        ThemeMode.Light => Loc.T("Theme_Light"),
+        ThemeMode.Dark => Loc.T("Theme_Dark"),
+        _ => Loc.T("Theme_Auto")
     };
 
     private bool HasModel => _model.Tables.Count > 0 || _model.Measures.Count > 0;
@@ -187,7 +186,7 @@ public sealed partial class MainViewModel : ObservableObject
             else if (StartupFile(args) is null)
             {
                 // Abierta por su cuenta: si hay un tablero abierto en Power BI Desktop, se engancha solo.
-                StatusText = "Buscando un tablero abierto en Power BI Desktop…";
+                StatusText = Loc.T("Status_SearchingDesktop");
                 await ConnectToDesktopModelAsync(null, ct);
                 if (ct.IsCancellationRequested) return;
             }
@@ -212,10 +211,8 @@ public sealed partial class MainViewModel : ObservableObject
             {
                 _settings.UpdatePromptShown = true;
                 _persist?.Invoke();
-                Notify(ToastKind.Info,
-                    "¿Querés que PBI Context busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. " +
-                    "Podés cambiarlo cuando quieras en Acerca de.",
-                    "Activar", () =>
+                Notify(ToastKind.Info, Loc.T("Update_Prompt"),
+                    Loc.T("Update_PromptAction"), () =>
                     {
                         Updates.AutoCheck = true;
                         AboutRequested?.Invoke(true);
@@ -228,8 +225,8 @@ public sealed partial class MainViewModel : ObservableObject
             // (UpdateStatus también es un método de esta clase: por eso el nombre completo del enum.)
             if (result is { Status: PBIExplorer.Services.Updates.UpdateStatus.Available, Release: { } release })
             {
-                Notify(ToastKind.Info, $"Hay una versión nueva de PBI Context: {release.Version.Major}.{release.Version.Minor}.{release.Version.Build}.",
-                    "Ver", () => AboutRequested?.Invoke(false), sticky: true);
+                Notify(ToastKind.Info, Loc.F("Update_NewVersionToast", $"{release.Version.Major}.{release.Version.Minor}.{release.Version.Build}"),
+                    Loc.T("Update_NewVersionAction"), () => AboutRequested?.Invoke(false), sticky: true);
             }
         }
         catch (Exception ex)
@@ -237,6 +234,22 @@ public sealed partial class MainViewModel : ObservableObject
             // Una falla buscando actualizaciones nunca debe molestar a quien está trabajando.
             AppLog.Write($"Chequeo de actualizaciones: {ex.Message}");
         }
+    }
+
+    /// <summary>El idioma elegido (no necesariamente el que se está usando hasta reiniciar).</summary>
+    public AppLanguage Language => _settings.Language;
+
+    [RelayCommand]
+    private void SetLanguage(AppLanguage language)
+    {
+        if (_settings.Language == language) return;
+
+        _settings.Language = language;
+        _persist?.Invoke();
+        OnPropertyChanged(nameof(Language));
+
+        // Los textos se cargan al arrancar: el cambio se ve al reiniciar.
+        Notify(ToastKind.Info, Loc.T("Lang_RestartPrompt"), Loc.T("Lang_RestartAction"), () => _dialogs.RestartApplication(), sticky: true);
     }
 
     [RelayCommand]
@@ -265,7 +278,7 @@ public sealed partial class MainViewModel : ObservableObject
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Operación cancelada.";
+            StatusText = Loc.T("Status_Cancelled");
         }
         finally
         {
@@ -308,9 +321,9 @@ public sealed partial class MainViewModel : ObservableObject
             if (_reportPath is not null) LoadReport(_reportPath);
 
             if (!HasAnything)
-                Notify(ToastKind.Info, "No hay nada para actualizar: abrí un tablero en Power BI Desktop o elegí un .pbix.");
+                Notify(ToastKind.Info, Loc.T("Toast_NothingToRefresh"));
             else
-                Notify(ToastKind.Success, "Datos actualizados.");
+                Notify(ToastKind.Success, Loc.T("Toast_Refreshed"));
         });
     }
 
@@ -341,7 +354,7 @@ public sealed partial class MainViewModel : ObservableObject
         {
             if (await ConnectToDesktopModelAsync(name, ct))
             {
-                Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
+                Notify(ToastKind.Success, Loc.F("Toast_ModelRead", name));
                 return;
             }
 
@@ -371,7 +384,7 @@ public sealed partial class MainViewModel : ObservableObject
     private async Task OpenInDesktopAndWaitAsync(string path, CancellationToken ct)
     {
         var name = Path.GetFileNameWithoutExtension(path);
-        StatusText = $"Abriendo \"{name}\" en Power BI Desktop… con archivos grandes puede tardar unos minutos.";
+        StatusText = Loc.F("Status_OpeningInDesktop", name);
         _dialogs.OpenWithShell(path);
 
         var deadline = DateTime.UtcNow + DesktopWaitTimeout;
@@ -381,15 +394,13 @@ public sealed partial class MainViewModel : ObservableObject
             // el modelo simplemente no aparece todavía y se vuelve a intentar.
             if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
             {
-                Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
+                Notify(ToastKind.Success, Loc.F("Toast_ModelRead", name));
                 return;
             }
             await Task.Delay(DesktopPollInterval, ct);
         }
 
-        Notify(ToastKind.Warning,
-            $"Power BI Desktop todavía no terminó de abrir \"{name}\". Cuando termine, tocá Actualizar (F5).",
-            sticky: true);
+        Notify(ToastKind.Warning, Loc.F("Toast_DesktopStillOpening", name), sticky: true);
     }
 
     private void ClearModel()
@@ -419,7 +430,7 @@ public sealed partial class MainViewModel : ObservableObject
         {
             _server = server;
             _database = database;
-            StatusText = $"Conectando a {server} …";
+            StatusText = Loc.F("Status_Connecting", server);
             _model = await WithCancellation(_backend.ReadModelAsync(server, database), ct);
             _sourceName = database;
 
@@ -439,16 +450,15 @@ public sealed partial class MainViewModel : ObservableObject
 
             if (_model.Warnings.Count > 0)
             {
-                var detail = "Algunas secciones no se pudieron leer del motor de este modelo:\n\n" +
-                             string.Join("\n\n", _model.Warnings);
-                Notify(ToastKind.Warning, "Algunas secciones no se pudieron leer de este modelo.", "Ver detalle",
-                    () => _dialogs.ShowWarning(detail, $"{WpfDialogService.AppName} — advertencias"));
+                var detail = Loc.F("Warn_SectionsUnreadableDetail", string.Join("\n\n", _model.Warnings));
+                Notify(ToastKind.Warning, Loc.T("Toast_SectionsUnreadable"), Loc.T("Toast_ViewDetail"),
+                    () => _dialogs.ShowWarning(detail, Loc.F("Dialog_WarningsTitle", WpfDialogService.AppName)));
             }
             return true;
         }
         catch (OperationCanceledException)
         {
-            StatusText = "Conexión cancelada.";
+            StatusText = Loc.T("Status_ConnectionCancelled");
             return false;
         }
         catch (Exception ex)
@@ -456,8 +466,8 @@ public sealed partial class MainViewModel : ObservableObject
             AppLog.Write($"ERROR conectando al modelo: {ex}");
             if (quiet) return false;   // sondeo mientras Power BI Desktop termina de abrir: se reintenta solo
 
-            StatusText = "No se pudo conectar al modelo en vivo.";
-            NotifyError($"No se pudo conectar al modelo de Power BI Desktop. {ex.Message}", "Reintentar",
+            StatusText = Loc.T("Status_ConnectFailed");
+            NotifyError(Loc.F("Toast_ConnectFailed", ex.Message), Loc.T("Toast_Retry"),
                 () => RefreshCommand.Execute(null));
             return false;
         }
@@ -474,13 +484,11 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (reportName is null)
         {
-            ShowVisualsEmpty("No se detectó ningún tablero abierto",
-                "Abrí un tablero en Power BI Desktop y volvé a lanzar la herramienta, o elegí el archivo a mano.");
+            ShowVisualsEmpty(Loc.T("Visuals_NoReportTitle"), Loc.T("Visuals_NoReportBody"));
             return;
         }
 
-        ShowVisualsEmpty($"Buscando \"{reportName}.pbix\" en el disco…",
-            "Los visuales y sus campos viven dentro del archivo, no en el modelo en memoria.");
+        ShowVisualsEmpty(Loc.F("Visuals_FindingTitle", reportName), Loc.T("Visuals_InsideFileBody2"));
 
         string? path;
         try
@@ -489,15 +497,14 @@ public sealed partial class MainViewModel : ObservableObject
         }
         catch (OperationCanceledException)
         {
-            ShowVisualsEmpty("Búsqueda cancelada", "Elegí el archivo a mano cuando quieras.");
+            ShowVisualsEmpty(Loc.T("Visuals_SearchCancelledTitle"), Loc.T("Visuals_SearchCancelledBody"));
             throw;
         }
         AppLog.Write($"Ruta detectada: {path ?? "(no encontrada)"}");
 
         if (path is null)
         {
-            ShowVisualsEmpty($"No encontré \"{reportName}.pbix\" automáticamente",
-                "Puede estar en una carpeta fuera de la búsqueda. Elegilo a mano y se carga igual.");
+            ShowVisualsEmpty(Loc.F("Visuals_NotFoundTitle", reportName), Loc.T("Visuals_NotFoundBody"));
             return;
         }
 
@@ -520,8 +527,7 @@ public sealed partial class MainViewModel : ObservableObject
 
             if (_visuals.Count == 0)
             {
-                ShowVisualsEmpty("Ese archivo no tiene visuales legibles",
-                    "Se probaron los dos formatos de reporte (PBIR y Layout clásico) y ninguno devolvió visuales.");
+                ShowVisualsEmpty(Loc.T("Visuals_NoVisualsTitle"), Loc.T("Visuals_NoVisualsBody"));
             }
             else
             {
@@ -535,14 +541,14 @@ public sealed partial class MainViewModel : ObservableObject
             if (_visuals.Count > 0)
             {
                 var pages = _visuals.Select(v => v.Page).Distinct().Count();
-                StatusText = $"{Path.GetFileName(path)} · {pages} páginas · {_visuals.Count} usos de campos";
+                StatusText = Loc.F("Status_ReportSummary", Path.GetFileName(path), pages, _visuals.Count);
             }
         }
         catch (Exception ex)
         {
             AppLog.Write($"ERROR leyendo visuales: {ex}");
-            ShowVisualsEmpty("No se pudo leer ese archivo", ex.Message);
-            NotifyError($"No se pudo leer {Path.GetFileName(path)}. {ex.Message}");
+            ShowVisualsEmpty(Loc.T("Visuals_ReadFailedTitle"), ex.Message);
+            NotifyError(Loc.F("Toast_ReadFailed", Path.GetFileName(path), ex.Message));
         }
     }
 
@@ -551,7 +557,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task ChoosePbixAsync()
     {
-        var path = _dialogs.PickOpenFile("Archivos Power BI (*.pbix)|*.pbix");
+        var path = _dialogs.PickOpenFile(Loc.T("Dialog_PbixFilter"));
         if (path is null) return;
 
         await OpenReportAsync(path);
@@ -565,7 +571,7 @@ public sealed partial class MainViewModel : ObservableObject
         if (!File.Exists(path))
         {
             _settings.RemoveRecentFile(path);
-            Notify(ToastKind.Warning, $"{Path.GetFileName(path)} ya no existe en esa ubicación.");
+            Notify(ToastKind.Warning, Loc.F("Toast_RecentMissing", Path.GetFileName(path)));
             return;
         }
 
@@ -602,7 +608,7 @@ public sealed partial class MainViewModel : ObservableObject
                 SelectedSection = Compare;
                 break;
             default:
-                Notify(ToastKind.Warning, "Solo se pueden abrir archivos .pbix (reporte) o .json (snapshot).");
+                Notify(ToastKind.Warning, Loc.T("Toast_UnsupportedFile"));
                 break;
         }
     }
@@ -622,7 +628,7 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void ChooseSnapshot()
     {
-        var path = _dialogs.PickOpenFile("Snapshot de PBI Context (*.json)|*.json");
+        var path = _dialogs.PickOpenFile(Loc.T("Dialog_SnapshotFilter"));
         if (path is not null) CompareWithSnapshot(path);
     }
 
@@ -636,13 +642,13 @@ public sealed partial class MainViewModel : ObservableObject
 
             var when = older.ExportedAtUtc.ToLocalTime().ToString("dd/MM/yyyy HH:mm");
             StatusText = diff.Count == 0
-                ? $"Sin cambios contra el snapshot de {older.SourceName} del {when}."
-                : $"{diff.Count} cambios contra el snapshot de {older.SourceName} del {when}.";
+                ? Loc.F("Status_NoChanges", older.SourceName, when)
+                : Loc.F("Status_ChangesFound", diff.Count, older.SourceName, when);
         }
         catch (Exception ex)
         {
             AppLog.Write($"ERROR comparando snapshot: {ex}");
-            NotifyError($"No se pudo leer ese snapshot. {ex.Message}");
+            NotifyError(Loc.F("Toast_SnapshotReadFailed", ex.Message));
         }
     }
 
@@ -710,7 +716,7 @@ public sealed partial class MainViewModel : ObservableObject
             }
         }
 
-        Notify(ToastKind.Info, $"No encontré {label} en el modelo (puede ser de una tabla oculta o de otra versión).");
+        Notify(ToastKind.Info, Loc.F("Toast_NotFound", UsageLabels.Display(label)));
     }
 
     [RelayCommand]
@@ -744,20 +750,7 @@ public sealed partial class MainViewModel : ObservableObject
     };
 
     [RelayCommand]
-    private void ShowShortcuts() => _dialogs.ShowInfo(
-        "Atajos de teclado\n\n" +
-        "Ctrl+F\t\tBuscar en todas las secciones\n" +
-        "Esc\t\tLimpiar la búsqueda\n" +
-        "Ctrl+O\t\tAbrir un .pbix\n" +
-        "Ctrl+E\t\tExportar Markdown (contexto para IA)\n" +
-        "Ctrl+Shift+E\tExportar JSON (snapshot)\n" +
-        "Botón Exportar\tWord, Excel, HTML, CSV de la sección o de todas\n" +
-        "F5\t\tActualizar los datos\n" +
-        "Ctrl+1 … 9, 0\tIr a la sección 1 … 10\n" +
-        "Ctrl+Av Pág / Re Pág\tSección siguiente / anterior\n" +
-        "Ctrl+T\t\tCambiar tema\n" +
-        "F1\t\tEsta ayuda\n\n" +
-        "También podés arrastrar un .pbix o un snapshot .json a la ventana.");
+    private void ShowShortcuts() => _dialogs.ShowInfo(Loc.T("Shortcuts_Text"));
 
     // =====================================================================
     // Avisos (toasts)
@@ -778,7 +771,7 @@ public sealed partial class MainViewModel : ObservableObject
         // Los errores siempre ofrecen una salida: reintentar o abrir el log con el detalle.
         if (actionText is null)
         {
-            actionText = "Ver log";
+            actionText = Loc.T("Toast_ViewLog");
             action = () => _dialogs.OpenWithShell(AppPaths.LogPath);
         }
         Notify(ToastKind.Error, message, actionText, action);
@@ -817,16 +810,16 @@ public sealed partial class MainViewModel : ObservableObject
 
         var tiles = new (string Icon, string Label, int Value, string? Sub)[]
         {
-            ("", "Tablas",         _model.Tables.Count,        hiddenTables   > 0 ? $"{hiddenTables} ocultas"   : null),
-            ("", "Columnas",       _model.Columns.Count,       null),
-            ("", "Medidas DAX",    _model.Measures.Count,      hiddenMeasures > 0 ? $"{hiddenMeasures} ocultas" : null),
-            ("", "Relaciones",     _model.Relationships.Count, null),
-            ("", "Power Query",    _model.PowerQueries.Count,  null),
-            ("", "Páginas",        pages,                      null),
-            ("", "Visuales",       visualCount,                null),
-            ("", "Usos de campos", _visuals.Count,             null),
-            ("", "Filtros",        _filters.Count,             null),
-            ("", "Sin uso",        _usage.Count(u => u.IsUnused), null),
+            ("", Loc.T("Section_Tables"),    _model.Tables.Count,        hiddenTables   > 0 ? Loc.F("Tile_Hidden", hiddenTables)   : null),
+            ("", Loc.T("Section_Columns"),   _model.Columns.Count,       null),
+            ("", Loc.T("Section_Measures"),  _model.Measures.Count,      hiddenMeasures > 0 ? Loc.F("Tile_Hidden", hiddenMeasures) : null),
+            ("", Loc.T("Section_Relationships"), _model.Relationships.Count, null),
+            ("", Loc.T("Tile_PowerQuery"), _model.PowerQueries.Count,  null),
+            ("", Loc.T("Tile_Pages"),        pages,                      null),
+            ("", Loc.T("Tile_Visuals"),       visualCount,                null),
+            ("", Loc.T("Tile_FieldUses"), _visuals.Count,             null),
+            ("", Loc.T("Section_Filters"),   _filters.Count,             null),
+            ("", Loc.T("Tile_Unused"),        _usage.Count(u => u.IsUnused), null),
         };
 
         Summary.SetTiles(tiles.Select((t, i) => new TileViewModel(t.Icon, t.Label, t.Value, t.Sub, i)));
@@ -838,23 +831,22 @@ public sealed partial class MainViewModel : ObservableObject
         // conexión" vs. "esta sección puntual no tiene filas".
         var notConnected = !HasModel;
         var fromReport = notConnected && _reportPath is not null;
-        SetModelEmpty(Measures, notConnected, fromReport, _model.Measures.Count == 0, "El modelo conectado no tiene medidas DAX.");
-        SetModelEmpty(Tables, notConnected, fromReport, _model.Tables.Count == 0, "El modelo conectado no tiene tablas visibles.");
-        SetModelEmpty(Columns, notConnected, fromReport, _model.Columns.Count == 0, "El modelo conectado no tiene columnas.");
-        SetModelEmpty(Relationships, notConnected, fromReport, _model.Relationships.Count == 0, "El modelo conectado no tiene relaciones definidas.");
-        SetModelEmpty(PowerQuery, notConnected, fromReport, _model.PowerQueries.Count == 0, "El modelo conectado no tiene consultas de Power Query.");
-        SetModelEmpty(Usage, notConnected, fromReport, _model.Measures.Count == 0 && _model.Columns.Count == 0, "No hay medidas ni columnas para analizar todavía.");
+        SetModelEmpty(Measures, notConnected, fromReport, _model.Measures.Count == 0, Loc.T("Empty_NoMeasures"));
+        SetModelEmpty(Tables, notConnected, fromReport, _model.Tables.Count == 0, Loc.T("Empty_NoTables"));
+        SetModelEmpty(Columns, notConnected, fromReport, _model.Columns.Count == 0, Loc.T("Empty_NoColumns"));
+        SetModelEmpty(Relationships, notConnected, fromReport, _model.Relationships.Count == 0, Loc.T("Empty_NoRelationships"));
+        SetModelEmpty(PowerQuery, notConnected, fromReport, _model.PowerQueries.Count == 0, Loc.T("Empty_NoQueries"));
+        SetModelEmpty(Usage, notConnected, fromReport, _model.Measures.Count == 0 && _model.Columns.Count == 0, Loc.T("Empty_NothingToAnalyze"));
 
         if (_filters.Count == 0)
-            Filters.SetEmpty(true, "Sin filtros detectados",
-                "No se encontraron filtros a nivel reporte, página o visual en este archivo — o el tablero de verdad no tiene ninguno configurado.");
+            Filters.SetEmpty(true, Loc.T("Empty_NoFiltersTitle"), Loc.T("Empty_NoFiltersBody"));
         else
             Filters.SetEmpty(false);
 
         if (notConnected)
-            Performance.SetEmpty(true, "Sin modelo conectado", "Conectate a un modelo para analizar su rendimiento.");
+            Performance.SetEmpty(true, Loc.T("Empty_NoModelTitle"), Loc.T("Empty_PerfConnect"));
         else if (_performance.Count == 0)
-            Performance.SetEmpty(true, "Sin alertas detectadas", "No se encontraron patrones conocidos de riesgo en este modelo.");
+            Performance.SetEmpty(true, Loc.T("Empty_NoAlertsTitle"), Loc.T("Empty_NoAlertsBody"));
         else
             Performance.SetEmpty(false);
     }
@@ -862,17 +854,15 @@ public sealed partial class MainViewModel : ObservableObject
     private void SetModelEmpty(SectionViewModel section, bool notConnected, bool fromReport, bool sectionIsEmpty, string emptyBody)
     {
         // Con un .pbix cargado pero sin modelo, la salida es abrirlo en Power BI Desktop desde acá.
-        section.EmptyActionText = fromReport ? "Abrir en Power BI Desktop" : null;
+        section.EmptyActionText = fromReport ? Loc.T("Empty_OpenInDesktop") : null;
         section.EmptyActionCommand = fromReport ? OpenReportInDesktopCommand : null;
 
         if (fromReport)
-            section.SetEmpty(true, "Falta el modelo de este tablero",
-                "Las tablas, columnas y medidas no se pueden leer del archivo .pbix (van comprimidas adentro): hay que tener el tablero abierto en Power BI Desktop.");
+            section.SetEmpty(true, Loc.T("Empty_MissingModelTitle"), Loc.T("Empty_MissingModelBody"));
         else if (notConnected)
-            section.SetEmpty(true, "Sin modelo conectado",
-                "Abrí tu tablero en Power BI Desktop y esta app se engancha sola, o lanzala desde la pestaña Herramientas externas. Ahí se llenan medidas, tablas, columnas y relaciones.");
+            section.SetEmpty(true, Loc.T("Empty_NoModelTitle"), Loc.T("Empty_NoModelBody"));
         else if (sectionIsEmpty)
-            section.SetEmpty(true, "Esta sección está vacía", emptyBody);
+            section.SetEmpty(true, Loc.T("Empty_SectionEmptyTitle"), emptyBody);
         else
             section.SetEmpty(false);
     }
@@ -884,41 +874,40 @@ public sealed partial class MainViewModel : ObservableObject
         if (section == Visuals && _visuals.Count > 0)
         {
             var pages = _visuals.Select(v => v.Page).Distinct().Count();
-            StatusText = $"{pages} páginas · {_visuals.Count} usos de campos";
+            StatusText = Loc.F("Status_PagesAndUses", pages, _visuals.Count);
         }
         else if (section == Summary)
         {
-            StatusText = "Análisis local, basado en reglas — no usa IA ni sale a internet.";
+            StatusText = Loc.T("Status_Summary");
         }
         else if (section == Usage && _usage.Count > 0)
         {
             var unused = _usage.Count(u => u.IsUnused);
-            StatusText = $"{unused} de {_usage.Count} objetos sin ningún uso detectado — cruza visuales, DAX y relaciones.";
+            StatusText = Loc.F("Status_Usage", unused, _usage.Count);
         }
         else if (section == Filters)
         {
             StatusText = _filters.Count == 0
-                ? "Sin filtros detectados en el reporte, la página o los visuales."
-                : $"{_filters.Count} filtros — {_filters.Count(f => f.Scope == "Reporte")} de reporte, " +
-                  $"{_filters.Count(f => f.Scope == "Página")} de página, {_filters.Count(f => f.Scope == "Visual")} de visual.";
+                ? Loc.T("Status_NoFilters")
+                : Loc.F("Status_Filters", _filters.Count, _filters.Count(f => f.Scope == "Reporte"),
+                    _filters.Count(f => f.Scope == "Página"), _filters.Count(f => f.Scope == "Visual"));
         }
         else if (section == Performance)
         {
             StatusText = _performance.Count == 0
-                ? "Heurísticas sobre metadata — sin patrones de riesgo detectados."
-                : $"{_performance.Count} alertas — heurísticas sobre metadata, no un profiler real.";
+                ? Loc.T("Status_NoPerfRisks")
+                : Loc.F("Status_PerfAlerts", _performance.Count);
         }
         else if (section == Compare)
         {
-            StatusText = "Elegí un snapshot .json exportado antes para ver qué cambió.";
+            StatusText = Loc.T("Status_Compare");
         }
         else if (section == Measures || section == Tables || section == Columns
                  || section == Relationships || section == PowerQuery)
         {
             StatusText = HasModel
-                ? $"{_model.Tables.Count} tablas · {_model.Columns.Count} columnas · " +
-                  $"{_model.Measures.Count} medidas · {_model.Relationships.Count} relaciones"
-                : "Sin modelo: hace falta tener el tablero abierto en Power BI Desktop.";
+                ? Loc.F("Status_ModelCounts", _model.Tables.Count, _model.Columns.Count, _model.Measures.Count, _model.Relationships.Count)
+                : Loc.T("Status_NoModelNeeded");
         }
     }
 
@@ -933,20 +922,20 @@ public sealed partial class MainViewModel : ObservableObject
     {
         if (!EnsureSomethingLoaded()) return;
 
-        var path = _dialogs.PickSaveFile("Markdown (*.md)|*.md", $"Contexto_IA_{_sourceName}.md");
+        var path = _dialogs.PickSaveFile("Markdown (*.md)|*.md", Loc.F("Export_MarkdownSuggested", _sourceName));
         if (path is null) return;
 
         try
         {
             var summary = SummaryBuilder.Build(_model, _visuals);
             AiContextExporter.Export(path, _sourceName, _model, _visuals, summary, _usage, _filters);
-            Notify(ToastKind.Success, "Contexto guardado. Adjuntá ese .md en el chat con Claude o ChatGPT.",
-                "Mostrar", () => _dialogs.RevealInExplorer(path));
+            Notify(ToastKind.Success, Loc.T("Export_MarkdownSaved"),
+                Loc.T("Toast_Reveal"), () => _dialogs.RevealInExplorer(path));
         }
         catch (Exception ex)
         {
             AppLog.Write($"ERROR generando contexto IA: {ex}");
-            NotifyError($"No se pudo generar el archivo. {ex.Message}");
+            NotifyError(Loc.F("Toast_FileFailed", ex.Message));
         }
     }
 
@@ -955,19 +944,19 @@ public sealed partial class MainViewModel : ObservableObject
     {
         if (!EnsureSomethingLoaded()) return;
 
-        var path = _dialogs.PickSaveFile("JSON (*.json)|*.json", $"Snapshot_{_sourceName}.json");
+        var path = _dialogs.PickSaveFile("JSON (*.json)|*.json", Loc.F("Export_JsonSuggested", _sourceName));
         if (path is null) return;
 
         try
         {
             JsonModelExporter.Export(path, _sourceName, _model, _visuals, _usage, _filters);
-            Notify(ToastKind.Success, "Snapshot guardado. Usalo más adelante en \"Comparar versiones\".",
-                "Mostrar", () => _dialogs.RevealInExplorer(path));
+            Notify(ToastKind.Success, Loc.T("Export_JsonSaved"),
+                Loc.T("Toast_Reveal"), () => _dialogs.RevealInExplorer(path));
         }
         catch (Exception ex)
         {
             AppLog.Write($"ERROR generando JSON: {ex}");
-            NotifyError($"No se pudo generar el archivo. {ex.Message}");
+            NotifyError(Loc.F("Toast_FileFailed", ex.Message));
         }
     }
 
@@ -975,19 +964,19 @@ public sealed partial class MainViewModel : ObservableObject
 
     [RelayCommand]
     private Task ExportWordAsync() =>
-        ExportDocumentAsync("Documento de Word (*.docx)|*.docx", "docx", "el documento de Word", WordExporter.WriteFile);
+        ExportDocumentAsync(Loc.T("Export_WordFilter"), "docx", Loc.T("Export_WordLabel"), WordExporter.WriteFile);
 
     [RelayCommand]
     private Task ExportExcelAsync() =>
-        ExportDocumentAsync("Libro de Excel (*.xlsx)|*.xlsx", "xlsx", "el libro de Excel", ExcelExporter.WriteFile);
+        ExportDocumentAsync(Loc.T("Export_ExcelFilter"), "xlsx", Loc.T("Export_ExcelLabel"), ExcelExporter.WriteFile);
 
     [RelayCommand]
     private Task ExportHtmlAsync() =>
-        ExportDocumentAsync("Página web (*.html)|*.html", "html", "la página HTML", HtmlExporter.WriteFile);
+        ExportDocumentAsync(Loc.T("Export_HtmlFilter"), "html", Loc.T("Export_HtmlLabel"), HtmlExporter.WriteFile);
 
     [RelayCommand]
     private Task ExportCsvZipAsync() =>
-        ExportDocumentAsync("CSV de todas las secciones (*.zip)|*.zip", "zip", "los CSV",
+        ExportDocumentAsync(Loc.T("Export_ZipFilter"), "zip", Loc.T("Export_CsvZipLabel"),
             (path, document) => CsvExporter.WriteZip(path, document.Tables));
 
     /// <summary>CSV de la sección que se está viendo, tal cual se ve: con la búsqueda y el orden de la grilla.</summary>
@@ -998,16 +987,16 @@ public sealed partial class MainViewModel : ObservableObject
 
         if (SelectedSection is not IExportableSection section || !section.HasExportData)
         {
-            Notify(ToastKind.Info, "Elegí una sección con una tabla (Medidas, Columnas, Relaciones…) para exportarla a CSV.");
+            Notify(ToastKind.Info, Loc.T("Export_CsvNeedsSection"));
             return;
         }
 
-        var path = _dialogs.PickSaveFile("CSV (*.csv)|*.csv", $"{ExportText.SafeFileName(section.Title)}_{ExportText.SafeFileName(_sourceName)}.csv");
+        var path = _dialogs.PickSaveFile(Loc.T("Export_CsvFilter"), $"{ExportText.SafeFileName(section.Title)}_{ExportText.SafeFileName(_sourceName)}.csv");
         if (path is null) return;
 
         var table = section.ToExportTable(filteredView: true);
-        await WriteExportAsync(path, "el CSV", () => CsvExporter.WriteFile(path, table),
-            $"{table.Rows.Count:N0} filas guardadas" + (string.IsNullOrWhiteSpace(GlobalSearchText) ? "." : " (las de la búsqueda actual)."));
+        await WriteExportAsync(path, Loc.T("Export_CsvLabel"), () => CsvExporter.WriteFile(path, table),
+            Loc.F(string.IsNullOrWhiteSpace(GlobalSearchText) ? "Export_CsvRows" : "Export_CsvRowsFiltered", table.Rows.Count.ToString("N0")));
     }
 
     private async Task ExportDocumentAsync(string filter, string extension, string label, Action<string, ExportDocument> write)
@@ -1015,23 +1004,23 @@ public sealed partial class MainViewModel : ObservableObject
         if (IsBusy) { NotifyBusy(); return; }
         if (!EnsureSomethingLoaded()) return;
 
-        var path = _dialogs.PickSaveFile(filter, $"Documentacion_{ExportText.SafeFileName(_sourceName)}.{extension}");
+        var path = _dialogs.PickSaveFile(filter, Loc.F("Export_DocSuggested", ExportText.SafeFileName(_sourceName), extension));
         if (path is null) return;
 
         var document = BuildExportDocument();   // se arma acá (hilo de la interfaz); solo la escritura va a segundo plano
-        await WriteExportAsync(path, label, () => write(path, document), $"{document.Tables.Count} secciones guardadas.");
+        await WriteExportAsync(path, label, () => write(path, document), Loc.F("Export_SectionsSaved", document.Tables.Count));
     }
 
     private async Task WriteExportAsync(string path, string label, Action write, string successDetail)
     {
         await RunBusyAsync(async ct =>
         {
-            StatusText = $"Generando {label}…";
+            StatusText = Loc.F("Status_Generating", label);
             try
             {
                 await Task.Run(write, ct);
                 Notify(ToastKind.Success, $"{char.ToUpper(label[0])}{label[1..]}: {successDetail}",
-                    "Mostrar", () => _dialogs.RevealInExplorer(path));
+                    Loc.T("Toast_Reveal"), () => _dialogs.RevealInExplorer(path));
             }
             catch (OperationCanceledException)
             {
@@ -1040,7 +1029,7 @@ public sealed partial class MainViewModel : ObservableObject
             catch (Exception ex)
             {
                 AppLog.Write($"ERROR exportando {label}: {ex}");
-                NotifyError($"No se pudo generar {label}. {ex.Message}");
+                NotifyError(Loc.F("Toast_ExportFailed", label, ex.Message));
             }
         });
 
@@ -1059,12 +1048,12 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     private void NotifyBusy() =>
-        Notify(ToastKind.Info, "Todavía se está cargando el tablero; probá de nuevo en un momento (o cancelá la carga).");
+        Notify(ToastKind.Info, Loc.T("Toast_Busy"));
 
     private bool EnsureSomethingLoaded()
     {
         if (HasAnything) return true;
-        Notify(ToastKind.Info, "No hay nada cargado todavía — conectate a un modelo o abrí un .pbix primero.");
+        Notify(ToastKind.Info, Loc.T("Toast_NothingLoaded"));
         return false;
     }
 }

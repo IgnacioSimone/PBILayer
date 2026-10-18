@@ -82,9 +82,9 @@
                   PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown">
             <DataGrid.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Copiar celda" Click="CopyCell_Click" />
-                    <MenuItem Header="Copiar fila" Click="CopyRow_Click" />
-                    <MenuItem Header="Copiar todas las filas visibles" Click="CopyAll_Click" />
+                    <MenuItem Header="{views:Loc Copy_Cell}" Click="CopyCell_Click" />
+                    <MenuItem Header="{views:Loc Copy_Row}" Click="CopyRow_Click" />
+                    <MenuItem Header="{views:Loc Copy_All}" Click="CopyAll_Click" />
                 </ContextMenu>
             </DataGrid.ContextMenu>
         </DataGrid>

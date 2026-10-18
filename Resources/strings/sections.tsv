@@ -1,0 +1,71 @@
+# Secciones: títulos, encabezados de columnas (pantalla y exportación), panel de detalle, notas y estados vacíos.
+Section_Summary	Resumen	Summary
+Section_Measures	Medidas DAX	DAX measures
+Section_Tables	Tablas	Tables
+Section_Columns	Columnas	Columns
+Section_Relationships	Relaciones	Relationships
+Section_PowerQuery	Power Query (M)	Power Query (M)
+Section_Usage	Uso y limpieza	Usage & cleanup
+Section_Visuals	Visuales y campos	Visuals & fields
+Section_Filters	Filtros	Filters
+Section_Performance	Rendimiento	Performance
+Section_Compare	Comparar versiones	Compare versions
+
+Common_Yes	Sí	Yes
+Common_No	No	No
+
+Col_Table	Tabla	Table
+Col_Measure	Medida	Measure
+Col_Folder	Carpeta	Folder
+Col_Dax	DAX	DAX
+Col_Format	Formato	Format
+Col_Hidden	Oculta	Hidden
+Col_Description	Descripción	Description
+Col_Columns	Columnas	Columns
+Col_Measures	Medidas	Measures
+Col_Column	Columna	Column
+Col_DataType	Tipo de dato	Data type
+Col_Source	Origen	Source
+Col_SourceColumn	Columna de origen	Source column
+Col_DaxOrSource	DAX / columna origen	DAX / source column
+Col_FromTable	Desde tabla	From table
+Col_FromColumn	Desde columna	From column
+Col_ToTable	Hacia tabla	To table
+Col_ToColumn	Hacia columna	To column
+Col_Cardinality	Cardinalidad	Cardinality
+Col_CrossFilter	Filtro cruzado	Cross-filter
+Col_Active	Activa	Active
+Col_Name	Nombre	Name
+Col_Kind	Tipo	Type
+Col_MCode	Código M	M code
+Col_Level	Nivel	Level
+Col_Page	Página	Page
+Col_Visual	Visual	Visual
+Col_Field	Campo	Field
+Col_FilterType	Tipo de filtro	Filter type
+Col_Condition	Condición	Condition
+Col_Title	Título	Title
+Col_Severity	Severidad	Severity
+Col_Category	Categoría	Category
+Col_Object	Objeto	Object
+Col_Detail	Detalle	Detail
+Col_Status	Estado	Status
+Col_DependsOn	Depende de	Depends on
+Col_UsedBy	Usado por	Used by
+Col_Change	Cambio	Change
+
+Detail_MeasureSubtitle	Medida · {0}	Measure · {0}
+Detail_ColumnSubtitle	Columna · {0}	Column · {0}
+Detail_QuerySubtitle	Power Query · {0}	Power Query · {0}
+
+Count_Of	{0} de {1}	{0} of {1}
+Count_OneRow	1 fila	1 row
+Count_Rows	{0} filas	{0} rows
+NoResults	Sin resultados para "{0}"	No results for "{0}"
+
+Note_Performance	Heurísticas sobre patrones conocidos como antipatrón (relaciones bidireccionales o muchos a muchos, columnas calculadas, CALCULATE anidado). Esta herramienta nunca consulta filas reales, así que no puede medir cardinalidad ni tiempo de query real — son pistas para revisar, no un profiler.	Heuristics based on known anti-patterns (bidirectional or many-to-many relationships, calculated columns, nested CALCULATE). This tool never queries real rows, so it cannot measure real cardinality or query time — they are hints to review, not a profiler.
+Note_Usage	Cruza visuales del reporte, dependencias DAX, relaciones y dependencias entre consultas de Power Query (una tabla auxiliar o un parámetro que alimenta a una tabla en uso cuenta como usado). No ve segmentaciones, marcadores ni Q&A: confirmá antes de borrar.	Cross-checks report visuals, DAX dependencies, relationships and dependencies between Power Query queries (a helper table or parameter that feeds a table in use counts as used). It cannot see slicers, bookmarks or Q&A: double-check before deleting.
+Note_Compare	Compara el modelo conectado ahora contra un snapshot .json exportado antes (botón "Exportar JSON") del mismo tablero — pensado para auditar qué cambió entre una versión y otra.	Compares the model connected now against a .json snapshot exported earlier (the "Export JSON" option) from the same report — meant to audit what changed between one version and another.
+Compare_EmptyTitle	Elegí un snapshot para comparar	Choose a snapshot to compare
+Compare_EmptyBody	Elegí un archivo .json exportado antes de este mismo tablero para ver qué cambió desde entonces.	Choose a .json file exported earlier from this same report to see what has changed since then.
+Compare_EmptyAction	Elegir snapshot .json…	Choose snapshot .json…
