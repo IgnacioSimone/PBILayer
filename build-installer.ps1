@@ -1,7 +1,7 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Arma el instalador de PBI Context (PBIContext-Setup-<versión>.exe) y su archivo de hash.
+    Arma el instalador de PBI Layer (PBILayer-Setup-<versión>.exe) y su archivo de hash.
 
 .DESCRIPTION
     1. Corre los tests (salvo -SkipTests).
@@ -24,7 +24,7 @@ Set-Location $PSScriptRoot
 $csproj = [xml](Get-Content 'PBIExplorer.csproj')
 $version = ($csproj.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1).Trim()
 if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "La versión del .csproj ('$version') no tiene el formato X.Y.Z." }
-Write-Host "== PBI Context $version ==" -ForegroundColor Cyan
+Write-Host "== PBI Layer $version ==" -ForegroundColor Cyan
 
 # ---- Inno Setup ----
 $iscc = (Get-Command iscc -ErrorAction SilentlyContinue).Source
@@ -52,7 +52,7 @@ if (-not $SkipPublish) {
     dotnet publish PBIExplorer.csproj -c Release -r win-x64 --self-contained true -o publish --nologo -v q
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish falló.' }
 }
-if (-not (Test-Path 'publish\PBIContext.exe')) { throw 'No hay publish\PBIContext.exe: corré sin -SkipPublish.' }
+if (-not (Test-Path 'publish\PBILayer.exe')) { throw 'No hay publish\PBILayer.exe: corré sin -SkipPublish.' }
 
 # ---- Icono de la herramienta externa (se ve en la cinta de Power BI Desktop) ----
 Add-Type -AssemblyName System.Drawing
@@ -69,10 +69,10 @@ Set-Content 'installer\icon-data.inc' ('#define IconData "' + $iconData + '"') -
 
 # ---- Instalador ----
 Write-Host '-- Instalador (Inno Setup)' -ForegroundColor Cyan
-& $iscc "/DAppVersion=$version" '/Q' 'installer\PBIContext.iss'
+& $iscc "/DAppVersion=$version" '/Q' 'installer\PBILayer.iss'
 if ($LASTEXITCODE -ne 0) { throw 'Inno Setup falló.' }
 
-$setup = Join-Path $PSScriptRoot "installer_output\PBIContext-Setup-$version.exe"
+$setup = Join-Path $PSScriptRoot "installer_output\PBILayer-Setup-$version.exe"
 if (-not (Test-Path $setup)) { throw "No se generó $setup." }
 
 # ---- Hash para verificar la descarga ----

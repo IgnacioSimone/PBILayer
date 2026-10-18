@@ -30,7 +30,7 @@ public partial class App : Application
 
             // Única conexión de red de la app, y solo si el usuario la activa (ver Acerca de).
             var http = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(20) };
-            http.DefaultRequestHeaders.UserAgent.ParseAdd($"PBIContext/{AppInfo.VersionText}");
+            http.DefaultRequestHeaders.UserAgent.ParseAdd($"PBILayer/{AppInfo.VersionText}");
             var feed = new GitHubUpdateFeed(http, AppInfo.RepositoryOwner, AppInfo.RepositoryName);
             var installer = new UpdateInstaller(http, System.IO.Path.Combine(AppPaths.DataDir, "updates"));
             var updates = new UpdateViewModel(feed, installer, dialogs, settings, () => settings.Save(), AppInfo.Version);

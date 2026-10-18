@@ -1,4 +1,4 @@
-; Instalador de PBI Context (Inno Setup 6).
+; Instalador de PBI Layer (Inno Setup 6).
 ; No se compila a mano: lo arma build-installer.ps1, que pasa la versión (/DAppVersion=...) y genera icon-data.inc.
 
 #ifndef AppVersion
@@ -6,14 +6,14 @@
 #endif
 #include "icon-data.inc"
 
-#define AppName "PBI Context"
-#define AppExe "PBIContext.exe"
+#define AppName "PBI Layer"
+#define AppExe "PBILayer.exe"
 #define AppPublisher "Ignacio Simone"
-#define AppUrl "https://github.com/IgnacioSimone/PBIContext"
+#define AppUrl "https://github.com/IgnacioSimone/PBILayer"
 
 [Setup]
 ; GUID fijo: es lo que le permite a una versión nueva reemplazar a la anterior en vez de instalarse al lado.
-AppId={{B8C2D6A1-5E3F-4C7A-9D21-6F0A1E4B7C35}
+AppId={{592B6185-BF16-446B-857D-FE010307C4BA}
 AppName={#AppName}
 AppVersion={#AppVersion}
 AppVerName={#AppName} {#AppVersion}
@@ -42,12 +42,12 @@ ArchitecturesInstallIn64BitMode=x64
 
 #ifdef TestMode
 OutputDir={#TestMode}
-OutputBaseFilename=PBIContext-Setup-test
+OutputBaseFilename=PBILayer-Setup-test
 #else
 OutputDir=..\installer_output
-OutputBaseFilename=PBIContext-Setup-{#AppVersion}
+OutputBaseFilename=PBILayer-Setup-{#AppVersion}
 #endif
-SetupIconFile=..\Assets\PBIContext.ico
+SetupIconFile=..\Assets\PBILayer.ico
 UninstallDisplayIcon={app}\{#AppExe}
 UninstallDisplayName={#AppName}
 LicenseFile=..\LICENSE
@@ -55,7 +55,7 @@ Compression=lzma2/ultra64
 SolidCompression=yes
 WizardStyle=modern
 
-; Si PBI Context está abierto, el instalador lo cierra y (en modo normal) lo vuelve a abrir al terminar.
+; Si PBI Layer está abierto, el instalador lo cierra y (en modo normal) lo vuelve a abrir al terminar.
 CloseApplications=yes
 RestartApplications=no
 
@@ -80,12 +80,12 @@ Filename: "{app}\{#AppExe}"; Description: "{cm:LaunchProgram,{#AppName}}"; Flags
 
 [UninstallDelete]
 ; La herramienta externa se registra en una carpeta compartida de Power BI Desktop: se limpia al desinstalar.
-; (Las preferencias y el registro de errores quedan en %LOCALAPPDATA%\PBIContext a propósito.)
+; (Las preferencias y el registro de errores quedan en %LOCALAPPDATA%\PBILayer a propósito.)
 #ifdef TestMode
 Type: filesandordirs; Name: "{app}\_external-tools"
 #else
-Type: files; Name: "{commoncf32}\Microsoft Shared\Power BI Desktop\External Tools\PBIContext.pbitool.json"
-Type: filesandordirs; Name: "{localappdata}\PBIContext\updates"
+Type: files; Name: "{commoncf32}\Microsoft Shared\Power BI Desktop\External Tools\PBILayer.pbitool.json"
+Type: filesandordirs; Name: "{localappdata}\PBILayer\updates"
 #endif
 
 [Code]
@@ -116,7 +116,7 @@ begin
   StringChangeEx(Result, '"', '\"', True);
 end;
 
-{ Registra PBI Context en la pestaña "Herramientas externas" de Power BI Desktop. }
+{ Registra PBI Layer en la pestaña "Herramientas externas" de Power BI Desktop. }
 procedure WriteToolManifest();
 var
   Json: String;
@@ -125,16 +125,16 @@ begin
   Json :=
     '{' + #13#10 +
     '  "version": "1.0",' + #13#10 +
-    '  "name": "PBI Context",' + #13#10 +
+    '  "name": "PBI Layer",' + #13#10 +
     '  "description": "Medidas DAX, tablas, columnas, relaciones, Power Query y visuales del modelo abierto — solo metadata, nunca datos. No afiliado a Microsoft.",' + #13#10 +
     '  "path": "' + JsonEscape(ExpandConstant('{app}\{#AppExe}')) + '",' + #13#10 +
     '  "arguments": "\"%server%\" \"%database%\"",' + #13#10 +
     '  "iconData": "{#IconData}"' + #13#10 +
     '}';
-  SaveStringToFile(ToolManifestDir() + '\PBIContext.pbitool.json', Json, False);
+  SaveStringToFile(ToolManifestDir() + '\PBILayer.pbitool.json', Json, False);
 end;
 
-{ Versiones anteriores se copiaban a mano a %LOCALAPPDATA%\PBIContext (mezcladas con las preferencias y el
+{ Versiones anteriores se copiaban a mano a %LOCALAPPDATA%\PBILayer (mezcladas con las preferencias y el
   registro). Si hay una de esas, se borran solo sus archivos de programa para no dejar dos copias. }
 procedure RemoveLegacyProgramFiles();
 var
@@ -163,10 +163,32 @@ begin
   end;
 end;
 
+{ La app se llamaba "PBI Context" (otro AppId). Si está instalada, se desinstala en silencio antes de
+  instalar esta: así no quedan dos accesos directos, dos entradas en Herramientas externas ni dos
+  programas en "Aplicaciones instaladas". Las preferencias no se tocan (la app las migra sola). }
+procedure RemoveRenamedPredecessor();
+var
+  Uninstaller: String;
+  ResultCode: Integer;
+begin
+#ifndef TestMode
+  if RegQueryStringValue(HKLM64, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{B8C2D6A1-5E3F-4C7A-9D21-6F0A1E4B7C35}_is1',
+       'UninstallString', Uninstaller) or
+     RegQueryStringValue(HKLM32, 'Software\Microsoft\Windows\CurrentVersion\Uninstall\{B8C2D6A1-5E3F-4C7A-9D21-6F0A1E4B7C35}_is1',
+       'UninstallString', Uninstaller) then
+  begin
+    Exec(RemoveQuotes(Uninstaller), '/VERYSILENT /NORESTART /SUPPRESSMSGBOXES', '', SW_HIDE, ewWaitUntilTerminated, ResultCode);
+  end;
+#endif
+end;
+
 procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssInstall then
-    RemoveLegacyProgramFiles()
+  begin
+    RemoveRenamedPredecessor();
+    RemoveLegacyProgramFiles();
+  end
   else if CurStep = ssPostInstall then
     WriteToolManifest();
 end;

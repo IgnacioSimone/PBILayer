@@ -41,7 +41,7 @@ Detail_CodeHeader	CÓDIGO	CODE
 Detail_CodeAria	Código	Code
 Detail_DependsOn	DEPENDE DE	DEPENDS ON
 Detail_UsedBy	USADA POR	USED BY
-About_Title	Acerca de PBI Context	About PBI Context
+About_Title	Acerca de PBI Layer	About PBI Layer
 About_Description	Documenta un modelo de Power BI y su reporte: medidas DAX, tablas, columnas, relaciones, Power Query, qué visual usa qué campo y qué objetos no se usan en ningún lado.	Documents a Power BI model and its report: DAX measures, tables, columns, relationships, Power Query, which visual uses which field and which objects are not used anywhere.
 About_UpdatesHeader	ACTUALIZACIONES	UPDATES
 Btn_CheckNow	Buscar ahora	Check now
@@ -69,5 +69,5 @@ Menu_Language	Idioma	Language
 Lang_Auto	Automático (Windows)	Automatic (Windows)
 Lang_Spanish	Español	Español
 Lang_English	English	English
-Lang_RestartPrompt	El idioma cambia al reiniciar PBI Context.	The language changes when PBI Context restarts.
+Lang_RestartPrompt	El idioma cambia al reiniciar PBI Layer.	The language changes when PBI Layer restarts.
 Lang_RestartAction	Reiniciar ahora	Restart now

@@ -20,7 +20,7 @@ public class JsonModelExporterTests
         return model;
     }
 
-    private static string TempJsonPath() => Path.Combine(Path.GetTempPath(), $"pbicontext_test_{Guid.NewGuid():N}.json");
+    private static string TempJsonPath() => Path.Combine(Path.GetTempPath(), $"pbilayer_test_{Guid.NewGuid():N}.json");
 
     [Fact]
     public void ExportThenLoad_RoundTripsStructure_AndMasksSensitiveText()

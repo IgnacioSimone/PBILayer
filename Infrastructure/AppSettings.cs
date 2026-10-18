@@ -13,7 +13,7 @@ public enum UpdateCheckMode
     Off
 }
 
-/// <summary>Preferencias del usuario, persistidas en %LOCALAPPDATA%\PBIContext\settings.json.</summary>
+/// <summary>Preferencias del usuario, persistidas en %LOCALAPPDATA%\PBILayer\settings.json.</summary>
 public sealed class AppSettings
 {
     public const int MaxRecentFiles = 8;

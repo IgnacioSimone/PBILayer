@@ -47,8 +47,8 @@ Vis_keyDriversVisual	impulsores clave	key influencers
 Vis_decompositionTreeVisual	árbol de descomposición	decomposition tree
 Vis_qnaVisual	preguntas y respuestas	Q&A
 Export_Summary	Resumen	Summary
-Export_GeneratedAt	Generado el {0:dd/MM/yyyy HH:mm} con PBI Context	Generated on {0:dd/MM/yyyy HH:mm} with PBI Context
-Export_DocGeneratedAt	Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Context	Documentation generated on {0:dd/MM/yyyy HH:mm} with PBI Context
+Export_GeneratedAt	Generado el {0:dd/MM/yyyy HH:mm} con PBI Layer	Generated on {0:dd/MM/yyyy HH:mm} with PBI Layer
+Export_DocGeneratedAt	Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Layer	Documentation generated on {0:dd/MM/yyyy HH:mm} with PBI Layer
 Export_DocTitle	{0} — Documentación	{0} — Documentation
 Export_NoRows	Sin filas.	No rows.
 Export_PrivacyNote	Solo metadata del modelo y del reporte: no incluye filas de datos. Emails, DNI, CUIT y rutas locales están enmascarados.	Model and report metadata only: no data rows are included. Emails, national IDs, tax IDs and local paths are masked.

@@ -7,7 +7,7 @@ namespace PBIExplorer.Infrastructure;
 
 public sealed class WpfDialogService : IDialogService
 {
-    public const string AppName = "PBI Context";
+    public const string AppName = "PBI Layer";
 
     public void ShowInfo(string message) =>
         MessageBox.Show(message, AppName, MessageBoxButton.OK, MessageBoxImage.Information);

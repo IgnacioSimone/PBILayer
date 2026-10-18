@@ -51,8 +51,8 @@ jobs:
       - name: Publicar la release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2.6.2
         with:
-          name: PBI Context ${{ env.VERSION }}
+          name: PBI Layer ${{ env.VERSION }}
           body_path: release-notes.md
           files: |
-            installer_output/PBIContext-Setup-${{ env.VERSION }}.exe
-            installer_output/PBIContext-Setup-${{ env.VERSION }}.exe.sha256
+            installer_output/PBILayer-Setup-${{ env.VERSION }}.exe
+            installer_output/PBILayer-Setup-${{ env.VERSION }}.exe.sha256

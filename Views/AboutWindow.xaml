@@ -4,7 +4,7 @@
         xmlns:views="clr-namespace:PBIExplorer.Views"
         Title="{views:Loc About_Title}" Width="540" SizeToContent="Height" MaxHeight="800"
         ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner"
-        Icon="pack://application:,,,/Assets/PBIContext.ico"
+        Icon="pack://application:,,,/Assets/PBILayer.ico"
         Style="{StaticResource {x:Type Window}}">
 
     <Window.Resources>
@@ -79,11 +79,11 @@
             <!-- Enlaces -->
             <WrapPanel Margin="-10,18,0,0">
                 <Button Content="{views:Loc Link_Repo}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
-                        CommandParameter="https://github.com/IgnacioSimone/PBIContext" />
+                        CommandParameter="https://github.com/IgnacioSimone/PBILayer" />
                 <Button Content="{views:Loc Link_License}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
-                        CommandParameter="https://github.com/IgnacioSimone/PBIContext/blob/master/LICENSE" />
+                        CommandParameter="https://github.com/IgnacioSimone/PBILayer/blob/master/LICENSE" />
                 <Button Content="{views:Loc Link_Changelog}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
-                        CommandParameter="https://github.com/IgnacioSimone/PBIContext/blob/master/CHANGELOG.md" />
+                        CommandParameter="https://github.com/IgnacioSimone/PBILayer/blob/master/CHANGELOG.md" />
                 <Button Content="{views:Loc Link_DataFolder}" Style="{StaticResource LinkButton}" Command="{Binding OpenDataFolderCommand}"
                         ToolTip="{Binding DataFolder}" />
             </WrapPanel>

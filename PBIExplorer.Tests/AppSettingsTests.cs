@@ -5,7 +5,7 @@ namespace PBIExplorer.Tests;
 
 public class AppSettingsTests
 {
-    private static string TempFile() => Path.Combine(Path.GetTempPath(), $"pbicontext-{Guid.NewGuid():N}.json");
+    private static string TempFile() => Path.Combine(Path.GetTempPath(), $"pbilayer-{Guid.NewGuid():N}.json");
 
     [Fact]
     public void Round_trips_theme_window_and_recent_files()

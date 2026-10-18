@@ -6,7 +6,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). L
 
 Versión grande: la app pasa de herramienta externa de un solo uso a una aplicación completa.
 
+**Nuevo nombre: PBI Layer** (antes "PBI Context"). El instalador desinstala solo la versión anterior y las preferencias se copian a la carpeta nueva (`%LOCALAPPDATA%\PBILayer`).
+
 ### Agregado
+- Tarjetas del Resumen con una descripción breve; al presionarlas llevan a su sección.
+- Aviso de espera mientras Power BI Desktop abre el archivo, y botón ✕ para borrar de una vez el texto de los buscadores.
 - Interfaz y exportaciones (Word, Excel, HTML, CSV) en español e inglés; idioma automático según Windows, con selector en el menú Ayuda (se aplica al reiniciar).
 - **Funciona sola**: al abrirla detecta el tablero abierto en Power BI Desktop y lee su modelo, sin pasar por *Herramientas externas*. Al abrir un `.pbix` que no está en Power BI Desktop, lo abre ahí y espera a que cargue.
 - **Búsqueda global** (Ctrl+F) sin distinguir acentos, con contador de resultados por sección.

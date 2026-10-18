@@ -55,7 +55,7 @@ public static class JsonModelExporter
     {
         var json = File.ReadAllText(path);
         return JsonSerializer.Deserialize<JsonSnapshotEnvelope>(json, Options)
-               ?? throw new InvalidDataException("El archivo no tiene el formato esperado de snapshot de PBI Context.");
+               ?? throw new InvalidDataException("El archivo no tiene el formato esperado de snapshot de PBI Layer.");
     }
 
     private static ModelSnapshot MaskModel(ModelSnapshot model)

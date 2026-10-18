@@ -1,4 +1,6 @@
-# PBI Context
+# PBI Layer
+
+**Documentación de modelos de Power BI.** (Antes llamada "PBI Context".)
 
 Aplicación de escritorio para Windows (también se registra como herramienta externa de Power BI Desktop) que documenta un modelo (medidas DAX, tablas,
 columnas, relaciones, consultas Power Query) y su reporte (qué visual usa qué campo, en
@@ -41,21 +43,21 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
 
 ### Instalador (recomendado)
 
-1. Bajá `PBIContext-Setup-<versión>.exe` de la página de [Releases](https://github.com/IgnacioSimone/PBIContext/releases)
+1. Bajá `PBILayer-Setup-<versión>.exe` de la página de [Releases](https://github.com/IgnacioSimone/PBILayer/releases)
    y ejecutalo. Pide permisos de administrador porque registra la herramienta externa en una carpeta de
    sistema que lee Power BI Desktop. Instala en `Program Files`, crea el acceso directo del menú Inicio y,
-   si había una copia vieja en `%LOCALAPPDATA%\PBIContext`, la reemplaza sin tocar tus preferencias.
-2. Abrí **PBI Context** desde el menú Inicio (busca solo el tablero abierto en Power BI Desktop) o desde
-   Power BI Desktop → pestaña **Herramientas externas** → **PBI Context**.
+   si había una copia vieja en `%LOCALAPPDATA%\PBILayer`, la reemplaza sin tocar tus preferencias.
+2. Abrí **PBI Layer** desde el menú Inicio (busca solo el tablero abierto en Power BI Desktop) o desde
+   Power BI Desktop → pestaña **Herramientas externas** → **PBI Layer**.
 
-Instalación silenciosa: `PBIContext-Setup-<versión>.exe /VERYSILENT /NORESTART`.
+Instalación silenciosa: `PBILayer-Setup-<versión>.exe /VERYSILENT /NORESTART`.
 Los archivos publicados traen un `.sha256`; podés verificar la descarga con `Get-FileHash`.
 El instalador **no está firmado digitalmente**, así que Windows SmartScreen puede mostrar un aviso la primera vez.
 
 ### Desde el código fuente
 
 1. Instalá el SDK de .NET 8 e [Inno Setup 6](https://jrsoftware.org/isinfo.php) (`winget install JRSoftware.InnoSetup`).
-2. `./build-installer.ps1` corre los tests, publica la app y arma `installer_output\PBIContext-Setup-<versión>.exe`
+2. `./build-installer.ps1` corre los tests, publica la app y arma `installer_output\PBILayer-Setup-<versión>.exe`
    junto con su `.sha256`. (`install.ps1` queda como alternativa sin instalador: copia la publicación a tu perfil.)
 3. Para publicar una versión: subí `<Version>` en `PBIExplorer.csproj`, agregá sus notas en `CHANGELOG.md`, y
    empujá la etiqueta `vX.Y.Z`: el workflow `release.yml` arma el instalador y crea la release en GitHub.

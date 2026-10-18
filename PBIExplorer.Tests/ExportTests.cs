@@ -11,7 +11,7 @@ namespace PBIExplorer.Tests;
 
 public class ExportTests : IDisposable
 {
-    private readonly string _dir = Path.Combine(Path.GetTempPath(), "pbicontext-tests-" + Guid.NewGuid().ToString("N"));
+    private readonly string _dir = Path.Combine(Path.GetTempPath(), "pbilayer-tests-" + Guid.NewGuid().ToString("N"));
 
     public ExportTests() => Directory.CreateDirectory(_dir);
 

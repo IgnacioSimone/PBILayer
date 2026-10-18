@@ -81,9 +81,9 @@
   <data name="Theme_Dark" xml:space="preserve"><value>Tema: oscuro</value></data>
   <data name="Theme_Auto" xml:space="preserve"><value>Tema: automático (Windows)</value></data>
   <data name="Status_SearchingDesktop" xml:space="preserve"><value>Buscando un tablero abierto en Power BI Desktop…</value></data>
-  <data name="Update_Prompt" xml:space="preserve"><value>¿Querés que PBI Context busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. Podés cambiarlo cuando quieras en Acerca de.</value></data>
+  <data name="Update_Prompt" xml:space="preserve"><value>¿Querés que PBI Layer busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. Podés cambiarlo cuando quieras en Acerca de.</value></data>
   <data name="Update_PromptAction" xml:space="preserve"><value>Activar</value></data>
-  <data name="Update_NewVersionToast" xml:space="preserve"><value>Hay una versión nueva de PBI Context: {0}.</value></data>
+  <data name="Update_NewVersionToast" xml:space="preserve"><value>Hay una versión nueva de PBI Layer: {0}.</value></data>
   <data name="Update_NewVersionAction" xml:space="preserve"><value>Ver</value></data>
   <data name="Status_Cancelled" xml:space="preserve"><value>Operación cancelada.</value></data>
   <data name="Toast_NothingToRefresh" xml:space="preserve"><value>No hay nada para actualizar: abrí un tablero en Power BI Desktop o elegí un .pbix.</value></data>
@@ -117,7 +117,7 @@
   <data name="Dialog_PbixFilter" xml:space="preserve"><value>Archivos Power BI (*.pbix)|*.pbix</value></data>
   <data name="Toast_RecentMissing" xml:space="preserve"><value>{0} ya no existe en esa ubicación.</value></data>
   <data name="Toast_UnsupportedFile" xml:space="preserve"><value>Solo se pueden abrir archivos .pbix (reporte) o .json (snapshot).</value></data>
-  <data name="Dialog_SnapshotFilter" xml:space="preserve"><value>Snapshot de PBI Context (*.json)|*.json</value></data>
+  <data name="Dialog_SnapshotFilter" xml:space="preserve"><value>Snapshot de PBI Layer (*.json)|*.json</value></data>
   <data name="Status_NoChanges" xml:space="preserve"><value>Sin cambios contra el snapshot de {0} del {1}.</value></data>
   <data name="Status_ChangesFound" xml:space="preserve"><value>{0} cambios contra el snapshot de {1} del {2}.</value></data>
   <data name="Toast_SnapshotReadFailed" xml:space="preserve"><value>No se pudo leer ese snapshot. {0}</value></data>
@@ -318,8 +318,8 @@
   <data name="Vis_decompositionTreeVisual" xml:space="preserve"><value>árbol de descomposición</value></data>
   <data name="Vis_qnaVisual" xml:space="preserve"><value>preguntas y respuestas</value></data>
   <data name="Export_Summary" xml:space="preserve"><value>Resumen</value></data>
-  <data name="Export_GeneratedAt" xml:space="preserve"><value>Generado el {0:dd/MM/yyyy HH:mm} con PBI Context</value></data>
-  <data name="Export_DocGeneratedAt" xml:space="preserve"><value>Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Context</value></data>
+  <data name="Export_GeneratedAt" xml:space="preserve"><value>Generado el {0:dd/MM/yyyy HH:mm} con PBI Layer</value></data>
+  <data name="Export_DocGeneratedAt" xml:space="preserve"><value>Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Layer</value></data>
   <data name="Export_DocTitle" xml:space="preserve"><value>{0} — Documentación</value></data>
   <data name="Export_NoRows" xml:space="preserve"><value>Sin filas.</value></data>
   <data name="Export_PrivacyNote" xml:space="preserve"><value>Solo metadata del modelo y del reporte: no incluye filas de datos. Emails, DNI, CUIT y rutas locales están enmascarados.</value></data>
@@ -412,7 +412,7 @@
   <data name="Detail_CodeAria" xml:space="preserve"><value>Código</value></data>
   <data name="Detail_DependsOn" xml:space="preserve"><value>DEPENDE DE</value></data>
   <data name="Detail_UsedBy" xml:space="preserve"><value>USADA POR</value></data>
-  <data name="About_Title" xml:space="preserve"><value>Acerca de PBI Context</value></data>
+  <data name="About_Title" xml:space="preserve"><value>Acerca de PBI Layer</value></data>
   <data name="About_Description" xml:space="preserve"><value>Documenta un modelo de Power BI y su reporte: medidas DAX, tablas, columnas, relaciones, Power Query, qué visual usa qué campo y qué objetos no se usan en ningún lado.</value></data>
   <data name="About_UpdatesHeader" xml:space="preserve"><value>ACTUALIZACIONES</value></data>
   <data name="Btn_CheckNow" xml:space="preserve"><value>Buscar ahora</value></data>
@@ -440,7 +440,7 @@
   <data name="Lang_Auto" xml:space="preserve"><value>Automático (Windows)</value></data>
   <data name="Lang_Spanish" xml:space="preserve"><value>Español</value></data>
   <data name="Lang_English" xml:space="preserve"><value>English</value></data>
-  <data name="Lang_RestartPrompt" xml:space="preserve"><value>El idioma cambia al reiniciar PBI Context.</value></data>
+  <data name="Lang_RestartPrompt" xml:space="preserve"><value>El idioma cambia al reiniciar PBI Layer.</value></data>
   <data name="Lang_RestartAction" xml:space="preserve"><value>Reiniciar ahora</value></data>
   <data name="Update_Installed" xml:space="preserve"><value>Versión instalada: {0}</value></data>
   <data name="Update_Busy" xml:space="preserve"><value>Ya hay una operación en curso.</value></data>
@@ -450,7 +450,7 @@
   <data name="Update_NoReleases" xml:space="preserve"><value>No hay versiones publicadas para consultar (el repositorio puede ser privado).</value></data>
   <data name="Update_CheckFailed" xml:space="preserve"><value>No se pudo buscar: {0}</value></data>
   <data name="Update_Downloading" xml:space="preserve"><value>Descargando la actualización…</value></data>
-  <data name="Update_Verified" xml:space="preserve"><value>Verificada. Cerrando PBI Context para instalar…</value></data>
+  <data name="Update_Verified" xml:space="preserve"><value>Verificada. Cerrando PBI Layer para instalar…</value></data>
   <data name="Update_Failed" xml:space="preserve"><value>No se pudo actualizar: {0}</value></data>
   <data name="About_Version" xml:space="preserve"><value>Versión {0}</value></data>
   <data name="About_Author" xml:space="preserve"><value>© 2026 {0} · Licencia {1}</value></data>

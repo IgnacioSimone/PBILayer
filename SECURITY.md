@@ -2,7 +2,7 @@
 
 ## Cómo reportar una vulnerabilidad
 
-Si encontraste un problema de seguridad en PBI Context, **no lo publiques en un issue**.
+Si encontraste un problema de seguridad en PBI Layer, **no lo publiques en un issue**.
 Usá el botón **Report a vulnerability** de la pestaña *Security* de este repositorio
 (reporte privado de GitHub). Respondo lo antes posible.
 
@@ -18,7 +18,7 @@ Usá el botón **Report a vulnerability** de la pestaña *Security* de este repo
 Cada release incluye el instalador y un archivo `.sha256`. Comprobá que la huella coincida:
 
 ```powershell
-Get-FileHash .\PBIContext-Setup-X.Y.Z.exe -Algorithm SHA256
+Get-FileHash .\PBILayer-Setup-X.Y.Z.exe -Algorithm SHA256
 ```
 
 El instalador todavía no está firmado digitalmente, por eso Windows SmartScreen puede mostrar un aviso.

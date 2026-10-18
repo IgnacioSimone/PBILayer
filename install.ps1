@@ -1,7 +1,7 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
-    Instala PBI Context como herramienta externa de Power BI Desktop.
+    Instala PBI Layer como herramienta externa de Power BI Desktop.
 
 .DESCRIPTION
     Copia la publicación self-contained a la carpeta local del usuario y registra
@@ -17,7 +17,7 @@ $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $publishDir = Join-Path $scriptDir "publish"
-$exeName = "PBIContext.exe"
+$exeName = "PBILayer.exe"
 
 if (-not (Test-Path (Join-Path $publishDir $exeName))) {
     Write-Error "No se encontró '$exeName' en '$publishDir'. Compilá primero con:`n  dotnet publish -c Release -r win-x64 --self-contained true -o publish"
@@ -32,7 +32,7 @@ if (-not $isAdmin) {
     exit 0
 }
 
-$installDir = Join-Path $env:LOCALAPPDATA "PBIContext"
+$installDir = Join-Path $env:LOCALAPPDATA "PBILayer"
 Write-Host "Instalando en: $installDir"
 New-Item -ItemType Directory -Force -Path $installDir | Out-Null
 Copy-Item -Path (Join-Path $publishDir "*") -Destination $installDir -Recurse -Force
@@ -40,7 +40,7 @@ Copy-Item -Path (Join-Path $publishDir "*") -Destination $installDir -Recurse -F
 $exePath = Join-Path $installDir $exeName
 $manifest = @{
     version       = "1.0"
-    name          = "PBI Context"
+    name          = "PBI Layer"
     description   = "Medidas DAX, tablas, columnas, relaciones, Power Query y visuales del modelo abierto — solo metadata, nunca datos. No afiliado a Microsoft."
     path          = $exePath
     arguments     = '"%server%" "%database%"'
@@ -52,12 +52,12 @@ if (-not (Test-Path $externalToolsDir)) {
     New-Item -ItemType Directory -Force -Path $externalToolsDir | Out-Null
 }
 
-$manifestPath = Join-Path $externalToolsDir "PBIContext.pbitool.json"
+$manifestPath = Join-Path $externalToolsDir "PBILayer.pbitool.json"
 Set-Content -Path $manifestPath -Value $manifest -Encoding UTF8
 
 Write-Host ""
 Write-Host "Listo. Si Power BI Desktop está abierto, cerralo y volvé a abrirlo."
-Write-Host "Después vas a ver 'PBI Context' en la pestaña Herramientas externas."
+Write-Host "Después vas a ver 'PBI Layer' en la pestaña Herramientas externas."
 Write-Host ""
 Write-Host "Presioná Enter para cerrar..."
 Read-Host | Out-Null

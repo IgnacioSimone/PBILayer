@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Genera PBIContext.ico e icon-256.png a partir de la geometría de icon.svg.
+    Genera PBILayer.ico e icon-256.png a partir de la geometría de icon.svg.
 
 .DESCRIPTION
     WPF y Windows no leen SVG, así que las formas del icono (cuadrado redondeado oscuro, tres capas amarillas
@@ -111,7 +111,7 @@ foreach ($sz in $sizes) {
 }
 
 # .ico con imágenes PNG adentro (válido desde Windows Vista).
-$fs = [IO.File]::Create((Join-Path $outDir 'PBIContext.ico'))
+$fs = [IO.File]::Create((Join-Path $outDir 'PBILayer.ico'))
 $bw = New-Object IO.BinaryWriter $fs
 $bw.Write([uint16]0); $bw.Write([uint16]1); $bw.Write([uint16]$entries.Count)
 $offset = 6 + 16 * $entries.Count

@@ -7,10 +7,10 @@ namespace PBIExplorer.Infrastructure;
 /// que a su vez la toma de &lt;Version&gt; en el .csproj: hay un único lugar donde cambiarla.</summary>
 public static class AppInfo
 {
-    public const string Name = "PBI Context";
+    public const string Name = "PBI Layer";
     public const string Author = "Ignacio Simone";
     public const string RepositoryOwner = "IgnacioSimone";
-    public const string RepositoryName = "PBIContext";
+    public const string RepositoryName = "PBILayer";
     public const string RepositoryUrl = "https://github.com/" + RepositoryOwner + "/" + RepositoryName;
     public const string LicenseUrl = RepositoryUrl + "/blob/master/LICENSE";
     public const string LicenseName = "MIT";

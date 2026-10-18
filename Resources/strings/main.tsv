@@ -9,9 +9,9 @@ Theme_Light	Tema: claro	Theme: light
 Theme_Dark	Tema: oscuro	Theme: dark
 Theme_Auto	Tema: automático (Windows)	Theme: automatic (Windows)
 Status_SearchingDesktop	Buscando un tablero abierto en Power BI Desktop…	Looking for a report open in Power BI Desktop…
-Update_Prompt	¿Querés que PBI Context busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. Podés cambiarlo cuando quieras en Acerca de.	Do you want PBI Context to look for new versions by itself? It makes one query per day to GitHub and sends no data. You can change this at any time in About.
+Update_Prompt	¿Querés que PBI Layer busque versiones nuevas solo? Hace una consulta por día a GitHub y no envía ningún dato. Podés cambiarlo cuando quieras en Acerca de.	Do you want PBI Layer to look for new versions by itself? It makes one query per day to GitHub and sends no data. You can change this at any time in About.
 Update_PromptAction	Activar	Turn on
-Update_NewVersionToast	Hay una versión nueva de PBI Context: {0}.	There is a new version of PBI Context: {0}.
+Update_NewVersionToast	Hay una versión nueva de PBI Layer: {0}.	There is a new version of PBI Layer: {0}.
 Update_NewVersionAction	Ver	View
 Status_Cancelled	Operación cancelada.	Operation cancelled.
 Toast_NothingToRefresh	No hay nada para actualizar: abrí un tablero en Power BI Desktop o elegí un .pbix.	Nothing to refresh: open a report in Power BI Desktop or choose a .pbix.
@@ -43,7 +43,7 @@ Toast_ReadFailed	No se pudo leer {0}. {1}	Could not read {0}. {1}
 Dialog_PbixFilter	Archivos Power BI (*.pbix)|*.pbix	Power BI files (*.pbix)|*.pbix
 Toast_RecentMissing	{0} ya no existe en esa ubicación.	{0} no longer exists at that location.
 Toast_UnsupportedFile	Solo se pueden abrir archivos .pbix (reporte) o .json (snapshot).	Only .pbix (report) or .json (snapshot) files can be opened.
-Dialog_SnapshotFilter	Snapshot de PBI Context (*.json)|*.json	PBI Context snapshot (*.json)|*.json
+Dialog_SnapshotFilter	Snapshot de PBI Layer (*.json)|*.json	PBI Layer snapshot (*.json)|*.json
 Status_NoChanges	Sin cambios contra el snapshot de {0} del {1}.	No changes against the snapshot of {0} from {1}.
 Status_ChangesFound	{0} cambios contra el snapshot de {1} del {2}.	{0} changes against the snapshot of {1} from {2}.
 Toast_SnapshotReadFailed	No se pudo leer ese snapshot. {0}	Could not read that snapshot. {0}

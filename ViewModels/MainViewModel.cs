@@ -173,7 +173,7 @@ public sealed partial class MainViewModel : ObservableObject
     // =====================================================================
 
     /// <summary>Power BI Desktop invoca la herramienta externa como:
-    /// PBIContext.exe "localhost:PUERTO" "GUID-de-la-base".</summary>
+    /// PBILayer.exe "localhost:PUERTO" "GUID-de-la-base".</summary>
     public async Task InitializeAsync(string[] args)
     {
         AppLog.Write($"Inicio. Args: {string.Join(" | ", args)}");
@@ -200,7 +200,7 @@ public sealed partial class MainViewModel : ObservableObject
             if (StartupFile(args) is null) await TryAutoLoadVisualsAsync(ct);
         });
 
-        // "Abrir con" desde el Explorador, o PBIContext.exe "ruta.pbix": carga ese archivo.
+        // "Abrir con" desde el Explorador, o PBILayer.exe "ruta.pbix": carga ese archivo.
         if (StartupFile(args) is { } file) await OpenFileAsync(file);
 
         await CheckForUpdatesAtStartupAsync();

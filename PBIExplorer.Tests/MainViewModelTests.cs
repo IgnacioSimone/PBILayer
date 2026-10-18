@@ -283,7 +283,7 @@ public class MainViewModelTests
     }
 
     private static string TempFile(string name) =>
-        Path.Combine(Path.GetTempPath(), $"pbicontext-{Guid.NewGuid():N}-{name}");
+        Path.Combine(Path.GetTempPath(), $"pbilayer-{Guid.NewGuid():N}-{name}");
 
     [Fact]
     public async Task Csv_export_of_a_section_is_what_the_grid_shows_now()
@@ -406,7 +406,7 @@ public class MainViewModelTests
         };
         var vm = Create(backend);
 
-        await vm.InitializeAsync(new[] { "PBIContext.exe" });   // sin servidor/base: abierta a mano
+        await vm.InitializeAsync(new[] { "PBILayer.exe" });   // sin servidor/base: abierta a mano
 
         Assert.Equal(2, vm.Measures.TotalCount);
         Assert.False(vm.Measures.IsEmpty);
@@ -439,7 +439,7 @@ public class MainViewModelTests
         };
         var dialogs = new FakeDialogs();
         var vm = Create(backend, dialogs);
-        await vm.InitializeAsync(new[] { "PBIContext.exe" });
+        await vm.InitializeAsync(new[] { "PBILayer.exe" });
         Assert.Equal(2, vm.Measures.TotalCount);   // quedó enganchada a "Otro tablero"
         var path = Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix");
 
@@ -552,7 +552,7 @@ public class MainViewModelTests
         var never = new TaskCompletionSource<ModelSnapshot>();
         var vm = Create(new FakeBackend { PendingRead = never.Task });
 
-        var init = vm.InitializeAsync(new[] { "PBIContext.exe", "localhost:1", "db" });
+        var init = vm.InitializeAsync(new[] { "PBILayer.exe", "localhost:1", "db" });
         Assert.True(vm.IsBusy);
 
         vm.CancelCommand.Execute(null);
@@ -567,7 +567,7 @@ public class MainViewModelTests
     {
         var vm = Create();
 
-        await vm.InitializeAsync(new[] { "PBIContext.exe" });
+        await vm.InitializeAsync(new[] { "PBILayer.exe" });
 
         Assert.True(vm.Visuals.IsEmpty);
         Assert.Equal("No se detectó ningún tablero abierto", vm.Visuals.EmptyTitle);

@@ -11,7 +11,7 @@ namespace PBIExplorer.Tests;
 
 public sealed class UpdateTests : IDisposable
 {
-    private readonly string _dir = Path.Combine(Path.GetTempPath(), "pbicontext-update-" + Guid.NewGuid().ToString("N"));
+    private readonly string _dir = Path.Combine(Path.GetTempPath(), "pbilayer-update-" + Guid.NewGuid().ToString("N"));
 
     public UpdateTests() => Directory.CreateDirectory(_dir);
 
@@ -78,12 +78,12 @@ public sealed class UpdateTests : IDisposable
         public void OpenWithShell(string path) => Opened.Add(path);
     }
 
-    private const string Url = "https://github.com/IgnacioSimone/PBIContext/releases/download/v2.1.0/PBIContext-Setup-2.1.0.exe";
+    private const string Url = "https://github.com/IgnacioSimone/PBILayer/releases/download/v2.1.0/PBILayer-Setup-2.1.0.exe";
     private const string ShaUrl = Url + ".sha256";
 
     private static ReleaseInfo Release(string version = "2.1.0", bool installable = true) => new(
-        Version.Parse(version), "v" + version, "Notas de la versión", "https://github.com/IgnacioSimone/PBIContext/releases/tag/v" + version,
-        installable ? $"PBIContext-Setup-{version}.exe" : null, installable ? Url : null, installable ? ShaUrl : null);
+        Version.Parse(version), "v" + version, "Notas de la versión", "https://github.com/IgnacioSimone/PBILayer/releases/tag/v" + version,
+        installable ? $"PBILayer-Setup-{version}.exe" : null, installable ? Url : null, installable ? ShaUrl : null);
 
     private static string Sha(byte[] bytes) => Convert.ToHexString(SHA256.HashData(bytes)).ToLowerInvariant();
 
@@ -92,11 +92,11 @@ public sealed class UpdateTests : IDisposable
     private const string ReleaseJson = """
         {
           "tag_name": "v2.1.0", "draft": false, "prerelease": false,
-          "html_url": "https://github.com/IgnacioSimone/PBIContext/releases/tag/v2.1.0",
+          "html_url": "https://github.com/IgnacioSimone/PBILayer/releases/tag/v2.1.0",
           "body": "- Novedad A\n- Novedad B",
           "assets": [
-            { "name": "PBIContext-Setup-2.1.0.exe", "browser_download_url": "https://github.com/IgnacioSimone/PBIContext/releases/download/v2.1.0/PBIContext-Setup-2.1.0.exe" },
-            { "name": "PBIContext-Setup-2.1.0.exe.sha256", "browser_download_url": "https://github.com/IgnacioSimone/PBIContext/releases/download/v2.1.0/PBIContext-Setup-2.1.0.exe.sha256" },
+            { "name": "PBILayer-Setup-2.1.0.exe", "browser_download_url": "https://github.com/IgnacioSimone/PBILayer/releases/download/v2.1.0/PBILayer-Setup-2.1.0.exe" },
+            { "name": "PBILayer-Setup-2.1.0.exe.sha256", "browser_download_url": "https://github.com/IgnacioSimone/PBILayer/releases/download/v2.1.0/PBILayer-Setup-2.1.0.exe.sha256" },
             { "name": "otra-cosa.zip", "browser_download_url": "https://example.com/otra-cosa.zip" }
           ]
         }
@@ -110,7 +110,7 @@ public sealed class UpdateTests : IDisposable
         Assert.Equal(new Version(2, 1, 0), release.Version);
         Assert.Equal("v2.1.0", release.Tag);
         Assert.Contains("Novedad B", release.Notes);
-        Assert.Equal("PBIContext-Setup-2.1.0.exe", release.InstallerName);
+        Assert.Equal("PBILayer-Setup-2.1.0.exe", release.InstallerName);
         Assert.Equal(Url, release.InstallerUrl);
         Assert.Equal(ShaUrl, release.ChecksumUrl);
         Assert.True(release.CanInstall);
@@ -119,7 +119,7 @@ public sealed class UpdateTests : IDisposable
     [Fact]
     public void A_release_without_checksum_cannot_be_installed_automatically()
     {
-        var json = ReleaseJson.Replace("PBIContext-Setup-2.1.0.exe.sha256", "algo.txt");
+        var json = ReleaseJson.Replace("PBILayer-Setup-2.1.0.exe.sha256", "algo.txt");
 
         var release = GitHubUpdateFeed.Parse(json)!;
 
@@ -150,9 +150,9 @@ public sealed class UpdateTests : IDisposable
     // ---------------- Consulta a GitHub ----------------
 
     private static GitHubUpdateFeed FeedFor(FakeHandler handler) =>
-        new(new HttpClient(handler), "IgnacioSimone", "PBIContext");
+        new(new HttpClient(handler), "IgnacioSimone", "PBILayer");
 
-    private const string ApiUrl = "https://api.github.com/repos/IgnacioSimone/PBIContext/releases/latest";
+    private const string ApiUrl = "https://api.github.com/repos/IgnacioSimone/PBILayer/releases/latest";
 
     [Fact]
     public async Task The_feed_queries_the_public_releases_api_and_sends_nothing_else()
@@ -219,12 +219,12 @@ public sealed class UpdateTests : IDisposable
     public async Task A_download_with_a_matching_hash_is_saved_and_returned()
     {
         var bytes = Encoding.UTF8.GetBytes(new string('x', 5000));
-        var handler = new FakeHandler().Serve(Url, bytes).Serve(ShaUrl, $"{Sha(bytes)}  PBIContext-Setup-2.1.0.exe\n");
+        var handler = new FakeHandler().Serve(Url, bytes).Serve(ShaUrl, $"{Sha(bytes)}  PBILayer-Setup-2.1.0.exe\n");
         var progress = new List<double>();
 
         var path = await InstallerFor(handler).DownloadAndVerifyAsync(Release(), new Progress<double>(progress.Add), CancellationToken.None);
 
-        Assert.Equal(Path.Combine(_dir, "PBIContext-Setup-2.1.0.exe"), path);
+        Assert.Equal(Path.Combine(_dir, "PBILayer-Setup-2.1.0.exe"), path);
         Assert.Equal(bytes, File.ReadAllBytes(path));
         Assert.False(File.Exists(path + ".part"));
     }
@@ -254,9 +254,9 @@ public sealed class UpdateTests : IDisposable
     }
 
     [Theory]
-    [InlineData("http://github.com/x/PBIContext-Setup-2.1.0.exe")]
-    [InlineData("https://evil.example.com/PBIContext-Setup-2.1.0.exe")]
-    [InlineData("https://github.com.evil.example/PBIContext-Setup-2.1.0.exe")]
+    [InlineData("http://github.com/x/PBILayer-Setup-2.1.0.exe")]
+    [InlineData("https://evil.example.com/PBILayer-Setup-2.1.0.exe")]
+    [InlineData("https://github.com.evil.example/PBILayer-Setup-2.1.0.exe")]
     [InlineData("file:///C:/Windows/System32/cmd.exe")]
     public async Task Only_https_downloads_from_github_are_allowed(string badUrl)
     {
@@ -419,7 +419,7 @@ public sealed class UpdateTests : IDisposable
 
         await vm.InstallCommand.ExecuteAsync(null);
 
-        Assert.Equal(new[] { Path.Combine(_dir, "PBIContext-Setup-2.1.0.exe") }, dialogs.Installers);
+        Assert.Equal(new[] { Path.Combine(_dir, "PBILayer-Setup-2.1.0.exe") }, dialogs.Installers);
         Assert.False(vm.IsDownloading);
     }
 
@@ -482,7 +482,7 @@ public sealed class UpdateTests : IDisposable
         var (updates, feed, settings, _, _) = CreateVm(Release());
         var main = CreateMain(updates, settings);
 
-        await main.InitializeAsync(new[] { "PBIContext.exe" });
+        await main.InitializeAsync(new[] { "PBILayer.exe" });
 
         var toast = Assert.Single(main.Toasts, t => t.ActionText == "Activar");
         Assert.Contains("no envía ningún dato", toast.Message);
@@ -491,7 +491,7 @@ public sealed class UpdateTests : IDisposable
 
         // Segundo arranque: no se vuelve a preguntar.
         var again = CreateMain(updates, settings);
-        await again.InitializeAsync(new[] { "PBIContext.exe" });
+        await again.InitializeAsync(new[] { "PBILayer.exe" });
         Assert.DoesNotContain(again.Toasts, t => t.ActionText == "Activar");
     }
 
@@ -502,7 +502,7 @@ public sealed class UpdateTests : IDisposable
         var main = CreateMain(updates, settings);
         var requested = new List<bool>();
         main.AboutRequested += requested.Add;
-        await main.InitializeAsync(new[] { "PBIContext.exe" });
+        await main.InitializeAsync(new[] { "PBILayer.exe" });
 
         main.Toasts.Single(t => t.ActionText == "Activar").RunActionCommand.Execute(null);
 
@@ -519,7 +519,7 @@ public sealed class UpdateTests : IDisposable
         var requested = new List<bool>();
         main.AboutRequested += requested.Add;
 
-        await main.InitializeAsync(new[] { "PBIContext.exe" });
+        await main.InitializeAsync(new[] { "PBILayer.exe" });
 
         var toast = Assert.Single(main.Toasts);
         Assert.Contains("2.5.0", toast.Message);
@@ -535,7 +535,7 @@ public sealed class UpdateTests : IDisposable
         var (updates, feed, settings, _, _) = CreateVm(Release("2.5.0"), mode: UpdateCheckMode.Off);
         var main = CreateMain(updates, settings);
 
-        await main.InitializeAsync(new[] { "PBIContext.exe" });
+        await main.InitializeAsync(new[] { "PBILayer.exe" });
 
         Assert.Empty(main.Toasts);
         Assert.Equal(0, feed.Calls);
@@ -572,9 +572,9 @@ public sealed class UpdateTests : IDisposable
     }
 
     [Theory]
-    [InlineData("https://github.com/IgnacioSimone/PBIContext", true)]
-    [InlineData("https://github.com/IgnacioSimone/PBIContext/blob/master/LICENSE", true)]
-    [InlineData("https://github.com/otra-persona/PBIContext", false)]
+    [InlineData("https://github.com/IgnacioSimone/PBILayer", true)]
+    [InlineData("https://github.com/IgnacioSimone/PBILayer/blob/master/LICENSE", true)]
+    [InlineData("https://github.com/otra-persona/PBILayer", false)]
     [InlineData("https://evil.example.com", false)]
     [InlineData("", false)]
     public void About_only_opens_links_to_the_project(string url, bool opens)

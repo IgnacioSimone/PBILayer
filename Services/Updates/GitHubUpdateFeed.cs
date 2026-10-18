@@ -61,7 +61,7 @@ public sealed class GitHubUpdateFeed : IUpdateFeed
                 var url = Text(asset, "browser_download_url");
                 if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(url)) continue;
 
-                if (name.StartsWith("PBIContext-Setup-", StringComparison.OrdinalIgnoreCase) && name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
+                if (name.StartsWith("PBILayer-Setup-", StringComparison.OrdinalIgnoreCase) && name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                 {
                     installerName = name;
                     installerUrl = url;

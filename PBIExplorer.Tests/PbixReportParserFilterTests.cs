@@ -8,7 +8,7 @@ public class PbixReportParserFilterTests
 {
     private static string BuildSyntheticPbix(Action<ZipArchive> populate)
     {
-        var path = Path.Combine(Path.GetTempPath(), $"pbicontext_filters_{Guid.NewGuid():N}.pbix");
+        var path = Path.Combine(Path.GetTempPath(), $"pbilayer_filters_{Guid.NewGuid():N}.pbix");
         using (var fs = File.Create(path))
         using (var zip = new ZipArchive(fs, ZipArchiveMode.Create))
         {
