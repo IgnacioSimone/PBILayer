@@ -10,6 +10,9 @@ public interface IDialogService
     string? PickOpenFile(string filter);
     string? PickSaveFile(string filter, string suggestedName);
 
+    /// <summary>Copia texto al portapapeles.</summary>
+    void CopyText(string text);
+
     /// <summary>Abre el Explorador de Windows con el archivo seleccionado.</summary>
     void RevealInExplorer(string path);
 

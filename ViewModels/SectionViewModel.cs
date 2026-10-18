@@ -61,6 +61,24 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
     [ObservableProperty] private int _totalCount;
     [ObservableProperty] private int _visibleCount;
 
+    /// <summary>Fila seleccionada en la grilla (la usa el panel de detalle y la navegación entre dependencias).</summary>
+    [ObservableProperty] private T? _selectedItem;
+
+    /// <summary>Panel lateral de la fila seleccionada; null si la sección no tiene detalle o no hay selección.</summary>
+    [ObservableProperty] private DetailViewModel? _detail;
+
+    /// <summary>Lo pone la ventana principal; sin esto no hay panel de detalle.</summary>
+    public DetailContext? DetailContext { get; set; }
+
+    /// <summary>Las secciones con panel de detalle lo arman acá a partir de la fila seleccionada.</summary>
+    protected virtual DetailViewModel? BuildDetail(T item, DetailContext context) => null;
+
+    partial void OnSelectedItemChanged(T? value) =>
+        Detail = value is null || DetailContext is null ? null : BuildDetail(value, DetailContext);
+
+    [RelayCommand]
+    private void CloseDetail() => SelectedItem = null;
+
     /// <summary>"340 filas" o, con una búsqueda activa, "12 de 340".</summary>
     public string CountText => IsFiltered
         ? $"{VisibleCount:N0} de {TotalCount:N0}"
@@ -96,11 +114,39 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
     }
 }
 
-public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInfo>("Medidas DAX", "");
+public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInfo>("Medidas DAX", "")
+{
+    protected override DetailViewModel? BuildDetail(MeasureInfo m, DetailContext context) =>
+        new(m.Name, $"Medida · {m.Table}", m.Expression, CodeLanguage.Dax,
+            DetailFacts.Of(("Carpeta", m.DisplayFolder), ("Formato", m.FormatString),
+                ("Oculta", m.IsHidden ? "Sí" : null), ("Descripción", m.Description)),
+            context.FindUsage("Medida", m.Table, m.Name), context);
+}
+
 public sealed class TablesSectionViewModel() : GridSectionViewModel<TableInfo>("Tablas", "");
-public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>("Columnas", "");
+
+public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>("Columnas", "")
+{
+    protected override DetailViewModel? BuildDetail(ColumnInfo c, DetailContext context)
+    {
+        var calculated = !string.IsNullOrWhiteSpace(c.Expression);
+        return new DetailViewModel(c.Name, $"Columna · {c.Table}", calculated ? c.Expression : null, CodeLanguage.Dax,
+            DetailFacts.Of(("Tipo de dato", c.DataType), ("Origen", c.ColumnType),
+                ("Columna de origen", calculated ? null : c.SourceColumn), ("Carpeta", c.DisplayFolder),
+                ("Oculta", c.IsHidden ? "Sí" : null), ("Descripción", c.Description)),
+            context.FindUsage("Columna", c.Table, c.Name), context);
+    }
+}
+
 public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<RelationshipInfo>("Relaciones", "");
-public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>("Power Query (M)", "");
+
+public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>("Power Query (M)", "")
+{
+    protected override DetailViewModel? BuildDetail(PowerQueryInfo q, DetailContext context) =>
+        new(q.Name, $"Power Query · {q.Kind}", q.MCode, CodeLanguage.M,
+            DetailFacts.Of(("Oculta", q.IsHidden ? "Sí" : null), ("Descripción", q.Description)),
+            usage: null, context);
+}
 public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>("Filtros", "");
 public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>("Visuales y campos", "");
 

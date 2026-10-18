@@ -34,6 +34,14 @@ public partial class GridSectionView : UserControl
         set => SetValue(HeaderContentProperty, value);
     }
 
+    /// <summary>Al saltar a una dependencia la fila queda seleccionada pero puede estar lejos del
+    /// área visible: se la trae a la vista.</summary>
+    private void Grid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (Grid.SelectedItem is { } item)
+            Dispatcher.BeginInvoke(() => Grid.ScrollIntoView(item), System.Windows.Threading.DispatcherPriority.Loaded);
+    }
+
     private void OnColumnsChanged(object? sender, NotifyCollectionChangedEventArgs e)
     {
         if (e.NewItems is null) return;

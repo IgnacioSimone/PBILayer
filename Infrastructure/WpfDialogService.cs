@@ -27,6 +27,16 @@ public sealed class WpfDialogService : IDialogService
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
+    public void CopyText(string text)
+    {
+        try { Clipboard.SetText(text); }
+        catch (System.Runtime.InteropServices.COMException ex)
+        {
+            // Otro programa tiene el portapapeles tomado en este instante.
+            AppLog.Write($"No se pudo copiar al portapapeles: {ex.Message}");
+        }
+    }
+
     public void RevealInExplorer(string path)
     {
         try

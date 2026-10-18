@@ -1,0 +1,134 @@
+<UserControl x:Class="PBIExplorer.Views.DetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:PBIExplorer.Views"
+             AutomationProperties.Name="Detalle">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <views:NullToCollapsedConverter x:Key="NullToCollapsed" />
+
+        <Style x:Key="SectionLabel" TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="{StaticResource FontSmall}" />
+            <Setter Property="FontSize" Value="10.5" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{DynamicResource InkFaint}" />
+            <Setter Property="Margin" Value="0,18,0,8" />
+        </Style>
+
+        <!-- Lista de dependencias: cada una es un botón que salta al objeto -->
+        <DataTemplate x:Key="DependencyTemplate">
+            <Button Command="{Binding OpenCommand}" HorizontalContentAlignment="Left" Cursor="Hand"
+                    ToolTip="Ir a este objeto" Margin="0,0,0,2">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" CornerRadius="6" Padding="8,5" Background="Transparent">
+                            <TextBlock Text="{Binding Label}" FontFamily="{StaticResource FontMono}" FontSize="11.5"
+                                       Foreground="{DynamicResource Accent}" TextTrimming="CharacterEllipsis" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoft}" />
+                            </Trigger>
+                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource AccentSoft}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Border BorderBrush="{DynamicResource Separator}" BorderThickness="1,0,0,0"
+            Background="{DynamicResource CardBg}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <StackPanel Margin="20,16,16,20">
+
+                <!-- Encabezado -->
+                <DockPanel>
+                    <Button DockPanel.Dock="Right" VerticalAlignment="Top" Style="{StaticResource LinkButton}"
+                            Command="{Binding DataContext.CloseDetailCommand, RelativeSource={RelativeSource AncestorType=views:GridSectionView}}"
+                            ToolTip="Cerrar el detalle" AutomationProperties.Name="Cerrar el detalle">
+                        <TextBlock Text="&#xE711;" FontFamily="{StaticResource FontIcon}" FontSize="12"
+                                   Foreground="{DynamicResource InkDim}" />
+                    </Button>
+                    <StackPanel>
+                        <TextBlock Text="{Binding Title}" TextWrapping="Wrap"
+                                   FontFamily="{StaticResource FontDisplay}" FontSize="18" FontWeight="SemiBold"
+                                   Foreground="{DynamicResource Ink}" />
+                        <TextBlock Text="{Binding Subtitle}" Margin="0,4,0,0" TextWrapping="Wrap"
+                                   FontFamily="{StaticResource FontSmall}" FontSize="12"
+                                   Foreground="{DynamicResource InkDim}" />
+                        <TextBlock Text="{Binding StatusText}" Margin="0,6,0,0" FontWeight="SemiBold"
+                                   FontFamily="{StaticResource FontSmall}" FontSize="12"
+                                   Visibility="{Binding StatusText, Converter={StaticResource NullToCollapsed}}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{DynamicResource InkDim}" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding StatusText}" Value="Sin uso — candidata a eliminar">
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding StatusText}" Value="Solo uso interno">
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding StatusText}" Value="En uso">
+                                            <Setter Property="Foreground" Value="{DynamicResource StatusGood}" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+                </DockPanel>
+
+                <!-- Código -->
+                <StackPanel Visibility="{Binding HasCode, Converter={StaticResource BoolToVisibility}}">
+                    <DockPanel Margin="0,18,0,8">
+                        <Button DockPanel.Dock="Right" Style="{StaticResource LinkButton}" Command="{Binding CopyCommand}"
+                                Content="Copiar" ToolTip="Copiar el código completo" />
+                        <TextBlock Style="{StaticResource SectionLabel}" Margin="0" VerticalAlignment="Center"
+                                   Text="CÓDIGO" />
+                    </DockPanel>
+                    <Border Background="{DynamicResource SidebarBg}" CornerRadius="8" Padding="12,10"
+                            BorderBrush="{DynamicResource Separator}" BorderThickness="1">
+                        <ScrollViewer MaxHeight="340" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                            <views:CodeTextBlock Code="{Binding Code}" Language="{Binding Language}"
+                                                 TextWrapping="Wrap"
+                                                 FontFamily="{StaticResource FontMono}" FontSize="12"
+                                                 Foreground="{DynamicResource Ink}"
+                                                 AutomationProperties.Name="Código" />
+                        </ScrollViewer>
+                    </Border>
+                </StackPanel>
+
+                <!-- Datos -->
+                <ItemsControl ItemsSource="{Binding Facts}" Margin="0,6,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel Margin="0,10,0,0">
+                                <TextBlock DockPanel.Dock="Left" Width="110" Text="{Binding Label}" TextWrapping="Wrap"
+                                           FontFamily="{StaticResource FontSmall}" FontSize="12"
+                                           Foreground="{DynamicResource InkFaint}" />
+                                <TextBlock Text="{Binding Value}" TextWrapping="Wrap"
+                                           FontFamily="{StaticResource FontText}" FontSize="12.5"
+                                           Foreground="{DynamicResource Ink}" />
+                            </DockPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- Dependencias -->
+                <StackPanel Visibility="{Binding HasDependsOn, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Style="{StaticResource SectionLabel}" Text="DEPENDE DE" />
+                    <ItemsControl ItemsSource="{Binding DependsOn}" ItemTemplate="{StaticResource DependencyTemplate}" />
+                </StackPanel>
+
+                <StackPanel Visibility="{Binding HasUsedBy, Converter={StaticResource BoolToVisibility}}">
+                    <TextBlock Style="{StaticResource SectionLabel}" Text="USADA POR" />
+                    <ItemsControl ItemsSource="{Binding UsedBy}" ItemTemplate="{StaticResource DependencyTemplate}" />
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Border>
+</UserControl>

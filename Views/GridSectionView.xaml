@@ -19,6 +19,11 @@
         </EventTrigger>
     </UserControl.Triggers>
 
+    <DockPanel>
+    <!-- Panel de detalle de la fila seleccionada (solo en las secciones que lo tienen) -->
+    <views:DetailView DockPanel.Dock="Right" Width="400" DataContext="{Binding Detail}"
+                      Visibility="{Binding Detail, Converter={StaticResource NullToCollapsed}}" />
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -60,6 +65,8 @@
 
         <DataGrid x:Name="Grid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
                   ItemsSource="{Binding View}"
+                  SelectedItem="{Binding SelectedItem, Mode=TwoWay}"
+                  SelectionChanged="Grid_SelectionChanged"
                   AutomationProperties.Name="{Binding Title}"
                   PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown">
             <DataGrid.ContextMenu>
@@ -100,4 +107,5 @@
             </StackPanel>
         </Border>
     </Grid>
+    </DockPanel>
 </UserControl>

@@ -29,6 +29,8 @@ public static class ThemeService
         ["ButtonBg"] = "#FFFFFF", ["ButtonHover"] = "#F7F7F9", ["ButtonPressed"] = "#ECECEF",
         ["ThumbBrush"] = "#38000000", ["ThumbHoverBrush"] = "#60000000",
         ["StatusBad"] = "#C0392B", ["StatusWarn"] = "#96650F", ["StatusGood"] = "#1C7C4C",
+        ["SyntaxKeyword"] = "#A12C7B", ["SyntaxFunction"] = "#0F6AA6", ["SyntaxString"] = "#1C7C4C",
+        ["SyntaxNumber"] = "#96650F", ["SyntaxComment"] = "#5E725E", ["SyntaxReference"] = "#B54A2C",
     };
 
     private static readonly Dictionary<string, string> Dark = new()
@@ -42,6 +44,8 @@ public static class ThemeService
         ["ButtonBg"] = "#342C26", ["ButtonHover"] = "#3E352E", ["ButtonPressed"] = "#2A241F",
         ["ThumbBrush"] = "#40FFFFFF", ["ThumbHoverBrush"] = "#70FFFFFF",
         ["StatusBad"] = "#F28B7D", ["StatusWarn"] = "#E6B85C", ["StatusGood"] = "#63C995",
+        ["SyntaxKeyword"] = "#F28EC4", ["SyntaxFunction"] = "#7FC1F0", ["SyntaxString"] = "#7FD6A2",
+        ["SyntaxNumber"] = "#E6B85C", ["SyntaxComment"] = "#92A692", ["SyntaxReference"] = "#EE8D6C",
     };
 
     private static ThemeMode _mode = ThemeMode.System;

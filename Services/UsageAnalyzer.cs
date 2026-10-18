@@ -29,12 +29,23 @@ public static class UsageAnalyzer
 
         // Todo lo que puede aparecer del lado derecho de una dependencia: medida por
         // nombre (único en el modelo) o columna por (tabla, nombre).
-        var measureUsedBy = new Dictionary<string, List<string>>();
+        var measureUsedBy = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
         var columnUsedBy = new Dictionary<(string Table, string Name), List<string>>();
+
+        // DAX permite escribir una medida con su tabla delante (Tabla[Medida]). Si "Tabla[Campo]"
+        // no es una columna pero sí una medida de esa tabla, es una referencia a la medida: sin
+        // esto la medida figuraría "sin uso" siendo usada, y se borraría algo que está andando.
+        var measureKeys = model.Measures.Select(m => (m.Table.ToLowerInvariant(), m.Name.ToLowerInvariant())).ToHashSet();
+        var columnKeys = model.Columns.Select(c => (c.Table.ToLowerInvariant(), c.Name.ToLowerInvariant())).ToHashSet();
+
+        bool IsMeasureReference(DaxReferenceParser.Reference reference) =>
+            reference.Table is null ||
+            (measureKeys.Contains((reference.Table.ToLowerInvariant(), reference.Field.ToLowerInvariant())) &&
+             !columnKeys.Contains((reference.Table.ToLowerInvariant(), reference.Field.ToLowerInvariant())));
 
         void RegisterDependency(string sourceLabel, DaxReferenceParser.Reference reference)
         {
-            if (reference.Table is null)
+            if (IsMeasureReference(reference))
             {
                 if (!measureUsedBy.TryGetValue(reference.Field, out var list))
                     measureUsedBy[reference.Field] = list = new List<string>();
