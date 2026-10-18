@@ -225,11 +225,14 @@ public class AdomdModelReader
         // ---------- Power Query (M) ----------
         try
         {
-            var raw = RunDmv(conn, "SELECT [TableID],[Name],[QueryDefinition] FROM $SYSTEM.TMSCHEMA_PARTITIONS");
+            var raw = RunDmv(conn, "SELECT [TableID],[Name],[QueryDefinition],[Type] FROM $SYSTEM.TMSCHEMA_PARTITIONS");
             foreach (DataRow row in raw.Rows)
             {
                 var tableId = GetStr(row, "TableID");
                 if (autoDateTableIds.Contains(tableId)) continue;
+
+                // Tipo 2 = tabla calculada: su definición es DAX, no M (no es una consulta de Power Query).
+                if (GetLong(row, "Type") == 2) continue;
 
                 var mCode = GetStr(row, "QueryDefinition");
                 if (string.IsNullOrWhiteSpace(mCode)) continue;
