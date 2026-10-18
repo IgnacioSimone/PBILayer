@@ -62,8 +62,38 @@ function Render([int]$size) {
     foreach ($layer in $layers) {
         $g.FillPolygon((New-Object Drawing.SolidBrush $layer.Color), (New-Poly $layer.Points $s))
     }
-    $white = New-Object Drawing.SolidBrush ([Drawing.Color]::White)
-    foreach ($bar in $bars) { $g.FillPolygon($white, (New-Poly $bar $s)) }
+    # Barras con degradado vertical blanco -> crema -> gris cálido (bar-shade del SVG).
+    foreach ($bar in $bars) {
+        $pts = New-Poly $bar $s
+        $minY = ($pts | ForEach-Object { $_.Y } | Measure-Object -Minimum).Minimum
+        $maxY = ($pts | ForEach-Object { $_.Y } | Measure-Object -Maximum).Maximum
+        $minX = ($pts | ForEach-Object { $_.X } | Measure-Object -Minimum).Minimum
+        $rect = New-Object Drawing.RectangleF ([single]$minX), ([single]$minY), 1, ([single]($maxY - $minY))
+        $brush = New-Object Drawing.Drawing2D.LinearGradientBrush $rect, ([Drawing.Color]::White), ([Drawing.Color]::FromArgb(255, 0x91, 0x8D, 0x7F)), 90
+        $blend = New-Object Drawing.Drawing2D.ColorBlend 3
+        $blend.Colors = @([Drawing.Color]::White, [Drawing.Color]::FromArgb(255, 0xF5, 0xF2, 0xE8), [Drawing.Color]::FromArgb(255, 0x91, 0x8D, 0x7F))
+        $blend.Positions = @([single]0, [single]0.52, [single]1)
+        $brush.InterpolationColors = $blend
+        $g.FillPolygon($brush, $pts)
+        $brush.Dispose()
+    }
+
+    # Los textos decorativos (01 {} CSV / 10 [] XML) solo se leen a partir de 64 px.
+    if ($size -ge 64) {
+        $family = New-Object Drawing.FontFamily 'Consolas'
+        $font = New-Object Drawing.Font $family, ([single](5 * $s)), ([Drawing.FontStyle]::Bold), ([Drawing.GraphicsUnit]::Pixel)
+        $ascent = $font.Size * $family.GetCellAscent([Drawing.FontStyle]::Bold) / $family.GetEmHeight([Drawing.FontStyle]::Bold)
+        $g.TextRenderingHint = 'AntiAliasGridFit'
+        $labels = @(
+            @(17, 90, '01', 255), @(20, 99, '{}', 179), @(15, 109, 'CSV', 102),
+            @(101, 90, '10', 255), @(98, 99, '[]', 179), @(96, 109, 'XML', 102)
+        )
+        foreach ($l in $labels) {
+            $tb = New-Object Drawing.SolidBrush ([Drawing.Color]::FromArgb($l[3], 0xF6, 0xC9, 0x44))
+            $g.DrawString($l[2], $font, $tb, [single]($l[0] * $s), [single]($l[1] * $s - $ascent), [Drawing.StringFormat]::GenericTypographic)
+            $tb.Dispose()
+        }
+    }
 
     $g.Dispose()
     return $bmp
