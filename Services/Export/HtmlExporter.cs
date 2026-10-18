@@ -67,8 +67,8 @@ public static class HtmlExporter
     }
 
     private const string Css = """
-        :root{color-scheme:light dark;--bg:#f7f2ea;--card:#fffdf9;--ink:#241e19;--dim:#6e5f51;--line:#dfd1bc;--accent:#b54a2c;--soft:#fbe9dd;--mono:#f3ebdf}
-        @media (prefers-color-scheme:dark){:root{--bg:#1b1714;--card:#27211d;--ink:#f2ebe3;--dim:#c4b6a8;--line:#3d342c;--accent:#ee8d6c;--soft:#4a2a1c;--mono:#221c18}}
+        :root{color-scheme:light dark;--bg:#f5f5f2;--card:#ffffff;--ink:#151616;--dim:#565753;--line:#dcdcd6;--accent:#8a6400;--soft:#fff3c4;--mono:#f1f1ec}
+        @media (prefers-color-scheme:dark){:root{--bg:#1f2020;--card:#272828;--ink:#f5f5f2;--dim:#c5c5c0;--line:#3b3c3b;--accent:#f6c944;--soft:#3a3317;--mono:#1c1d1d}}
         *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 "Segoe UI Variable Text","Segoe UI",system-ui,sans-serif}
         header{padding:28px 32px 0}
         .bar{position:sticky;top:0;z-index:2;background:var(--bg);padding:10px 32px 0;border-bottom:1px solid var(--line)}

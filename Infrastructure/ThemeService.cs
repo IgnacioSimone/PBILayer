@@ -20,32 +20,32 @@ public static class ThemeService
 {
     private static readonly Dictionary<string, string> Light = new()
     {
-        ["WindowBg"] = "#F7F2EA", ["SidebarBg"] = "#EFE6D8", ["CardBg"] = "#FFFDF9",
-        ["Separator"] = "#DFD1BC", ["SeparatorSoft"] = "#F0E7D8",
-        ["Ink"] = "#241E19", ["InkDim"] = "#6E5F51", ["InkFaint"] = "#6B5C4E",
-        ["Accent"] = "#B54A2C", ["AccentSoft"] = "#FBE9DD",
-        ["RowAlt"] = "#FBF6EE", ["RowHover"] = "#FBEEE2",
-        ["NavHover"] = "#E6DBC9", ["PanelTint"] = "#EBE0CE",
-        ["ButtonBg"] = "#FFFFFF", ["ButtonHover"] = "#F7F7F9", ["ButtonPressed"] = "#ECECEF",
+        ["WindowBg"] = "#F5F5F2", ["SidebarBg"] = "#ECECE8", ["CardBg"] = "#FFFFFF",
+        ["Separator"] = "#DCDCD6", ["SeparatorSoft"] = "#EDEDE8",
+        ["Ink"] = "#151616", ["InkDim"] = "#565753", ["InkFaint"] = "#6A6B66",
+        ["Accent"] = "#8A6400", ["AccentSoft"] = "#FFF3C4",
+        ["RowAlt"] = "#FAFAF7", ["RowHover"] = "#FFF8DA",
+        ["NavHover"] = "#E2E2DC", ["PanelTint"] = "#E6E6E0",
+        ["ButtonBg"] = "#FFFFFF", ["ButtonHover"] = "#F5F5F2", ["ButtonPressed"] = "#EAEAE5",
         ["ThumbBrush"] = "#38000000", ["ThumbHoverBrush"] = "#60000000",
         ["StatusBad"] = "#C0392B", ["StatusWarn"] = "#96650F", ["StatusGood"] = "#1C7C4C",
         ["SyntaxKeyword"] = "#A12C7B", ["SyntaxFunction"] = "#0F6AA6", ["SyntaxString"] = "#1C7C4C",
-        ["SyntaxNumber"] = "#96650F", ["SyntaxComment"] = "#5E725E", ["SyntaxReference"] = "#B54A2C",
+        ["SyntaxNumber"] = "#96650F", ["SyntaxComment"] = "#5E725E", ["SyntaxReference"] = "#8A6400",
     };
 
     private static readonly Dictionary<string, string> Dark = new()
     {
-        ["WindowBg"] = "#1B1714", ["SidebarBg"] = "#221D19", ["CardBg"] = "#27211D",
-        ["Separator"] = "#3D342C", ["SeparatorSoft"] = "#322A24",
-        ["Ink"] = "#F2EBE3", ["InkDim"] = "#C4B6A8", ["InkFaint"] = "#AB9D8F",
-        ["Accent"] = "#EE8D6C", ["AccentSoft"] = "#4A2A1C",
-        ["RowAlt"] = "#2C2520", ["RowHover"] = "#3B2C22",
-        ["NavHover"] = "#352D26", ["PanelTint"] = "#2E2721",
-        ["ButtonBg"] = "#342C26", ["ButtonHover"] = "#3E352E", ["ButtonPressed"] = "#2A241F",
+        ["WindowBg"] = "#1F2020", ["SidebarBg"] = "#171818", ["CardBg"] = "#272828",
+        ["Separator"] = "#3B3C3B", ["SeparatorSoft"] = "#313231",
+        ["Ink"] = "#F5F5F2", ["InkDim"] = "#C5C5C0", ["InkFaint"] = "#A6A6A1",
+        ["Accent"] = "#F6C944", ["AccentSoft"] = "#3A3317",
+        ["RowAlt"] = "#2C2D2D", ["RowHover"] = "#393520",
+        ["NavHover"] = "#2D2E2E", ["PanelTint"] = "#2B2C2C",
+        ["ButtonBg"] = "#343535", ["ButtonHover"] = "#3E3F3F", ["ButtonPressed"] = "#2A2B2B",
         ["ThumbBrush"] = "#40FFFFFF", ["ThumbHoverBrush"] = "#70FFFFFF",
         ["StatusBad"] = "#F28B7D", ["StatusWarn"] = "#E6B85C", ["StatusGood"] = "#63C995",
         ["SyntaxKeyword"] = "#F28EC4", ["SyntaxFunction"] = "#7FC1F0", ["SyntaxString"] = "#7FD6A2",
-        ["SyntaxNumber"] = "#E6B85C", ["SyntaxComment"] = "#92A692", ["SyntaxReference"] = "#EE8D6C",
+        ["SyntaxNumber"] = "#E6B85C", ["SyntaxComment"] = "#92A692", ["SyntaxReference"] = "#F6C944",
     };
 
     private static ThemeMode _mode = ThemeMode.System;
@@ -93,10 +93,11 @@ public static class ThemeService
         foreach (var (key, hex) in palette)
             SetBrush(app, key, (Color)ColorConverter.ConvertFromString(hex));
 
-        // Los rellenos con texto blanco encima no cambian entre temas (contraste 5.3:1).
-        SetBrush(app, "AccentStrong", (Color)ColorConverter.ConvertFromString("#B54A2C"));
-        SetBrush(app, "AccentHover", (Color)ColorConverter.ConvertFromString("#C86540"));
-        SetBrush(app, "AccentPressed", (Color)ColorConverter.ConvertFromString("#9C3E22"));
+        // Los rellenos amarillos (con texto casi negro encima) no cambian entre temas.
+        SetBrush(app, "AccentStrong", (Color)ColorConverter.ConvertFromString("#F6C944"));
+        SetBrush(app, "OnAccent", (Color)ColorConverter.ConvertFromString("#121313"));
+        SetBrush(app, "AccentHover", (Color)ColorConverter.ConvertFromString("#FFD761"));
+        SetBrush(app, "AccentPressed", (Color)ColorConverter.ConvertFromString("#D9A71E"));
 
         // Modo de alto contraste de Windows: manda el sistema, no nuestra paleta.
         if (SystemParameters.HighContrast) ApplyHighContrast(app);
@@ -126,6 +127,7 @@ public static class ThemeService
         Set("InkFaint", SystemColors.WindowTextColor);
         Set("Accent", SystemColors.HotTrackColor);
         Set("AccentStrong", SystemColors.HighlightColor);
+        Set("OnAccent", SystemColors.HighlightTextColor);
         Set("NavHover", SystemColors.ControlColor);
         Set("PanelTint", SystemColors.ControlColor);
         Set("ButtonBg", SystemColors.ControlColor);

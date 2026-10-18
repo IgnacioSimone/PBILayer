@@ -71,7 +71,7 @@ public static class WordExporter
         // Encabezado: se repite arriba de cada página.
         var header = new TableRow(new TableRowProperties(new TableHeader(), new CantSplit()));
         for (var c = 0; c < data.Headers.Count; c++)
-            header.Append(Cell(data.Headers[c], widths[c], bold: true, shade: "EFE6D8"));
+            header.Append(Cell(data.Headers[c], widths[c], bold: true, shade: "FFF3C4"));
         table.Append(header);
 
         foreach (var row in data.Rows)
@@ -87,12 +87,12 @@ public static class WordExporter
     private static Table NewTable(int[] widths)
     {
         var borders = new TableBorders(
-            new TopBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" },
-            new LeftBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" },
-            new BottomBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" },
-            new RightBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" },
-            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" },
-            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4, Color = "DFD1BC" });
+            new TopBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" },
+            new LeftBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" },
+            new BottomBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" },
+            new RightBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" },
+            new InsideHorizontalBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" },
+            new InsideVerticalBorder { Val = BorderValues.Single, Size = 4, Color = "DCDCD6" });
 
         var table = new Table(new TableProperties(
             new TableWidth { Width = widths.Sum().ToString(), Type = TableWidthUnitValues.Dxa },
@@ -176,9 +176,9 @@ public static class WordExporter
                     new SpacingBetweenLines { After = "120" }))),
             ParagraphStyle("Normal", "Normal", isDefault: true),
             ParagraphStyle("Title", "Title", size: "52", bold: true, after: "60"),
-            ParagraphStyle("Subtitle", "Subtitle", size: "24", color: "6E5F51", after: "60"),
-            ParagraphStyle("Note", "Note", size: "18", color: "6E5F51", after: "160"),
-            ParagraphStyle("Heading1", "heading 1", size: "34", bold: true, color: "B54A2C", before: "120", after: "160", keepNext: true));
+            ParagraphStyle("Subtitle", "Subtitle", size: "24", color: "565753", after: "60"),
+            ParagraphStyle("Note", "Note", size: "18", color: "565753", after: "160"),
+            ParagraphStyle("Heading1", "heading 1", size: "34", bold: true, color: "8A6400", before: "120", after: "160", keepNext: true));
         part.Styles.Save();
     }
 
