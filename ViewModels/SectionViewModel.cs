@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using PBIExplorer.Models;
 using PBIExplorer.Services;
+using PBIExplorer.Services.Export;
 
 namespace PBIExplorer.ViewModels;
 
@@ -44,9 +45,47 @@ public interface ISearchableSection
     string SearchText { get; set; }
 }
 
-/// <summary>Sección con una grilla de solo lectura y vista filtrable.</summary>
-public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearchableSection where T : class
+/// <summary>Una columna de una sección al exportar: encabezado, cómo sacar el texto de la fila y si es código.</summary>
+public sealed record ExportColumn<T>(string Header, Func<T, string?> Get, bool IsCode = false);
+
+/// <summary>Sección que se puede exportar como tabla (CSV, Excel, Word, HTML).</summary>
+public interface IExportableSection
 {
+    string Title { get; }
+    bool HasExportData { get; }
+
+    /// <param name="filteredView">true: solo lo que se ve ahora (con la búsqueda y el orden de la grilla); false: todas las filas.</param>
+    ExportTable ToExportTable(bool filteredView);
+}
+
+/// <summary>Sección con una grilla de solo lectura y vista filtrable.</summary>
+public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearchableSection, IExportableSection where T : class
+{
+    private List<T> _items = new();
+
+    /// <summary>Todas las filas, sin el filtro de la búsqueda.</summary>
+    protected virtual IEnumerable<T> AllItems => _items;
+
+    /// <summary>Columnas que se exportan; vacío = esta sección no se exporta.</summary>
+    protected virtual IReadOnlyList<ExportColumn<T>> ExportColumns => Array.Empty<ExportColumn<T>>();
+
+    protected static string YesNo(bool value) => value ? "Sí" : "No";
+
+    public bool HasExportData => ExportColumns.Count > 0 && AllItems.Any();
+
+    public ExportTable ToExportTable(bool filteredView)
+    {
+        var columns = ExportColumns;
+        var rows = (filteredView ? View.Cast<T>() : AllItems)
+            .Select(item => (IReadOnlyList<string>)columns
+                .Select(c => SensitiveTextGuard.Mask(c.Get(item) ?? ""))
+                .ToList())
+            .ToList();
+
+        var code = columns.Select((c, i) => (c, i)).Where(x => x.c.IsCode).Select(x => x.i).ToHashSet();
+        return new ExportTable(Title, columns.Select(c => c.Header).ToList(), rows, code, Note);
+    }
+
     protected GridSectionViewModel(string title, string icon, string? note = null)
         : base(title, icon)
     {
@@ -95,6 +134,7 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
     public virtual void SetItems(IEnumerable<T> items)
     {
         var list = new ObservableCollection<T>(items);
+        _items = list.ToList();
         TotalCount = list.Count;
         View = CollectionViewSource.GetDefaultView(list);
         ApplyFilter();
@@ -116,6 +156,13 @@ public abstract partial class GridSectionViewModel<T> : SectionViewModel, ISearc
 
 public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInfo>("Medidas DAX", "")
 {
+    protected override IReadOnlyList<ExportColumn<MeasureInfo>> ExportColumns { get; } = new ExportColumn<MeasureInfo>[]
+    {
+        new("Tabla", m => m.Table), new("Medida", m => m.Name), new("Carpeta", m => m.DisplayFolder),
+        new("DAX", m => m.Expression, IsCode: true), new("Formato", m => m.FormatString),
+        new("Oculta", m => YesNo(m.IsHidden)), new("Descripción", m => m.Description)
+    };
+
     protected override DetailViewModel? BuildDetail(MeasureInfo m, DetailContext context) =>
         new(m.Name, $"Medida · {m.Table}", m.Expression, CodeLanguage.Dax,
             DetailFacts.Of(("Carpeta", m.DisplayFolder), ("Formato", m.FormatString),
@@ -123,10 +170,25 @@ public sealed class MeasuresSectionViewModel() : GridSectionViewModel<MeasureInf
             context.FindUsage("Medida", m.Table, m.Name), context);
 }
 
-public sealed class TablesSectionViewModel() : GridSectionViewModel<TableInfo>("Tablas", "");
+public sealed class TablesSectionViewModel() : GridSectionViewModel<TableInfo>("Tablas", "")
+{
+    protected override IReadOnlyList<ExportColumn<TableInfo>> ExportColumns { get; } = new ExportColumn<TableInfo>[]
+    {
+        new("Tabla", t => t.Name), new("Columnas", t => t.ColumnCount.ToString()), new("Medidas", t => t.MeasureCount.ToString()),
+        new("Descripción", t => t.Description), new("Oculta", t => YesNo(t.IsHidden))
+    };
+}
 
 public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>("Columnas", "")
 {
+    protected override IReadOnlyList<ExportColumn<ColumnInfo>> ExportColumns { get; } = new ExportColumn<ColumnInfo>[]
+    {
+        new("Tabla", c => c.Table), new("Columna", c => c.Name), new("Tipo de dato", c => c.DataType),
+        new("Origen", c => c.ColumnType), new("Carpeta", c => c.DisplayFolder),
+        new("DAX / columna origen", c => c.DaxOrSource, IsCode: true),
+        new("Oculta", c => YesNo(c.IsHidden)), new("Descripción", c => c.Description)
+    };
+
     protected override DetailViewModel? BuildDetail(ColumnInfo c, DetailContext context)
     {
         var calculated = !string.IsNullOrWhiteSpace(c.Expression);
@@ -138,10 +200,25 @@ public sealed class ColumnsSectionViewModel() : GridSectionViewModel<ColumnInfo>
     }
 }
 
-public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<RelationshipInfo>("Relaciones", "");
+public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<RelationshipInfo>("Relaciones", "")
+{
+    protected override IReadOnlyList<ExportColumn<RelationshipInfo>> ExportColumns { get; } = new ExportColumn<RelationshipInfo>[]
+    {
+        new("Desde tabla", r => r.FromTable), new("Desde columna", r => r.FromColumn),
+        new("Hacia tabla", r => r.ToTable), new("Hacia columna", r => r.ToColumn),
+        new("Cardinalidad", r => r.Cardinality), new("Filtro cruzado", r => r.CrossFilterBehavior),
+        new("Activa", r => YesNo(r.IsActive))
+    };
+}
 
 public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>("Power Query (M)", "")
 {
+    protected override IReadOnlyList<ExportColumn<PowerQueryInfo>> ExportColumns { get; } = new ExportColumn<PowerQueryInfo>[]
+    {
+        new("Nombre", q => q.Name), new("Tipo", q => q.Kind), new("Código M", q => q.MCode, IsCode: true),
+        new("Oculta", q => YesNo(q.IsHidden)), new("Descripción", q => q.Description)
+    };
+
     protected override DetailViewModel? BuildDetail(PowerQueryInfo q, DetailContext context)
     {
         // Una consulta que carga una tabla comparte el veredicto de esa tabla; un parámetro,
@@ -154,12 +231,34 @@ public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQue
             usage, context);
     }
 }
-public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>("Filtros", "");
-public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>("Visuales y campos", "");
+public sealed class FiltersSectionViewModel() : GridSectionViewModel<FilterInfo>("Filtros", "")
+{
+    protected override IReadOnlyList<ExportColumn<FilterInfo>> ExportColumns { get; } = new ExportColumn<FilterInfo>[]
+    {
+        new("Nivel", f => f.Scope), new("Página", f => f.Page), new("Visual", f => f.VisualText),
+        new("Tipo", f => f.FieldKind), new("Campo", f => f.TargetText), new("Tipo de filtro", f => f.FilterType),
+        new("Condición", f => f.Summary, IsCode: true)
+    };
+}
+public sealed class VisualsSectionViewModel() : GridSectionViewModel<VisualFieldUsage>("Visuales y campos", "")
+{
+    protected override IReadOnlyList<ExportColumn<VisualFieldUsage>> ExportColumns { get; } = new ExportColumn<VisualFieldUsage>[]
+    {
+        new("Página", v => v.Page), new("Visual", v => v.VisualType), new("Título", v => v.Title),
+        new("Tipo", v => v.FieldKind), new("Tabla", v => v.Table), new("Campo", v => v.Field)
+    };
+}
 
 public sealed class PerformanceSectionViewModel() : GridSectionViewModel<PerformanceWarning>(
     "Rendimiento", "",
-    note: "Heurísticas sobre patrones conocidos como antipatrón (relaciones bidireccionales o muchos a muchos, columnas calculadas, CALCULATE anidado). Esta herramienta nunca consulta filas reales, así que no puede medir cardinalidad ni tiempo de query real — son pistas para revisar, no un profiler.");
+    note: "Heurísticas sobre patrones conocidos como antipatrón (relaciones bidireccionales o muchos a muchos, columnas calculadas, CALCULATE anidado). Esta herramienta nunca consulta filas reales, así que no puede medir cardinalidad ni tiempo de query real — son pistas para revisar, no un profiler.")
+{
+    protected override IReadOnlyList<ExportColumn<PerformanceWarning>> ExportColumns { get; } = new ExportColumn<PerformanceWarning>[]
+    {
+        new("Severidad", w => w.Severity.ToString()), new("Categoría", w => w.Category), new("Tabla", w => w.Table),
+        new("Objeto", w => w.Subject), new("Detalle", w => w.Message)
+    };
+}
 
 public sealed partial class UsageSectionViewModel() : GridSectionViewModel<ObjectUsage>(
     "Uso y limpieza", "",
@@ -168,6 +267,15 @@ public sealed partial class UsageSectionViewModel() : GridSectionViewModel<Objec
     private List<ObjectUsage> _all = new();
 
     public IReadOnlyList<ObjectUsage> All => _all;
+
+    // El documento exportado lleva todos los objetos, no solo los que dejó el filtro "solo sin uso".
+    protected override IEnumerable<ObjectUsage> AllItems => _all;
+
+    protected override IReadOnlyList<ExportColumn<ObjectUsage>> ExportColumns { get; } = new ExportColumn<ObjectUsage>[]
+    {
+        new("Tipo", u => u.Kind), new("Tabla", u => u.Table), new("Nombre", u => u.Name), new("Estado", u => u.Status),
+        new("Depende de", u => u.DependsOnText), new("Usado por", u => u.UsedByText)
+    };
 
     [ObservableProperty] private bool _onlyUnused;
 
@@ -193,6 +301,11 @@ public sealed partial class CompareSectionViewModel : GridSectionViewModel<Model
         EmptyIcon = "";
         EmptyActionText = "Elegir snapshot .json…";
     }
+
+    protected override IReadOnlyList<ExportColumn<ModelDiffEntry>> ExportColumns { get; } = new ExportColumn<ModelDiffEntry>[]
+    {
+        new("Cambio", d => d.KindText), new("Categoría", d => d.Category), new("Objeto", d => d.Name), new("Detalle", d => d.Detail)
+    };
 
     public override void SetItems(IEnumerable<ModelDiffEntry> items)
     {

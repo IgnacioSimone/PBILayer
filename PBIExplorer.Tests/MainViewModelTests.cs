@@ -1,3 +1,5 @@
+using System.IO;
+using DocumentFormat.OpenXml.Packaging;
 using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 using PBIExplorer.Services;
@@ -56,7 +58,14 @@ public class MainViewModelTests
         public void ShowInfo(string message) => Infos.Add(message);
         public void ShowWarning(string message, string? title = null) => Warnings.Add(message);
         public string? PickOpenFile(string filter) => OpenFileResult;
-        public string? PickSaveFile(string filter, string suggestedName) => null;
+        public string? SaveFileResult { get; set; }
+        public List<string> SaveSuggestions { get; } = new();
+
+        public string? PickSaveFile(string filter, string suggestedName)
+        {
+            SaveSuggestions.Add(suggestedName);
+            return SaveFileResult;
+        }
         public void RevealInExplorer(string path) => Revealed.Add(path);
         public List<string> Copied { get; } = new();
         public void CopyText(string text) => Copied.Add(text);
@@ -263,6 +272,105 @@ public class MainViewModelTests
         Assert.Equal(CodeLanguage.M, vm.PowerQuery.Detail.Language);
         Assert.Equal(new[] { "let Origen = 1 in Origen" }, dialogs.Copied);
         Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success);
+    }
+
+    private static string TempFile(string name) =>
+        Path.Combine(Path.GetTempPath(), $"pbicontext-{Guid.NewGuid():N}-{name}");
+
+    [Fact]
+    public async Task Csv_export_of_a_section_is_what_the_grid_shows_now()
+    {
+        var path = TempFile("medidas.csv");
+        var dialogs = new FakeDialogs { SaveFileResult = path };
+        var vm = Create(new FakeBackend { Model = SampleModel() }, dialogs);
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.SelectedSection = vm.Measures;
+        vm.GlobalSearchText = "margen";
+
+        await vm.ExportCsvCommand.ExecuteAsync(null);
+
+        try
+        {
+            var lines = File.ReadAllLines(path);
+            Assert.Equal(2, lines.Length);   // encabezado + la única medida que coincide
+            Assert.Contains("Margen", lines[1]);
+            Assert.DoesNotContain("Total", lines[1].Replace("[Total]", ""));
+            Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success && t.Message.Contains("1 filas"));
+            Assert.Contains("Medidas DAX", dialogs.SaveSuggestions.Single());
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public async Task Csv_export_without_a_table_section_selected_explains_what_to_do()
+    {
+        var dialogs = new FakeDialogs { SaveFileResult = TempFile("x.csv") };
+        var vm = Create(new FakeBackend { Model = SampleModel() }, dialogs);
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.SelectedSection = vm.Summary;
+
+        await vm.ExportCsvCommand.ExecuteAsync(null);
+
+        Assert.Empty(dialogs.SaveSuggestions);   // ni siquiera se abrió el diálogo
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Info);
+    }
+
+    [Fact]
+    public async Task Excel_export_has_a_sheet_for_each_section_with_data_and_masks_sensitive_text()
+    {
+        var path = TempFile("todo.xlsx");
+        var model = SampleModel();
+        model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Contacto", Expression = "\"nacho@empresa.com\"" });
+        var vm = Create(new FakeBackend { Model = model }, new FakeDialogs { SaveFileResult = path });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+
+        await vm.ExportExcelCommand.ExecuteAsync(null);
+
+        try
+        {
+            using var book = SpreadsheetDocument.Open(path, isEditable: false);
+            var names = book.WorkbookPart!.Workbook.Descendants<DocumentFormat.OpenXml.Spreadsheet.Sheet>().Select(s => s.Name!.Value).ToList();
+            Assert.Equal(new[] { "Resumen", "Medidas DAX", "Tablas", "Columnas", "Uso y limpieza" }, names);
+
+            var allText = string.Concat(book.WorkbookPart.WorksheetParts.SelectMany(p => p.Worksheet.Descendants<DocumentFormat.OpenXml.Spreadsheet.Text>()).Select(t => t.Text));
+            Assert.DoesNotContain("nacho@empresa.com", allText);
+            Assert.Contains("Margen", allText);
+        }
+        finally
+        {
+            File.Delete(path);
+        }
+    }
+
+    [Fact]
+    public async Task Exports_include_every_usage_row_even_when_the_screen_only_shows_unused_ones()
+    {
+        var vm = Create(new FakeBackend { Model = SampleModel() });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+        vm.Usage.OnlyUnused = true;
+
+        var forDocument = vm.Usage.ToExportTable(filteredView: false);
+        var forScreen = vm.Usage.ToExportTable(filteredView: true);
+
+        Assert.Equal(vm.Usage.All.Count, forDocument.Rows.Count);
+        Assert.True(forScreen.Rows.Count <= forDocument.Rows.Count);
+    }
+
+    [Fact]
+    public async Task A_failing_export_raises_an_error_toast_and_clears_busy()
+    {
+        // Ruta imposible: la carpeta no existe.
+        var path = Path.Combine(Path.GetTempPath(), "no-existe-" + Guid.NewGuid().ToString("N"), "x.docx");
+        var vm = Create(new FakeBackend { Model = SampleModel() }, new FakeDialogs { SaveFileResult = path });
+        await vm.ConnectToLiveModelAsync("localhost:1", "db");
+
+        await vm.ExportWordCommand.ExecuteAsync(null);
+
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Error && t.Message.Contains("No se pudo generar"));
+        Assert.False(vm.IsBusy);
     }
 
     [Fact]

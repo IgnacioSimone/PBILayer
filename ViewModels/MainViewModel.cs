@@ -5,6 +5,7 @@ using CommunityToolkit.Mvvm.Input;
 using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 using PBIExplorer.Services;
+using PBIExplorer.Services.Export;
 
 namespace PBIExplorer.ViewModels;
 
@@ -169,7 +170,8 @@ public sealed partial class MainViewModel : ObservableObject
             {
                 // Lanzada desde "Herramientas externas": Power BI Desktop nos pasa servidor y base.
                 _modelReportName = _backend.GetOpenReportName();
-                await ConnectToLiveModelAsync(args[1], args[2], ct);
+                var connected = await ConnectToLiveModelAsync(args[1], args[2], ct);
+                if (connected && _modelReportName is not null) _sourceName = _modelReportName;
                 if (ct.IsCancellationRequested) return;
             }
             else if (StartupFile(args) is null)
@@ -265,6 +267,7 @@ public sealed partial class MainViewModel : ObservableObject
         if (!await ConnectToLiveModelAsync(found.Server, found.Database, ct, quiet)) return false;
 
         _modelReportName = found.ReportName;
+        _sourceName = found.ReportName;   // la base se llama con un GUID: para nombrar archivos sirve el nombre del tablero
         return true;
     }
 
@@ -688,8 +691,9 @@ public sealed partial class MainViewModel : ObservableObject
         "Ctrl+F\t\tBuscar en todas las secciones\n" +
         "Esc\t\tLimpiar la búsqueda\n" +
         "Ctrl+O\t\tAbrir un .pbix\n" +
-        "Ctrl+E\t\tExportar Markdown\n" +
-        "Ctrl+Shift+E\tExportar JSON\n" +
+        "Ctrl+E\t\tExportar Markdown (contexto para IA)\n" +
+        "Ctrl+Shift+E\tExportar JSON (snapshot)\n" +
+        "Botón Exportar\tWord, Excel, HTML, CSV de la sección o de todas\n" +
         "F5\t\tActualizar los datos\n" +
         "Ctrl+1 … 9, 0\tIr a la sección 1 … 10\n" +
         "Ctrl+Av Pág / Re Pág\tSección siguiente / anterior\n" +
@@ -908,6 +912,96 @@ public sealed partial class MainViewModel : ObservableObject
             NotifyError($"No se pudo generar el archivo. {ex.Message}");
         }
     }
+
+    // ---- Documentos: Word, Excel, HTML y CSV ----
+
+    [RelayCommand]
+    private Task ExportWordAsync() =>
+        ExportDocumentAsync("Documento de Word (*.docx)|*.docx", "docx", "el documento de Word", WordExporter.WriteFile);
+
+    [RelayCommand]
+    private Task ExportExcelAsync() =>
+        ExportDocumentAsync("Libro de Excel (*.xlsx)|*.xlsx", "xlsx", "el libro de Excel", ExcelExporter.WriteFile);
+
+    [RelayCommand]
+    private Task ExportHtmlAsync() =>
+        ExportDocumentAsync("Página web (*.html)|*.html", "html", "la página HTML", HtmlExporter.WriteFile);
+
+    [RelayCommand]
+    private Task ExportCsvZipAsync() =>
+        ExportDocumentAsync("CSV de todas las secciones (*.zip)|*.zip", "zip", "los CSV",
+            (path, document) => CsvExporter.WriteZip(path, document.Tables));
+
+    /// <summary>CSV de la sección que se está viendo, tal cual se ve: con la búsqueda y el orden de la grilla.</summary>
+    [RelayCommand]
+    private async Task ExportCsvAsync()
+    {
+        if (IsBusy) { NotifyBusy(); return; }
+
+        if (SelectedSection is not IExportableSection section || !section.HasExportData)
+        {
+            Notify(ToastKind.Info, "Elegí una sección con una tabla (Medidas, Columnas, Relaciones…) para exportarla a CSV.");
+            return;
+        }
+
+        var path = _dialogs.PickSaveFile("CSV (*.csv)|*.csv", $"{ExportText.SafeFileName(section.Title)}_{ExportText.SafeFileName(_sourceName)}.csv");
+        if (path is null) return;
+
+        var table = section.ToExportTable(filteredView: true);
+        await WriteExportAsync(path, "el CSV", () => CsvExporter.WriteFile(path, table),
+            $"{table.Rows.Count:N0} filas guardadas" + (string.IsNullOrWhiteSpace(GlobalSearchText) ? "." : " (las de la búsqueda actual)."));
+    }
+
+    private async Task ExportDocumentAsync(string filter, string extension, string label, Action<string, ExportDocument> write)
+    {
+        if (IsBusy) { NotifyBusy(); return; }
+        if (!EnsureSomethingLoaded()) return;
+
+        var path = _dialogs.PickSaveFile(filter, $"Documentacion_{ExportText.SafeFileName(_sourceName)}.{extension}");
+        if (path is null) return;
+
+        var document = BuildExportDocument();   // se arma acá (hilo de la interfaz); solo la escritura va a segundo plano
+        await WriteExportAsync(path, label, () => write(path, document), $"{document.Tables.Count} secciones guardadas.");
+    }
+
+    private async Task WriteExportAsync(string path, string label, Action write, string successDetail)
+    {
+        await RunBusyAsync(async ct =>
+        {
+            StatusText = $"Generando {label}…";
+            try
+            {
+                await Task.Run(write, ct);
+                Notify(ToastKind.Success, $"{char.ToUpper(label[0])}{label[1..]}: {successDetail}",
+                    "Mostrar", () => _dialogs.RevealInExplorer(path));
+            }
+            catch (OperationCanceledException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                AppLog.Write($"ERROR exportando {label}: {ex}");
+                NotifyError($"No se pudo generar {label}. {ex.Message}");
+            }
+        });
+
+        UpdateStatus();
+    }
+
+    private ExportDocument BuildExportDocument()
+    {
+        var tables = Sections.OfType<IExportableSection>()
+            .Where(s => s.HasExportData)
+            .Select(s => s.ToExportTable(filteredView: false))
+            .ToList();
+
+        var facts = Summary.Tiles.Select(t => new ExportFact(t.Label, t.Value.ToString("N0"))).ToList();
+        return new ExportDocument(SensitiveTextGuard.Mask(_sourceName), DateTime.Now, facts, tables);
+    }
+
+    private void NotifyBusy() =>
+        Notify(ToastKind.Info, "Todavía se está cargando el tablero; probá de nuevo en un momento (o cancelá la carga).");
 
     private bool EnsureSomethingLoaded()
     {
