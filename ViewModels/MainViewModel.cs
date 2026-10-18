@@ -270,14 +270,11 @@ public sealed partial class MainViewModel : ObservableObject
                 return;
             }
 
-            // Un modelo de otro tablero mezclado con los visuales de este daría un "Uso y limpieza" falso.
+            // El archivo no está abierto en Power BI Desktop: se abre ahí, porque es la única forma
+            // de leer su modelo. Un modelo de otro tablero mezclado con estos visuales daría un
+            // "Uso y limpieza" falso, así que se descarta antes.
             if (HasModel) ClearModel();
-
-            Notify(ToastKind.Info,
-                $"No pude leer el modelo (tablas, columnas, medidas, relaciones) porque \"{name}\" no está abierto en " +
-                "Power BI Desktop: ese dato va comprimido dentro del .pbix y solo se puede leer con el archivo abierto.",
-                "Abrir en Power BI Desktop", () => OpenReportInDesktopCommand.Execute(null),
-                sticky: true);
+            await OpenInDesktopAndWaitAsync(path, ct);
         });
     }
 
@@ -287,38 +284,37 @@ public sealed partial class MainViewModel : ObservableObject
     /// <summary>Tiempo máximo de espera: un .pbix de varios cientos de MB puede tardar minutos en abrir.</summary>
     public TimeSpan DesktopWaitTimeout { get; set; } = TimeSpan.FromMinutes(4);
 
-    /// <summary>Abre el reporte actual en Power BI Desktop y, apenas su modelo está disponible, lo lee.</summary>
+    /// <summary>Reintenta abrir el reporte actual en Power BI Desktop (botón del estado vacío).</summary>
     [RelayCommand]
     private async Task OpenReportInDesktopAsync()
     {
         if (_reportPath is null) return;
         var path = _reportPath;
-        var name = Path.GetFileNameWithoutExtension(path);
+        await RunBusyAsync(ct => OpenInDesktopAndWaitAsync(path, ct));
+    }
 
+    private async Task OpenInDesktopAndWaitAsync(string path, CancellationToken ct)
+    {
+        var name = Path.GetFileNameWithoutExtension(path);
+        StatusText = $"Abriendo \"{name}\" en Power BI Desktop… con archivos grandes puede tardar unos minutos.";
         _dialogs.OpenWithShell(path);
 
-        await RunBusyAsync(async ct =>
+        var deadline = DateTime.UtcNow + DesktopWaitTimeout;
+        while (DateTime.UtcNow < deadline)
         {
-            StatusText = $"Abriendo \"{name}\" en Power BI Desktop… con archivos grandes puede tardar unos minutos.";
-            var deadline = DateTime.UtcNow + DesktopWaitTimeout;
-
-            while (DateTime.UtcNow < deadline)
+            // Mientras Desktop carga, el título de su ventana todavía no tiene el nombre del archivo:
+            // el modelo simplemente no aparece todavía y se vuelve a intentar.
+            if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
             {
-                // Mientras Desktop carga, el título de su ventana todavía no tiene el nombre del archivo:
-                // el modelo simplemente no aparece todavía y se vuelve a intentar.
-                if (await ConnectToDesktopModelAsync(name, ct, quiet: true))
-                {
-                    LoadReport(path);
-                    Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
-                    return;
-                }
-                await Task.Delay(DesktopPollInterval, ct);
+                Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
+                return;
             }
+            await Task.Delay(DesktopPollInterval, ct);
+        }
 
-            Notify(ToastKind.Warning,
-                $"Power BI Desktop todavía no terminó de abrir \"{name}\". Cuando termine, tocá Actualizar (F5).",
-                sticky: true);
-        });
+        Notify(ToastKind.Warning,
+            $"Power BI Desktop todavía no terminó de abrir \"{name}\". Cuando termine, tocá Actualizar (F5).",
+            sticky: true);
     }
 
     private void ClearModel()

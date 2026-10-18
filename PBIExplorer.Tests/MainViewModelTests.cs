@@ -73,7 +73,10 @@ public class MainViewModelTests
         // Sin auto-descarte: los tests inspeccionan los avisos y no deben competir con un timer.
         return new MainViewModel(backend ?? new FakeBackend(), dialogs ?? new FakeDialogs(), settings)
         {
-            ToastDuration = Timeout.InfiniteTimeSpan
+            ToastDuration = Timeout.InfiniteTimeSpan,
+            // "Power BI Desktop" que nunca abre el archivo no debe colgar la prueba (en la app son 4 minutos).
+            DesktopPollInterval = TimeSpan.FromMilliseconds(5),
+            DesktopWaitTimeout = TimeSpan.FromMilliseconds(60)
         };
     }
 
@@ -185,41 +188,40 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task Opening_a_pbix_that_is_not_open_in_desktop_explains_why_and_drops_a_stale_model()
+    public async Task Opening_a_pbix_not_open_in_desktop_opens_it_there_and_drops_a_stale_model()
     {
         var backend = new FakeBackend
         {
             Model = SampleModel(),
             Desktop = new DesktopModel("localhost:5000", "guid-1", "Otro tablero")
         };
-        var vm = Create(backend);
+        var dialogs = new FakeDialogs();
+        var vm = Create(backend, dialogs);
         await vm.InitializeAsync(new[] { "PBIContext.exe" });
         Assert.Equal(2, vm.Measures.TotalCount);   // quedó enganchada a "Otro tablero"
+        var path = Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix");
 
-        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+        await vm.OpenFileAsync(path);
 
-        Assert.Equal(0, vm.Measures.TotalCount);   // no se mezclan medidas de otro tablero con estos visuales
+        Assert.Equal(new[] { path }, dialogs.Opened);   // se pidió abrirlo en Power BI Desktop
+        Assert.Equal(0, vm.Measures.TotalCount);        // no se mezclan medidas de otro tablero con estos visuales
         Assert.True(vm.Measures.IsEmpty);
-        var toast = Assert.Single(vm.Toasts, t => t.Kind == ToastKind.Info);
-        Assert.Contains("no está abierto en Power BI Desktop", toast.Message);
     }
 
     [Fact]
-    public async Task Opening_the_report_in_desktop_waits_for_its_model_and_then_reads_it()
+    public async Task Opening_a_pbix_opens_it_in_desktop_waits_for_its_model_and_reads_it()
     {
         var backend = new FakeBackend { Model = SampleModel() };
         var dialogs = new FakeDialogs();
         // Power BI Desktop "tarda" en abrir: el modelo recién aparece en el tercer sondeo.
         dialogs.OnOpenWithShell = _ => backend.DesktopAppearsAfter = 3;
         var vm = Create(backend, dialogs);
-        vm.DesktopPollInterval = TimeSpan.FromMilliseconds(5);
-        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
-        Assert.Equal(0, vm.Measures.TotalCount);
 
-        await vm.OpenReportInDesktopCommand.ExecuteAsync(null);
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
 
         Assert.Single(dialogs.Opened);
         Assert.Equal(2, vm.Measures.TotalCount);
+        Assert.False(vm.Measures.IsEmpty);
         Assert.False(vm.IsBusy);
         Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success);
     }
@@ -228,26 +230,43 @@ public class MainViewModelTests
     public async Task Waiting_for_desktop_gives_up_with_a_clear_warning()
     {
         var vm = Create(new FakeBackend());
-        vm.DesktopPollInterval = TimeSpan.FromMilliseconds(5);
-        vm.DesktopWaitTimeout = TimeSpan.FromMilliseconds(40);
-        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
 
-        await vm.OpenReportInDesktopCommand.ExecuteAsync(null);
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
 
         Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Warning && t.Message.Contains("todavía no terminó"));
         Assert.False(vm.IsBusy);
     }
 
     [Fact]
-    public async Task Sections_offer_to_open_the_report_in_desktop_when_only_the_pbix_is_loaded()
+    public async Task After_giving_up_the_sections_offer_to_retry_opening_in_desktop()
     {
-        var vm = Create(new FakeBackend());
-
+        var dialogs = new FakeDialogs();
+        var vm = Create(new FakeBackend(), dialogs);
         await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
 
         Assert.Equal("Falta el modelo de este tablero", vm.Tables.EmptyTitle);
         Assert.Equal("Abrir en Power BI Desktop", vm.Tables.EmptyActionText);
-        Assert.NotNull(vm.Tables.EmptyActionCommand);
+
+        await vm.OpenReportInDesktopCommand.ExecuteAsync(null);
+
+        Assert.Equal(2, dialogs.Opened.Count);
+    }
+
+    [Fact]
+    public async Task A_pbix_already_open_in_desktop_is_not_opened_again()
+    {
+        var dialogs = new FakeDialogs();
+        var backend = new FakeBackend
+        {
+            Model = SampleModel(),
+            Desktop = new DesktopModel("localhost:5000", "guid-1", "Ventas 2026")
+        };
+        var vm = Create(backend, dialogs);
+
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+
+        Assert.Empty(dialogs.Opened);
+        Assert.Equal(2, vm.Measures.TotalCount);
     }
 
     [Fact]
