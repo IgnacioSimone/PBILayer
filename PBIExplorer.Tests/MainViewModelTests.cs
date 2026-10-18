@@ -21,6 +21,16 @@ public class MainViewModelTests
         public string? GetOpenReportName() => ReportName;
         public Task<string?> FindOpenPbixAsync(TimeSpan budget) => Task.FromResult<string?>(null);
 
+        /// <summary>Lo que "Power BI Desktop" tiene abierto en este test (null = nada).</summary>
+        public DesktopModel? Desktop { get; set; }
+
+        public Task<DesktopModel?> FindDesktopModelAsync(string? reportName)
+        {
+            var match = Desktop is not null &&
+                        (reportName is null || string.Equals(reportName, Desktop.ReportName, StringComparison.OrdinalIgnoreCase));
+            return Task.FromResult(match ? Desktop : null);
+        }
+
         public (List<VisualFieldUsage>, List<FilterInfo>) ParseReport(string path) => (new(), new());
     }
 
@@ -123,8 +133,60 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public async Task Connection_failure_raises_a_retryable_error_toast()
+    public async Task Standalone_launch_attaches_itself_to_the_model_open_in_power_bi_desktop()
     {
+        var backend = new FakeBackend
+        {
+            Model = SampleModel(),
+            Desktop = new DesktopModel("localhost:5000", "guid-1", "Ventas 2026")
+        };
+        var vm = Create(backend);
+
+        await vm.InitializeAsync(new[] { "PBIContext.exe" });   // sin servidor/base: abierta a mano
+
+        Assert.Equal(2, vm.Measures.TotalCount);
+        Assert.False(vm.Measures.IsEmpty);
+    }
+
+    [Fact]
+    public async Task Opening_a_pbix_that_is_open_in_desktop_reads_its_model()
+    {
+        var path = Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix");
+        var backend = new FakeBackend
+        {
+            Model = SampleModel(),
+            Desktop = new DesktopModel("localhost:5000", "guid-1", "Ventas 2026")
+        };
+        var vm = Create(backend);
+
+        await vm.OpenFileAsync(path);
+
+        Assert.Equal(2, vm.Measures.TotalCount);
+        Assert.Contains(vm.Toasts, t => t.Kind == ToastKind.Success);
+    }
+
+    [Fact]
+    public async Task Opening_a_pbix_that_is_not_open_in_desktop_explains_why_and_drops_a_stale_model()
+    {
+        var backend = new FakeBackend
+        {
+            Model = SampleModel(),
+            Desktop = new DesktopModel("localhost:5000", "guid-1", "Otro tablero")
+        };
+        var vm = Create(backend);
+        await vm.InitializeAsync(new[] { "PBIContext.exe" });
+        Assert.Equal(2, vm.Measures.TotalCount);   // quedó enganchada a "Otro tablero"
+
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+
+        Assert.Equal(0, vm.Measures.TotalCount);   // no se mezclan medidas de otro tablero con estos visuales
+        Assert.True(vm.Measures.IsEmpty);
+        var toast = Assert.Single(vm.Toasts, t => t.Kind == ToastKind.Info);
+        Assert.Contains("no está abierto en Power BI Desktop", toast.Message);
+    }
+
+    [Fact]
+    public async Task Connection_failure_raises_a_retryable_error_toast()    {
         var vm = Create(new FakeBackend { ReadError = new InvalidOperationException("boom") });
 
         var ok = await vm.ConnectToLiveModelAsync("localhost:1", "db");
@@ -248,25 +310,25 @@ public class MainViewModelTests
     }
 
     [Fact]
-    public void Opening_a_file_with_an_unsupported_extension_warns()
+    public async Task Opening_a_file_with_an_unsupported_extension_warns()
     {
         var vm = Create();
 
-        vm.OpenFile(@"C:\temp\notas.txt");
+        await vm.OpenFileAsync(@"C:\temp\notas.txt");
 
         var toast = Assert.Single(vm.Toasts);
         Assert.Equal(ToastKind.Warning, toast.Kind);
     }
 
     [Fact]
-    public void Opening_a_missing_recent_file_removes_it_and_warns()
+    public async Task Opening_a_missing_recent_file_removes_it_and_warns()
     {
         var settings = new AppSettings();
         settings.RecentFiles.Add(@"C:\no-existe\viejo.pbix");
         var vm = Create(settings: settings);
         Assert.Single(vm.RecentFiles);
 
-        vm.OpenRecentCommand.Execute(@"C:\no-existe\viejo.pbix");
+        await vm.OpenRecentCommand.ExecuteAsync(@"C:\no-existe\viejo.pbix");
 
         Assert.Empty(vm.RecentFiles);
         Assert.Empty(settings.RecentFiles);

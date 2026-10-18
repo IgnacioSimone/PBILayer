@@ -29,18 +29,30 @@ public static class PbixLocator
             }
             catch (InvalidOperationException) { continue; }
 
-            if (string.IsNullOrWhiteSpace(title)) continue;
-
-            // "Simulación de Exámenes - Power BI Desktop"
-            var idx = title.IndexOf(TitleSuffix, StringComparison.OrdinalIgnoreCase);
-            var name = idx > 0 ? title[..idx] : title;
-
-            // Power BI marca los cambios sin guardar con un asterisco al final.
-            name = name.TrimEnd('*', ' ');
-
-            if (!string.IsNullOrWhiteSpace(name)) return name;
+            var name = ReportNameFromTitle(title);
+            if (name is not null) return name;
         }
         return null;
+    }
+
+    /// <summary>Nombre del reporte que tiene abierto un proceso de Power BI Desktop, o null.</summary>
+    public static string? ReportNameFor(Process desktopProcess)
+    {
+        try { return ReportNameFromTitle(desktopProcess.MainWindowTitle); }
+        catch (InvalidOperationException) { return null; }
+    }
+
+    /// <summary>"Simulación de Exámenes* - Power BI Desktop" → "Simulación de Exámenes".</summary>
+    public static string? ReportNameFromTitle(string? title)
+    {
+        if (string.IsNullOrWhiteSpace(title)) return null;
+
+        var idx = title.IndexOf(TitleSuffix, StringComparison.OrdinalIgnoreCase);
+        var name = idx > 0 ? title[..idx] : title;
+
+        // Power BI marca los cambios sin guardar con un asterisco al final.
+        name = name.TrimEnd('*', ' ');
+        return string.IsNullOrWhiteSpace(name) ? null : name;
     }
 
     /// <summary>

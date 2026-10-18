@@ -26,6 +26,7 @@ public sealed partial class MainViewModel : ObservableObject
     private string? _server;
     private string? _database;
     private string? _reportPath;
+    private string? _modelReportName;   // reporte de Power BI Desktop al que pertenece el modelo cargado
     private CancellationTokenSource? _cts;
 
     public MainViewModel(IPowerBiBackend backend, IDialogService dialogs, AppSettings? settings = null, Action? persist = null)
@@ -152,9 +153,17 @@ public sealed partial class MainViewModel : ObservableObject
         {
             if (args.Length >= 3)
             {
-                var connected = await ConnectToLiveModelAsync(args[1], args[2], ct);
+                // Lanzada desde "Herramientas externas": Power BI Desktop nos pasa servidor y base.
+                _modelReportName = _backend.GetOpenReportName();
+                await ConnectToLiveModelAsync(args[1], args[2], ct);
                 if (ct.IsCancellationRequested) return;
-                if (!connected) { RefreshAll(); }
+            }
+            else
+            {
+                // Abierta por su cuenta: si hay un tablero abierto en Power BI Desktop, se engancha solo.
+                StatusText = "Buscando un tablero abierto en Power BI Desktop…";
+                await ConnectToDesktopModelAsync(null, ct);
+                if (ct.IsCancellationRequested) return;
             }
 
             RefreshAll();
@@ -202,20 +211,82 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(CanExport))]
     private async Task RefreshAsync()
     {
-        if (_server is null && _reportPath is null)
-        {
-            Notify(ToastKind.Info, "No hay nada para actualizar: abrí la herramienta desde Power BI Desktop o elegí un .pbix.");
-            return;
-        }
-
         await RunBusyAsync(async ct =>
         {
-            if (_server is not null && _database is not null)
+            // El puerto del motor cambia cada vez que se abre el tablero, así que primero se
+            // vuelve a buscar; solo si no aparece se reintenta con el servidor ya conocido.
+            var reportName = _modelReportName ?? (_reportPath is null ? null : Path.GetFileNameWithoutExtension(_reportPath));
+            var reconnected = await ConnectToDesktopModelAsync(reportName, ct);
+            if (ct.IsCancellationRequested) return;
+
+            if (!reconnected && _server is not null && _database is not null)
                 if (!await ConnectToLiveModelAsync(_server, _database, ct)) return;
 
             if (_reportPath is not null) LoadReport(_reportPath);
-            Notify(ToastKind.Success, "Datos actualizados.");
+
+            if (!HasAnything)
+                Notify(ToastKind.Info, "No hay nada para actualizar: abrí un tablero en Power BI Desktop o elegí un .pbix.");
+            else
+                Notify(ToastKind.Success, "Datos actualizados.");
         });
+    }
+
+    /// <summary>Busca el modelo del tablero abierto en Power BI Desktop (por nombre, o el único
+    /// abierto) y lo lee. Devuelve false si no hay ninguno o si falló la lectura.</summary>
+    private async Task<bool> ConnectToDesktopModelAsync(string? reportName, CancellationToken ct)
+    {
+        var found = await WithCancellation(_backend.FindDesktopModelAsync(reportName), ct);
+        if (found is null) return false;
+
+        AppLog.Write($"Modelo de Power BI Desktop encontrado: \"{found.ReportName}\" en {found.Server}");
+        if (!await ConnectToLiveModelAsync(found.Server, found.Database, ct)) return false;
+
+        _modelReportName = found.ReportName;
+        return true;
+    }
+
+    /// <summary>Después de abrir un .pbix a mano: las tablas, columnas y medidas no se pueden leer del
+    /// archivo (el modelo va comprimido adentro), pero sí del motor de Power BI Desktop si ese
+    /// mismo archivo está abierto ahí.</summary>
+    private async Task EnsureModelForReportAsync(string path)
+    {
+        var name = Path.GetFileNameWithoutExtension(path);
+        if (HasModel && string.Equals(_modelReportName, name, StringComparison.OrdinalIgnoreCase)) return;
+
+        await RunBusyAsync(async ct =>
+        {
+            if (await ConnectToDesktopModelAsync(name, ct))
+            {
+                Notify(ToastKind.Success, $"Modelo de \"{name}\" leído desde Power BI Desktop.");
+                return;
+            }
+
+            // Un modelo de otro tablero mezclado con los visuales de este daría un "Uso y limpieza" falso.
+            if (HasModel) ClearModel();
+
+            Notify(ToastKind.Info,
+                $"No pude leer el modelo (tablas, columnas, medidas, relaciones) porque \"{name}\" no está abierto en " +
+                "Power BI Desktop: ese dato va comprimido dentro del .pbix y solo se puede leer con el archivo abierto. " +
+                "Abrilo ahí y tocá Actualizar.",
+                sticky: true);
+        });
+    }
+
+    private void ClearModel()
+    {
+        _model = new ModelSnapshot();
+        _server = null;
+        _database = null;
+        _modelReportName = null;
+
+        Measures.SetItems(_model.Measures);
+        Tables.SetItems(_model.Tables);
+        Columns.SetItems(_model.Columns);
+        Relationships.SetItems(_model.Relationships);
+        PowerQuery.SetItems(_model.PowerQueries);
+        RebuildPerformance();
+        RebuildUsage();
+        RefreshAll();
     }
 
     // =====================================================================
@@ -356,17 +427,16 @@ public sealed partial class MainViewModel : ObservableObject
     private void ShowVisualsEmpty(string title, string body) => Visuals.SetEmpty(true, title, body);
 
     [RelayCommand]
-    private void ChoosePbix()
+    private async Task ChoosePbixAsync()
     {
         var path = _dialogs.PickOpenFile("Archivos Power BI (*.pbix)|*.pbix");
         if (path is null) return;
 
-        LoadReport(path);
-        SelectedSection = Visuals;
+        await OpenReportAsync(path);
     }
 
     [RelayCommand]
-    private void OpenRecent(string? path)
+    private async Task OpenRecentAsync(string? path)
     {
         if (string.IsNullOrEmpty(path)) return;
 
@@ -377,8 +447,14 @@ public sealed partial class MainViewModel : ObservableObject
             return;
         }
 
+        await OpenReportAsync(path);
+    }
+
+    private async Task OpenReportAsync(string path)
+    {
         LoadReport(path);
         SelectedSection = Visuals;
+        await EnsureModelForReportAsync(path);
     }
 
     [RelayCommand]
@@ -392,13 +468,12 @@ public sealed partial class MainViewModel : ObservableObject
     }
 
     /// <summary>Arrastrar un archivo a la ventana: .pbix carga el reporte, .json lo compara.</summary>
-    public void OpenFile(string path)
+    public async Task OpenFileAsync(string path)
     {
         switch (Path.GetExtension(path).ToLowerInvariant())
         {
             case ".pbix":
-                LoadReport(path);
-                SelectedSection = Visuals;
+                await OpenReportAsync(path);
                 break;
             case ".json":
                 CompareWithSnapshot(path);
@@ -502,13 +577,14 @@ public sealed partial class MainViewModel : ObservableObject
     // Avisos (toasts)
     // =====================================================================
 
-    private void Notify(ToastKind kind, string message, string? actionText = null, Action? action = null)
+    /// <param name="sticky">Si es true el aviso queda hasta que el usuario lo cierre (mensajes largos o que piden una acción).</param>
+    private void Notify(ToastKind kind, string message, string? actionText = null, Action? action = null, bool sticky = false)
     {
         var toast = new ToastViewModel(kind, message, actionText, action, t => Toasts.Remove(t));
         Toasts.Add(toast);
         while (Toasts.Count > 4) Toasts.RemoveAt(0);
 
-        if (kind != ToastKind.Error) _ = DismissLaterAsync(toast);
+        if (kind != ToastKind.Error && !sticky) _ = DismissLaterAsync(toast);
     }
 
     private void NotifyError(string message, string? actionText = null, Action? action = null)
