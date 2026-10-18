@@ -24,8 +24,7 @@ public sealed record ExportDocument(
 
 public static class ExportText
 {
-    public const string PrivacyNote =
-        "Solo metadata del modelo y del reporte: no incluye filas de datos. Emails, DNI, CUIT y rutas locales están enmascarados.";
+    public static string PrivacyNote => Infrastructure.Loc.T("Export_PrivacyNote");
 
     /// <summary>Quita caracteres de control que XML (Word, Excel, HTML) no admite; deja tab y saltos de línea.</summary>
     public static string StripInvalidXmlChars(string? text)

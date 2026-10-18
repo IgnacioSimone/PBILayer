@@ -241,6 +241,66 @@
   <data name="Compare_EmptyTitle" xml:space="preserve"><value>Choose a snapshot to compare</value></data>
   <data name="Compare_EmptyBody" xml:space="preserve"><value>Choose a .json file exported earlier from this same report to see what has changed since then.</value></data>
   <data name="Compare_EmptyAction" xml:space="preserve"><value>Choose snapshot .json…</value></data>
+  <data name="Summary_Model" xml:space="preserve"><value>This model has {0} tables ({1} visible), {2} measures and {3} relationships between tables.</value></data>
+  <data name="Summary_Report_One" xml:space="preserve"><value>The report has {0} page with roughly {1} visuals in total.</value></data>
+  <data name="Summary_Report_Many" xml:space="preserve"><value>The report has {0} pages with roughly {1} visuals in total.</value></data>
+  <data name="Summary_NothingLoaded" xml:space="preserve"><value>Nothing loaded yet — connect to a model from Power BI Desktop and/or open the .pbix file.</value></data>
+  <data name="Summary_BusiestTable" xml:space="preserve"><value>The table with the most measures is &quot;{0}&quot; ({1} measures) — probably the heart of the model&apos;s business logic.</value></data>
+  <data name="Summary_RichestTable" xml:space="preserve"><value>The table with the most columns is &quot;{0}&quot; ({1} columns).</value></data>
+  <data name="Summary_MostConnected" xml:space="preserve"><value>&quot;{0}&quot; is the most connected table in the model ({1} relationships) — it looks like the central/fact table.</value></data>
+  <data name="Summary_Orphans_One" xml:space="preserve"><value>{0} visible table has no relationships — it may be a parameter table, deliberately disconnected, or an unused leftover.</value></data>
+  <data name="Summary_Orphans_Many" xml:space="preserve"><value>{0} visible tables have no relationships — they may be parameter tables, deliberately disconnected, or unused leftovers.</value></data>
+  <data name="Summary_Hidden_One" xml:space="preserve"><value>{0} measure is hidden — these are usually intermediate calculations used by other measures, not meant to be shown directly.</value></data>
+  <data name="Summary_Hidden_Many" xml:space="preserve"><value>{0} measures are hidden — these are usually intermediate calculations used by other measures, not meant to be shown directly.</value></data>
+  <data name="Summary_Page_One" xml:space="preserve"><value>Has {0} visual</value></data>
+  <data name="Summary_Page_Many" xml:space="preserve"><value>Has {0} visuals</value></data>
+  <data name="Summary_PageMeasures" xml:space="preserve"><value> Mainly shows: {0}.</value></data>
+  <data name="Summary_PageFilters" xml:space="preserve"><value> Can be filtered by: {0}.</value></data>
+  <data name="Summary_PageSources" xml:space="preserve"><value> Uses data from: {0}.</value></data>
+  <data name="Summary_TypeCount" xml:space="preserve"><value>{0} × {1}</value></data>
+  <data name="Summary_CustomVisual" xml:space="preserve"><value>custom visual</value></data>
+  <data name="Summary_CustomVisualNamed" xml:space="preserve"><value>custom visual &quot;{0}&quot;</value></data>
+  <data name="Vis_card" xml:space="preserve"><value>card</value></data>
+  <data name="Vis_multiRowCard" xml:space="preserve"><value>multi-row card</value></data>
+  <data name="Vis_slicer" xml:space="preserve"><value>slicer</value></data>
+  <data name="Vis_table" xml:space="preserve"><value>table</value></data>
+  <data name="Vis_pivotTable" xml:space="preserve"><value>pivot table</value></data>
+  <data name="Vis_matrix" xml:space="preserve"><value>matrix</value></data>
+  <data name="Vis_columnChart" xml:space="preserve"><value>column chart</value></data>
+  <data name="Vis_barChart" xml:space="preserve"><value>bar chart</value></data>
+  <data name="Vis_lineChart" xml:space="preserve"><value>line chart</value></data>
+  <data name="Vis_areaChart" xml:space="preserve"><value>area chart</value></data>
+  <data name="Vis_pieChart" xml:space="preserve"><value>pie chart</value></data>
+  <data name="Vis_donutChart" xml:space="preserve"><value>donut chart</value></data>
+  <data name="Vis_funnel" xml:space="preserve"><value>funnel</value></data>
+  <data name="Vis_gauge" xml:space="preserve"><value>gauge</value></data>
+  <data name="Vis_scatterChart" xml:space="preserve"><value>scatter chart</value></data>
+  <data name="Vis_treemap" xml:space="preserve"><value>treemap</value></data>
+  <data name="Vis_map" xml:space="preserve"><value>map</value></data>
+  <data name="Vis_filledMap" xml:space="preserve"><value>filled map</value></data>
+  <data name="Vis_pageNavigator" xml:space="preserve"><value>page navigator</value></data>
+  <data name="Vis_bookmarkNavigator" xml:space="preserve"><value>bookmark navigator</value></data>
+  <data name="Vis_textbox" xml:space="preserve"><value>text box</value></data>
+  <data name="Vis_image" xml:space="preserve"><value>image</value></data>
+  <data name="Vis_shape" xml:space="preserve"><value>shape</value></data>
+  <data name="Vis_actionButton" xml:space="preserve"><value>button</value></data>
+  <data name="Vis_waterfallChart" xml:space="preserve"><value>waterfall chart</value></data>
+  <data name="Vis_ribbonChart" xml:space="preserve"><value>ribbon chart</value></data>
+  <data name="Vis_keyDriversVisual" xml:space="preserve"><value>key influencers</value></data>
+  <data name="Vis_decompositionTreeVisual" xml:space="preserve"><value>decomposition tree</value></data>
+  <data name="Vis_qnaVisual" xml:space="preserve"><value>Q&amp;A</value></data>
+  <data name="Export_Summary" xml:space="preserve"><value>Summary</value></data>
+  <data name="Export_GeneratedAt" xml:space="preserve"><value>Generated on {0:dd/MM/yyyy HH:mm} with PBI Context</value></data>
+  <data name="Export_DocGeneratedAt" xml:space="preserve"><value>Documentation generated on {0:dd/MM/yyyy HH:mm} with PBI Context</value></data>
+  <data name="Export_DocTitle" xml:space="preserve"><value>{0} — Documentation</value></data>
+  <data name="Export_NoRows" xml:space="preserve"><value>No rows.</value></data>
+  <data name="Export_PrivacyNote" xml:space="preserve"><value>Model and report metadata only: no data rows are included. Emails, national IDs, tax IDs and local paths are masked.</value></data>
+  <data name="App_UnexpectedError" xml:space="preserve"><value>An unexpected error occurred:
+\
+\{0}
+\
+\Full details at:
+\{1}</value></data>
   <data name="Term_Measure" xml:space="preserve"><value>Measure</value></data>
   <data name="Term_Column" xml:space="preserve"><value>Column</value></data>
   <data name="Term_Table" xml:space="preserve"><value>Table</value></data>

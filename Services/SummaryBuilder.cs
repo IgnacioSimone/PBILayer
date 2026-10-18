@@ -1,5 +1,6 @@
 using System.Text;
 using System.Text.RegularExpressions;
+using PBIExplorer.Infrastructure;
 using PBIExplorer.Models;
 
 namespace PBIExplorer.Services;
@@ -14,22 +15,22 @@ public static class SummaryBuilder
 {
     private static readonly Regex CustomVisualGuidSuffix = new(@"[0-9A-Fa-f]{16,}$", RegexOptions.Compiled);
 
-    private static readonly Dictionary<string, string> FriendlyVisualNames = new(StringComparer.OrdinalIgnoreCase)
+    // Tipo de visual interno de Power BI → clave de texto (Vis_*).
+    private static readonly Dictionary<string, string> FriendlyVisualKeys = new(StringComparer.OrdinalIgnoreCase)
     {
-        ["card"] = "tarjeta", ["cardVisual"] = "tarjeta", ["multiRowCard"] = "tarjetas múltiples",
-        ["slicer"] = "segmentador", ["tableEx"] = "tabla", ["pivotTable"] = "tabla dinámica",
-        ["matrix"] = "matriz", ["columnChart"] = "gráfico de columnas", ["clusteredColumnChart"] = "gráfico de columnas",
-        ["barChart"] = "gráfico de barras", ["clusteredBarChart"] = "gráfico de barras",
-        ["lineChart"] = "gráfico de líneas", ["areaChart"] = "gráfico de área",
-        ["pieChart"] = "gráfico circular", ["donutChart"] = "gráfico de dona",
-        ["funnel"] = "embudo", ["gauge"] = "medidor", ["scatterChart"] = "dispersión",
-        ["treemap"] = "árbol jerárquico", ["map"] = "mapa", ["filledMap"] = "mapa coroplético",
-        ["pageNavigator"] = "navegador de páginas", ["bookmarkNavigator"] = "navegador de marcadores",
-        ["textbox"] = "texto", ["image"] = "imagen", ["shape"] = "forma", ["actionButton"] = "botón",
-        ["waterfallChart"] = "cascada", ["ribbonChart"] = "cinta", ["keyDriversVisual"] = "impulsores clave",
-        ["decompositionTreeVisual"] = "árbol de descomposición", ["qnaVisual"] = "preguntas y respuestas"
+        ["card"] = "Vis_card", ["cardVisual"] = "Vis_card", ["multiRowCard"] = "Vis_multiRowCard",
+        ["slicer"] = "Vis_slicer", ["tableEx"] = "Vis_table", ["pivotTable"] = "Vis_pivotTable",
+        ["matrix"] = "Vis_matrix", ["columnChart"] = "Vis_columnChart", ["clusteredColumnChart"] = "Vis_columnChart",
+        ["barChart"] = "Vis_barChart", ["clusteredBarChart"] = "Vis_barChart",
+        ["lineChart"] = "Vis_lineChart", ["areaChart"] = "Vis_areaChart",
+        ["pieChart"] = "Vis_pieChart", ["donutChart"] = "Vis_donutChart",
+        ["funnel"] = "Vis_funnel", ["gauge"] = "Vis_gauge", ["scatterChart"] = "Vis_scatterChart",
+        ["treemap"] = "Vis_treemap", ["map"] = "Vis_map", ["filledMap"] = "Vis_filledMap",
+        ["pageNavigator"] = "Vis_pageNavigator", ["bookmarkNavigator"] = "Vis_bookmarkNavigator",
+        ["textbox"] = "Vis_textbox", ["image"] = "Vis_image", ["shape"] = "Vis_shape", ["actionButton"] = "Vis_actionButton",
+        ["waterfallChart"] = "Vis_waterfallChart", ["ribbonChart"] = "Vis_ribbonChart", ["keyDriversVisual"] = "Vis_keyDriversVisual",
+        ["decompositionTreeVisual"] = "Vis_decompositionTreeVisual", ["qnaVisual"] = "Vis_qnaVisual"
     };
-
     public static DashboardSummary Build(ModelSnapshot model, List<VisualFieldUsage> visuals)
     {
         var summary = new DashboardSummary();
@@ -50,20 +51,19 @@ public static class SummaryBuilder
         if (hasModel)
         {
             var visibleTables = model.Tables.Count(t => !t.IsHidden);
-            sb.Append($"Este modelo tiene {model.Tables.Count} tablas ({visibleTables} visibles), ");
-            sb.Append($"{model.Measures.Count} medidas y {model.Relationships.Count} relaciones entre tablas. ");
+            sb.Append(Loc.F("Summary_Model", model.Tables.Count, visibleTables, model.Measures.Count, model.Relationships.Count));
         }
 
         if (hasVisuals)
         {
             var pages = visuals.Select(v => v.Page).Distinct().Count();
             var visualCount = visuals.Select(v => (v.Page, v.VisualType, v.Title)).Distinct().Count();
-            sb.Append($"El reporte tiene {pages} página{Plural(pages)} con, en total, aproximadamente {visualCount} visuales.");
+            sb.Append(Loc.F(pages == 1 ? "Summary_Report_One" : "Summary_Report_Many", pages, visualCount));
         }
 
         if (!hasModel && !hasVisuals)
         {
-            sb.Append("Todavía no hay nada cargado — conectate a un modelo desde Power BI Desktop y/o abrí el archivo .pbix.");
+            sb.Append(Loc.T("Summary_NothingLoaded"));
         }
 
         summary.OverviewText = sb.ToString().Trim();
@@ -75,11 +75,11 @@ public static class SummaryBuilder
 
         var busiest = model.Tables.OrderByDescending(t => t.MeasureCount).FirstOrDefault(t => t.MeasureCount > 0);
         if (busiest is not null)
-            summary.Highlights.Add($"La tabla con más medidas es \"{busiest.Name}\" ({busiest.MeasureCount} medidas) — probablemente el centro de la lógica de negocio del modelo.");
+            summary.Highlights.Add(Loc.F("Summary_BusiestTable", busiest.Name, busiest.MeasureCount));
 
         var richest = model.Tables.OrderByDescending(t => t.ColumnCount).FirstOrDefault(t => t.ColumnCount > 0);
         if (richest is not null && richest.Name != busiest?.Name)
-            summary.Highlights.Add($"La tabla con más columnas es \"{richest.Name}\" ({richest.ColumnCount} columnas).");
+            summary.Highlights.Add(Loc.F("Summary_RichestTable", richest.Name, richest.ColumnCount));
 
         if (model.Relationships.Count > 0)
         {
@@ -90,17 +90,17 @@ public static class SummaryBuilder
                 .FirstOrDefault();
 
             if (connections is not null)
-                summary.Highlights.Add($"\"{connections.Key}\" es la tabla más conectada del modelo ({connections.Count()} relaciones) — parece ser la tabla central/hechos.");
+                summary.Highlights.Add(Loc.F("Summary_MostConnected", connections.Key, connections.Count()));
 
             var referencedTables = model.Relationships.SelectMany(r => new[] { r.FromTable, r.ToTable }).ToHashSet();
             var orphanCount = model.Tables.Count(t => !t.IsHidden && !referencedTables.Contains(t.Name));
             if (orphanCount > 0)
-                summary.Highlights.Add($"{orphanCount} tabla{Plural(orphanCount)} visible{Plural(orphanCount)} no tiene{Plural(orphanCount, "n")} ninguna relación — puede{Plural(orphanCount, "n")} ser tablas de parámetros, desconectadas a propósito, o resabios sin usar.");
+                summary.Highlights.Add(Loc.F(orphanCount == 1 ? "Summary_Orphans_One" : "Summary_Orphans_Many", orphanCount));
         }
 
         var hiddenMeasures = model.Measures.Count(m => m.IsHidden);
         if (hiddenMeasures > 0)
-            summary.Highlights.Add($"{hiddenMeasures} medida{Plural(hiddenMeasures)} está{Plural(hiddenMeasures, "n")} oculta{Plural(hiddenMeasures)} — normalmente son cálculos intermedios usados por otras medidas, no pensados para mostrarse directamente.");
+            summary.Highlights.Add(Loc.F(hiddenMeasures == 1 ? "Summary_Hidden_One" : "Summary_Hidden_Many", hiddenMeasures));
     }
 
     private static void BuildPages(List<VisualFieldUsage> visuals, DashboardSummary summary)
@@ -129,7 +129,7 @@ public static class SummaryBuilder
                 .Select(v => FriendlyName(v.VisualType))
                 .GroupBy(n => n)
                 .OrderByDescending(g => g.Count())
-                .Select(g => g.Count() > 1 ? $"{g.Count()} {g.Key}s" : $"{g.Count()} {g.Key}")
+                .Select(g => g.Count() > 1 ? Loc.F("Summary_TypeCount", g.Count(), g.Key) : g.Key)
                 .ToList();
             page.VisualTypeBreakdown = string.Join(", ", typeBreakdown);
 
@@ -142,30 +142,29 @@ public static class SummaryBuilder
     private static string BuildPageSentence(PageSummary page, List<string> typeBreakdown)
     {
         var sb = new StringBuilder();
-        sb.Append($"Tiene {page.VisualCount} visual{Plural(page.VisualCount)}");
+        sb.Append(Loc.F(page.VisualCount == 1 ? "Summary_Page_One" : "Summary_Page_Many", page.VisualCount));
         if (typeBreakdown.Count > 0) sb.Append($" ({string.Join(", ", typeBreakdown)})");
         sb.Append('.');
 
         if (page.KeyMeasures.Count > 0)
-            sb.Append($" Muestra principalmente: {string.Join(", ", page.KeyMeasures)}.");
+            sb.Append(Loc.F("Summary_PageMeasures", string.Join(", ", page.KeyMeasures)));
 
         if (page.FilterColumns.Count > 0)
-            sb.Append($" Se puede filtrar por: {string.Join(", ", page.FilterColumns)}.");
+            sb.Append(Loc.F("Summary_PageFilters", string.Join(", ", page.FilterColumns)));
 
         if (page.SourceTables.Count > 0)
-            sb.Append($" Usa datos de: {string.Join(", ", page.SourceTables)}.");
+            sb.Append(Loc.F("Summary_PageSources", string.Join(", ", page.SourceTables)));
 
         return sb.ToString();
     }
 
     private static string FriendlyName(string visualType)
     {
-        if (FriendlyVisualNames.TryGetValue(visualType, out var friendly)) return friendly;
+        if (FriendlyVisualKeys.TryGetValue(visualType, out var friendlyKey)) return Loc.T(friendlyKey);
 
         // Los visuales custom de Power BI traen un GUID pegado al nombre (ej. sccWorkspaceBarChart1F7D...).
         var stripped = CustomVisualGuidSuffix.Replace(visualType, "");
-        return string.IsNullOrWhiteSpace(stripped) ? "visual personalizado" : $"visual personalizado \"{stripped}\"";
+        return string.IsNullOrWhiteSpace(stripped) ? Loc.T("Summary_CustomVisual") : Loc.F("Summary_CustomVisualNamed", stripped);
     }
 
-    private static string Plural(int count, string suffix = "s") => count == 1 ? "" : suffix;
 }

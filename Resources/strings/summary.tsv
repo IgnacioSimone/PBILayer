@@ -1,0 +1,55 @@
+Summary_Model	Este modelo tiene {0} tablas ({1} visibles), {2} medidas y {3} relaciones entre tablas. 	This model has {0} tables ({1} visible), {2} measures and {3} relationships between tables.
+Summary_Report_One	El reporte tiene {0} página con, en total, aproximadamente {1} visuales.	The report has {0} page with roughly {1} visuals in total.
+Summary_Report_Many	El reporte tiene {0} páginas con, en total, aproximadamente {1} visuales.	The report has {0} pages with roughly {1} visuals in total.
+Summary_NothingLoaded	Todavía no hay nada cargado — conectate a un modelo desde Power BI Desktop y/o abrí el archivo .pbix.	Nothing loaded yet — connect to a model from Power BI Desktop and/or open the .pbix file.
+Summary_BusiestTable	La tabla con más medidas es "{0}" ({1} medidas) — probablemente el centro de la lógica de negocio del modelo.	The table with the most measures is "{0}" ({1} measures) — probably the heart of the model's business logic.
+Summary_RichestTable	La tabla con más columnas es "{0}" ({1} columnas).	The table with the most columns is "{0}" ({1} columns).
+Summary_MostConnected	"{0}" es la tabla más conectada del modelo ({1} relaciones) — parece ser la tabla central/hechos.	"{0}" is the most connected table in the model ({1} relationships) — it looks like the central/fact table.
+Summary_Orphans_One	{0} tabla visible no tiene ninguna relación — puede ser una tabla de parámetros, desconectada a propósito, o un resabio sin usar.	{0} visible table has no relationships — it may be a parameter table, deliberately disconnected, or an unused leftover.
+Summary_Orphans_Many	{0} tablas visibles no tienen ninguna relación — pueden ser tablas de parámetros, desconectadas a propósito, o resabios sin usar.	{0} visible tables have no relationships — they may be parameter tables, deliberately disconnected, or unused leftovers.
+Summary_Hidden_One	{0} medida está oculta — normalmente son cálculos intermedios usados por otras medidas, no pensados para mostrarse directamente.	{0} measure is hidden — these are usually intermediate calculations used by other measures, not meant to be shown directly.
+Summary_Hidden_Many	{0} medidas están ocultas — normalmente son cálculos intermedios usados por otras medidas, no pensados para mostrarse directamente.	{0} measures are hidden — these are usually intermediate calculations used by other measures, not meant to be shown directly.
+Summary_Page_One	Tiene {0} visual	Has {0} visual
+Summary_Page_Many	Tiene {0} visuales	Has {0} visuals
+Summary_PageMeasures	 Muestra principalmente: {0}.	 Mainly shows: {0}.
+Summary_PageFilters	 Se puede filtrar por: {0}.	 Can be filtered by: {0}.
+Summary_PageSources	 Usa datos de: {0}.	 Uses data from: {0}.
+Summary_TypeCount	{0} × {1}	{0} × {1}
+Summary_CustomVisual	visual personalizado	custom visual
+Summary_CustomVisualNamed	visual personalizado "{0}"	custom visual "{0}"
+Vis_card	tarjeta	card
+Vis_multiRowCard	tarjetas múltiples	multi-row card
+Vis_slicer	segmentador	slicer
+Vis_table	tabla	table
+Vis_pivotTable	tabla dinámica	pivot table
+Vis_matrix	matriz	matrix
+Vis_columnChart	gráfico de columnas	column chart
+Vis_barChart	gráfico de barras	bar chart
+Vis_lineChart	gráfico de líneas	line chart
+Vis_areaChart	gráfico de área	area chart
+Vis_pieChart	gráfico circular	pie chart
+Vis_donutChart	gráfico de dona	donut chart
+Vis_funnel	embudo	funnel
+Vis_gauge	medidor	gauge
+Vis_scatterChart	dispersión	scatter chart
+Vis_treemap	árbol jerárquico	treemap
+Vis_map	mapa	map
+Vis_filledMap	mapa coroplético	filled map
+Vis_pageNavigator	navegador de páginas	page navigator
+Vis_bookmarkNavigator	navegador de marcadores	bookmark navigator
+Vis_textbox	texto	text box
+Vis_image	imagen	image
+Vis_shape	forma	shape
+Vis_actionButton	botón	button
+Vis_waterfallChart	cascada	waterfall chart
+Vis_ribbonChart	cinta	ribbon chart
+Vis_keyDriversVisual	impulsores clave	key influencers
+Vis_decompositionTreeVisual	árbol de descomposición	decomposition tree
+Vis_qnaVisual	preguntas y respuestas	Q&A
+Export_Summary	Resumen	Summary
+Export_GeneratedAt	Generado el {0:dd/MM/yyyy HH:mm} con PBI Context	Generated on {0:dd/MM/yyyy HH:mm} with PBI Context
+Export_DocGeneratedAt	Documentación generada el {0:dd/MM/yyyy HH:mm} con PBI Context	Documentation generated on {0:dd/MM/yyyy HH:mm} with PBI Context
+Export_DocTitle	{0} — Documentación	{0} — Documentation
+Export_NoRows	Sin filas.	No rows.
+Export_PrivacyNote	Solo metadata del modelo y del reporte: no incluye filas de datos. Emails, DNI, CUIT y rutas locales están enmascarados.	Model and report metadata only: no data rows are included. Emails, national IDs, tax IDs and local paths are masked.
+App_UnexpectedError	Ocurrió un error inesperado:\n\n{0}\n\nDetalle completo en:\n{1}	An unexpected error occurred:\n\n{0}\n\nFull details at:\n{1}

@@ -1,3 +1,4 @@
+using PBIExplorer.Infrastructure;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -21,12 +22,12 @@ public static class HtmlExporter
         sb.AppendLine("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
         // La página es un documento estático: nada de cargar recursos de afuera.
         sb.AppendLine("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:\">");
-        sb.AppendLine($"<title>{E(document.SourceName)} — Documentación</title>");
+        sb.AppendLine($"<title>{E(Loc.F("Export_DocTitle", document.SourceName))}</title>");
         sb.AppendLine("<style>" + Css + "</style></head><body>");
 
         sb.AppendLine("<header>");
         sb.AppendLine($"<h1>{E(document.SourceName)}</h1>");
-        sb.AppendLine($"<p class=\"meta\">Documentación generada el {document.GeneratedAt:dd/MM/yyyy HH:mm} con PBI Context</p>");
+        sb.AppendLine($"<p class=\"meta\">{E(Loc.F("Export_DocGeneratedAt", document.GeneratedAt))}</p>");
         sb.AppendLine($"<p class=\"meta\">{E(ExportText.PrivacyNote)}</p>");
         sb.AppendLine("<div class=\"facts\">");
         foreach (var fact in document.Summary)

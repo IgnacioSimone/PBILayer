@@ -47,7 +47,7 @@ public partial class App : Application
     private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
     {
         AppLog.Write($"EXCEPCIÓN NO CONTROLADA (UI): {e.Exception}");
-        MessageBox.Show($"Ocurrió un error inesperado:\n\n{e.Exception.Message}\n\nDetalle completo en:\n{AppPaths.LogPath}",
+        MessageBox.Show(Loc.F("App_UnexpectedError", e.Exception.Message, AppPaths.LogPath),
             WpfDialogService.AppName, MessageBoxButton.OK, MessageBoxImage.Error);
         e.Handled = true;
     }
