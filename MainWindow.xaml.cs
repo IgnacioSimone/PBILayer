@@ -20,13 +20,15 @@ public partial class MainWindow : Window
     private const int PowerQueryIndex = 5;
     private const int UsageIndex = 6;
     private const int VisualsIndex = 7;
-    private const int PerformanceIndex = 8;
-    private const int CompareIndex = 9;
+    private const int FiltersIndex = 8;
+    private const int PerformanceIndex = 9;
+    private const int CompareIndex = 10;
 
     private static readonly string LogPath = AppPaths.LogPath;
 
     private ModelSnapshot _model = new();
     private List<VisualFieldUsage> _visuals = new();
+    private List<FilterInfo> _filters = new();
     private List<ObjectUsage> _usage = new();
     private List<PerformanceWarning> _performanceWarnings = new();
     private string _sourceName = "modelo";
@@ -191,10 +193,17 @@ public partial class MainWindow : Window
         try
         {
             Log($"Leyendo visuales de: {path}");
-            _visuals = new PbixReportParser().ParseVisuals(path);
+            var parser = new PbixReportParser();
+            _visuals = parser.ParseVisuals(path);
             Log($"ParseVisuals devolvió {_visuals.Count} filas.");
 
             VisualsGrid.ItemsSource = new ObservableCollection<VisualFieldUsage>(_visuals);
+
+            _filters = parser.ParseFilters(path);
+            Log($"ParseFilters devolvió {_filters.Count} filtros.");
+            FiltersGrid.ItemsSource = new ObservableCollection<FilterInfo>(_filters);
+            FiltersEmptyState.Visibility = _filters.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
+            ReapplyGridFilter(FiltersSearchBox, FiltersGrid);
 
             if (_model.Tables.Count == 0) _sourceName = Path.GetFileNameWithoutExtension(path);
 
@@ -290,7 +299,7 @@ public partial class MainWindow : Window
         try
         {
             var older = JsonModelExporter.Load(dialog.FileName);
-            var diff = ModelDiffAnalyzer.Compare(older.Model, _model);
+            var diff = ModelDiffAnalyzer.Compare(older.Model, _model, older.Filters, _filters);
 
             CompareGrid.ItemsSource = new ObservableCollection<ModelDiffEntry>(diff);
             CompareGrid.Visibility = Visibility.Visible;
@@ -344,6 +353,7 @@ public partial class MainWindow : Window
             nameof(ColumnsSearchBox) => ColumnsGrid,
             nameof(RelationshipsSearchBox) => RelationshipsGrid,
             nameof(PowerQuerySearchBox) => PowerQueryGrid,
+            nameof(FiltersSearchBox) => FiltersGrid,
             _ => null
         };
         if (grid is not null) ApplyGridFilter(searchBox, grid);
@@ -400,6 +410,7 @@ public partial class MainWindow : Window
             ("", "Páginas",        pages,                      null),
             ("", "Visuales",       visualCount,                null),
             ("", "Usos de campos", _visuals.Count,             null),
+            ("", "Filtros",        _filters.Count,             null),
             ("", "Sin uso",         _usage.Count(u => u.IsUnused), null),
         };
 
@@ -544,12 +555,12 @@ public partial class MainWindow : Window
     private UIElement[]? Panes =>
         SummaryScroll is null || MeasuresPane is null || TablesPane is null || ColumnsPane is null ||
         RelationshipsPane is null || PowerQueryPane is null || UsagePane is null || VisualsPane is null ||
-        PerformancePane is null || ComparePane is null
+        FiltersPane is null || PerformancePane is null || ComparePane is null
             ? null
             : new UIElement[]
             {
                 SummaryScroll, MeasuresPane, TablesPane, ColumnsPane, RelationshipsPane, PowerQueryPane,
-                UsagePane, VisualsPane, PerformancePane, ComparePane
+                UsagePane, VisualsPane, FiltersPane, PerformancePane, ComparePane
             };
 
     private void NavList_SelectionChanged(object sender, SelectionChangedEventArgs e) => ApplyNavState();
@@ -626,6 +637,13 @@ public partial class MainWindow : Window
             var unused = _usage.Count(u => u.IsUnused);
             StatusText.Text = $"{unused} de {_usage.Count} objetos sin ningún uso detectado — cruza visuales, DAX y relaciones.";
         }
+        else if (index == FiltersIndex)
+        {
+            StatusText.Text = _filters.Count == 0
+                ? "Sin filtros detectados en el reporte, la página o los visuales."
+                : $"{_filters.Count} filtros — {_filters.Count(f => f.Scope == "Reporte")} de reporte, " +
+                  $"{_filters.Count(f => f.Scope == "Página")} de página, {_filters.Count(f => f.Scope == "Visual")} de visual.";
+        }
         else if (index == PerformanceIndex)
         {
             StatusText.Text = _performanceWarnings.Count == 0
@@ -675,7 +693,7 @@ public partial class MainWindow : Window
         try
         {
             var summary = SummaryBuilder.Build(_model, _visuals);
-            AiContextExporter.Export(dialog.FileName, _sourceName, _model, _visuals, summary, _usage);
+            AiContextExporter.Export(dialog.FileName, _sourceName, _model, _visuals, summary, _usage, _filters);
             MessageBox.Show(
                 "Listo. Adjuntá o pegá ese .md en el chat con tu asistente de IA para que analice todo el tablero.",
                 AppName, MessageBoxButton.OK, MessageBoxImage.Information);
@@ -702,7 +720,7 @@ public partial class MainWindow : Window
 
         try
         {
-            JsonModelExporter.Export(dialog.FileName, _sourceName, _model, _visuals, _usage);
+            JsonModelExporter.Export(dialog.FileName, _sourceName, _model, _visuals, _usage, _filters);
             MessageBox.Show(
                 "Listo. Guardá este archivo — más adelante podés usarlo en \"Comparar versiones\" para ver qué cambió.",
                 AppName, MessageBoxButton.OK, MessageBoxImage.Information);

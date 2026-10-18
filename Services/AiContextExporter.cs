@@ -19,7 +19,8 @@ public static class AiContextExporter
         ModelSnapshot model,
         List<VisualFieldUsage> visuals,
         DashboardSummary summary,
-        List<ObjectUsage>? usage = null)
+        List<ObjectUsage>? usage = null,
+        List<FilterInfo>? filters = null)
     {
         var sb = new StringBuilder();
 
@@ -151,6 +152,52 @@ public static class AiContextExporter
                 sb.AppendLine("|---|---|---|---|---|");
                 foreach (var v in pageGroup)
                     sb.AppendLine($"| {Esc(v.VisualType)} | {Esc(SensitiveTextGuard.Mask(v.Title))} | {Esc(v.FieldKind)} | {Esc(v.Table)} | {Esc(v.Field)} |");
+                sb.AppendLine();
+            }
+        }
+
+        if (filters is { Count: > 0 })
+        {
+            sb.AppendLine("## Filtros aplicados");
+            sb.AppendLine();
+            sb.AppendLine("Filtros configurados a nivel reporte (todas las páginas), por página, y por visual. " +
+                          "El resumen de la condición es best-effort: para filtros categóricos simples muestra los " +
+                          "valores incluidos/excluidos; para tipos más complejos (TopN, fecha relativa, avanzados) " +
+                          "solo indica el tipo — confirmar el detalle exacto en Power BI Desktop.");
+            sb.AppendLine();
+
+            var reportFilters = filters.Where(f => f.Scope == "Reporte").ToList();
+            if (reportFilters.Count > 0)
+            {
+                sb.AppendLine("### Nivel reporte (todas las páginas)");
+                sb.AppendLine();
+                sb.AppendLine("| Campo | Tipo de filtro | Condición |");
+                sb.AppendLine("|---|---|---|");
+                foreach (var f in reportFilters)
+                    sb.AppendLine($"| {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
+                sb.AppendLine();
+            }
+
+            foreach (var pageGroup in filters.Where(f => f.Scope == "Página").GroupBy(f => f.Page))
+            {
+                sb.AppendLine($"### Página: {pageGroup.Key}");
+                sb.AppendLine();
+                sb.AppendLine("| Campo | Tipo de filtro | Condición |");
+                sb.AppendLine("|---|---|---|");
+                foreach (var f in pageGroup)
+                    sb.AppendLine($"| {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
+                sb.AppendLine();
+            }
+
+            var visualFilters = filters.Where(f => f.Scope == "Visual").ToList();
+            if (visualFilters.Count > 0)
+            {
+                sb.AppendLine("### Por visual");
+                sb.AppendLine();
+                sb.AppendLine("| Página | Visual | Campo | Tipo de filtro | Condición |");
+                sb.AppendLine("|---|---|---|---|---|");
+                foreach (var f in visualFilters)
+                    sb.AppendLine($"| {Esc(f.Page)} | {Esc(SensitiveTextGuard.Mask(f.VisualText))} | {Esc(f.Table)}[{Esc(f.Field)}] | {Esc(f.FilterType)} | {Esc(SensitiveTextGuard.Mask(f.Summary))} |");
                 sb.AppendLine();
             }
         }

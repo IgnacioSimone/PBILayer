@@ -108,6 +108,7 @@
                     <ListBoxItem Content="Power Query (M)"    Tag="&#xE8B5;" />
                     <ListBoxItem Content="Uso y limpieza"     Tag="&#xE74D;" />
                     <ListBoxItem Content="Visuales y campos"  Tag="&#xE9D9;" />
+                    <ListBoxItem Content="Filtros"            Tag="&#xE71C;" />
                     <ListBoxItem Content="Rendimiento"        Tag="&#xE7BA;" />
                     <ListBoxItem Content="Comparar versiones" Tag="&#xE8AB;" />
                 </ListBox>
@@ -342,7 +343,45 @@
                         </Border>
                     </Grid>
 
-                    <!-- 8 · Rendimiento -->
+                    <!-- 8 · Filtros -->
+                    <Grid x:Name="FiltersPane" Visibility="Collapsed">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBox x:Name="FiltersSearchBox" Grid.Row="0" Margin="16,14,16,0"
+                                 Style="{StaticResource SearchBox}" TextChanged="GridSearchBox_TextChanged" />
+                        <DataGrid x:Name="FiltersGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="NIVEL" Binding="{Binding Scope}" Width="90" />
+                                <DataGridTextColumn Header="PÁGINA" Binding="{Binding Page}" Width="150" />
+                                <DataGridTextColumn Header="VISUAL" Binding="{Binding VisualText}" Width="180" />
+                                <DataGridTextColumn Header="TIPO" Binding="{Binding FieldKind}" Width="90" />
+                                <DataGridTextColumn Header="CAMPO" Binding="{Binding TargetText}" Width="220" />
+                                <DataGridTextColumn Header="TIPO DE FILTRO" Binding="{Binding FilterType}" Width="130" />
+                                <DataGridTextColumn Header="CONDICIÓN" Binding="{Binding Summary}" Width="360" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+
+                        <!-- Estado vacío: sin filtros configurados es información real, no un error -->
+                        <Border x:Name="FiltersEmptyState" Grid.Row="1" Background="{StaticResource CardBg}">
+                            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="420">
+                                <TextBlock Text="&#xE71C;" FontFamily="{StaticResource FontIcon}"
+                                           FontSize="42" Foreground="{StaticResource InkFaint}"
+                                           HorizontalAlignment="Center" />
+                                <TextBlock Text="Sin filtros detectados"
+                                           FontFamily="{StaticResource FontDisplay}" FontSize="17" FontWeight="SemiBold"
+                                           Foreground="{StaticResource Ink}" HorizontalAlignment="Center"
+                                           Margin="0,16,0,0" TextWrapping="Wrap" TextAlignment="Center" />
+                                <TextBlock Text="No se encontraron filtros a nivel reporte, página o visual en este archivo — o el tablero de verdad no tiene ninguno configurado."
+                                           FontFamily="{StaticResource FontText}" FontSize="12.5"
+                                           Foreground="{StaticResource InkDim}" HorizontalAlignment="Center"
+                                           Margin="0,8,0,0" TextWrapping="Wrap" TextAlignment="Center" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- 9 · Rendimiento -->
                     <Grid x:Name="PerformancePane" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -398,7 +437,7 @@
                         </Border>
                     </Grid>
 
-                    <!-- 9 · Comparar versiones -->
+                    <!-- 10 · Comparar versiones -->
                     <Grid x:Name="ComparePane" Visibility="Collapsed">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />

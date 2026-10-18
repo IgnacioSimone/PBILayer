@@ -16,6 +16,7 @@ public class JsonSnapshotEnvelope
     public ModelSnapshot Model { get; set; } = new();
     public List<VisualFieldUsage> Visuals { get; set; } = new();
     public List<ObjectUsage> Usage { get; set; } = new();
+    public List<FilterInfo> Filters { get; set; } = new();
 }
 
 /// <summary>
@@ -34,7 +35,7 @@ public static class JsonModelExporter
     };
 
     public static void Export(string path, string sourceName, ModelSnapshot model,
-        List<VisualFieldUsage> visuals, List<ObjectUsage>? usage = null)
+        List<VisualFieldUsage> visuals, List<ObjectUsage>? usage = null, List<FilterInfo>? filters = null)
     {
         var payload = new JsonSnapshotEnvelope
         {
@@ -42,7 +43,8 @@ public static class JsonModelExporter
             SourceName = sourceName,
             Model = MaskModel(model),
             Visuals = visuals.Select(MaskVisual).ToList(),
-            Usage = usage ?? new List<ObjectUsage>()
+            Usage = usage ?? new List<ObjectUsage>(),
+            Filters = (filters ?? new List<FilterInfo>()).Select(MaskFilter).ToList()
         };
 
         File.WriteAllText(path, JsonSerializer.Serialize(payload, Options), new UTF8Encoding(false));
@@ -101,5 +103,12 @@ public static class JsonModelExporter
     {
         Page = v.Page, VisualType = v.VisualType, Title = SensitiveTextGuard.Mask(v.Title),
         FieldKind = v.FieldKind, Table = v.Table, Field = v.Field
+    };
+
+    private static FilterInfo MaskFilter(FilterInfo f) => new()
+    {
+        Scope = f.Scope, Page = f.Page, VisualTitle = SensitiveTextGuard.Mask(f.VisualTitle),
+        VisualType = f.VisualType, Name = f.Name, FieldKind = f.FieldKind, Table = f.Table, Field = f.Field,
+        FilterType = f.FilterType, Summary = SensitiveTextGuard.Mask(f.Summary)
     };
 }
