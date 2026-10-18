@@ -331,7 +331,7 @@ public class MainViewModelTests
     {
         var path = TempFile("todo.xlsx");
         var model = SampleModel();
-        model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Contacto", Expression = "\"nacho@empresa.com\"" });
+        model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Contacto", Expression = "\"ana@empresa.com\"" });
         var vm = Create(new FakeBackend { Model = model }, new FakeDialogs { SaveFileResult = path });
         await vm.ConnectToLiveModelAsync("localhost:1", "db");
 
@@ -344,7 +344,7 @@ public class MainViewModelTests
             Assert.Equal(new[] { "Resumen", "Medidas DAX", "Tablas", "Columnas", "Uso y limpieza" }, names);
 
             var allText = string.Concat(book.WorkbookPart.WorksheetParts.SelectMany(p => p.Worksheet.Descendants<DocumentFormat.OpenXml.Spreadsheet.Text>()).Select(t => t.Text));
-            Assert.DoesNotContain("nacho@empresa.com", allText);
+            Assert.DoesNotContain("ana@empresa.com", allText);
             Assert.Contains("Margen", allText);
         }
         finally

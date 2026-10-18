@@ -8,7 +8,7 @@ public class JsonModelExporterTests
     private static ModelSnapshot SampleModel()
     {
         var model = new ModelSnapshot();
-        model.Tables.Add(new TableInfo { Name = "Ventas", Description = "Contacto: nacho@empresa.com" });
+        model.Tables.Add(new TableInfo { Name = "Ventas", Description = "Contacto: ana@empresa.com" });
         model.Measures.Add(new MeasureInfo { Table = "Ventas", Name = "Total", Expression = "SUM(Ventas[Monto])" });
         model.Columns.Add(new ColumnInfo { Table = "Ventas", Name = "Monto", DataType = "Número decimal" });
         model.Relationships.Add(new RelationshipInfo
@@ -39,7 +39,7 @@ public class JsonModelExporterTests
             Assert.Single(loaded.Model.Relationships);
 
             // El email y la password no deben llegar en texto plano al archivo.
-            Assert.DoesNotContain("nacho@empresa.com", loaded.Model.Tables[0].Description);
+            Assert.DoesNotContain("ana@empresa.com", loaded.Model.Tables[0].Description);
             Assert.DoesNotContain("abc123", loaded.Model.PowerQueries[0].MCode);
         }
         finally
