@@ -89,7 +89,7 @@
             </WrapPanel>
 
             <Button Content="{views:Loc Btn_Close}" Style="{StaticResource AccentButton}" HorizontalAlignment="Right" Margin="0,18,0,0"
-                    IsDefault="True" IsCancel="True" MinWidth="96" />
+                    IsDefault="True" IsCancel="True" MinWidth="96" Click="CloseButton_Click" />
         </StackPanel>
     </ScrollViewer>
 </Window>

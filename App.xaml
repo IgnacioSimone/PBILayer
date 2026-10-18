@@ -433,13 +433,36 @@
                                                Margin="{TemplateBinding Padding}" VerticalAlignment="Center"
                                                Foreground="{DynamicResource InkFaint}" IsHitTestVisible="False"
                                                Visibility="Collapsed" />
-                                    <ScrollViewer x:Name="PART_ContentHost" Margin="{TemplateBinding Padding}"
+                                    <ScrollViewer x:Name="PART_ContentHost" Margin="0,0,34,0"
                                                   VerticalAlignment="Center" />
+                                    <!-- X para borrar todo el texto de una vez (solo aparece si hay algo escrito) -->
+                                    <Button x:Name="ClearButton" HorizontalAlignment="Right" VerticalAlignment="Center"
+                                            Width="22" Height="22" Margin="0,0,6,0" Cursor="Hand" Focusable="False"
+                                            Command="{x:Static views:SearchCommands.Clear}"
+                                            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                                            ToolTip="{views:Loc Search_Clear}"
+                                            AutomationProperties.Name="{views:Loc Search_Clear}">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="Hover" CornerRadius="11" Background="Transparent">
+                                                    <TextBlock Text="&#xE711;" FontFamily="{StaticResource FontIcon}" FontSize="10"
+                                                               Foreground="{DynamicResource InkFaint}"
+                                                               HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Hover" Property="Background" Value="{DynamicResource Separator}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
                                 </Grid>
                             </Border>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="Text" Value="">
                                     <Setter TargetName="Placeholder" Property="Visibility" Value="Visible" />
+                                    <Setter TargetName="ClearButton" Property="Visibility" Value="Collapsed" />
                                 </Trigger>
                                 <Trigger Property="IsKeyboardFocused" Value="True">
                                     <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource Accent}" />

@@ -198,7 +198,7 @@
                     <Button Grid.Column="1" Style="{StaticResource LinkButton}"
                             x:Name="HelpMenuButton" Click="HelpMenuButton_Click" ToolTip="{views:Loc Help_Tooltip}"
                             AutomationProperties.Name="{views:Loc Help_Aria}">
-                        <TextBlock Text="&#xE897;" FontFamily="{StaticResource FontIcon}" FontSize="14"
+                        <TextBlock Text="&#xE713;" FontFamily="{StaticResource FontIcon}" FontSize="14"
                                    Foreground="{DynamicResource InkDim}" />
                     </Button>
                 </Grid>
@@ -286,7 +286,50 @@
 
             <Border Grid.Row="4" Style="{StaticResource Card}" ClipToBounds="True">
                 <!-- La vista de cada sección sale de Views/SectionTemplates.xaml según el tipo de ViewModel -->
-                <ContentControl Content="{Binding SelectedSection}" IsTabStop="False" />
+                <Grid>
+                    <ContentControl Content="{Binding SelectedSection}" IsTabStop="False" />
+
+                    <!-- Tarjeta de espera: aparece mientras Power BI Desktop abre el archivo -->
+                    <Border Background="{DynamicResource CardBg}"
+                            Visibility="{Binding IsWaitingForDesktop, Converter={StaticResource BoolToVisibility}}">
+                        <Border Style="{StaticResource Card}" MaxWidth="460" Padding="36,32"
+                                HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <StackPanel HorizontalAlignment="Center">
+                                <!-- Anillo de carga: un arco que gira -->
+                                <Grid Width="44" Height="44" HorizontalAlignment="Center">
+                                    <Ellipse Stroke="{DynamicResource Separator}" StrokeThickness="4" />
+                                    <Path Stroke="{DynamicResource AccentStrong}" StrokeThickness="4" StrokeStartLineCap="Round" StrokeEndLineCap="Round"
+                                          Data="M 22,2 A 20,20 0 0 1 42,22" RenderTransformOrigin="0.5,0.5">
+                                        <Path.RenderTransform>
+                                            <RotateTransform x:Name="SpinnerRotation" />
+                                        </Path.RenderTransform>
+                                        <Path.Triggers>
+                                            <EventTrigger RoutedEvent="Loaded">
+                                                <BeginStoryboard>
+                                                    <Storyboard RepeatBehavior="Forever">
+                                                        <DoubleAnimation Storyboard.TargetName="SpinnerRotation" Storyboard.TargetProperty="Angle"
+                                                                         From="0" To="360" Duration="0:0:1.1" />
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Path.Triggers>
+                                    </Path>
+                                </Grid>
+
+                                <TextBlock Text="{Binding WaitingTitle}" Margin="0,22,0,0" TextAlignment="Center" TextWrapping="Wrap"
+                                           FontFamily="{StaticResource FontDisplay}" FontSize="19" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource Ink}"
+                                           AutomationProperties.LiveSetting="Polite" />
+                                <TextBlock Text="{views:Loc Wait_Body}" Margin="0,10,0,0" TextAlignment="Center" TextWrapping="Wrap"
+                                           FontSize="13" Foreground="{DynamicResource InkDim}" />
+                                <TextBlock Text="{views:Loc Wait_Hint}" Margin="0,8,0,0" TextAlignment="Center" TextWrapping="Wrap"
+                                           FontSize="12" Foreground="{DynamicResource InkFaint}" />
+                                <Button Content="{views:Loc Btn_Cancel}" Style="{StaticResource SoftButton}" Margin="0,22,0,0"
+                                        HorizontalAlignment="Center" Command="{Binding CancelCommand}" />
+                            </StackPanel>
+                        </Border>
+                    </Border>
+                </Grid>
             </Border>
         </Grid>
 

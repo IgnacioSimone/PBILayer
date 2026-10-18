@@ -495,6 +495,26 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public async Task The_waiting_card_shows_while_desktop_opens_the_file_and_goes_away_after()
+    {
+        var backend = new FakeBackend { Model = SampleModel() };
+        var dialogs = new FakeDialogs();
+        MainViewModel? vm = null;
+        var shownWhileOpening = false;
+        dialogs.OnOpenWithShell = _ =>
+        {
+            shownWhileOpening = vm!.IsWaitingForDesktop && vm.WaitingTitle.Contains("Ventas 2026");
+            backend.DesktopAppearsAfter = 2;
+        };
+        vm = Create(backend, dialogs);
+
+        await vm.OpenFileAsync(Path.Combine(Path.GetTempPath(), "Ventas 2026.pbix"));
+
+        Assert.True(shownWhileOpening);
+        Assert.False(vm.IsWaitingForDesktop);
+    }
+
+    [Fact]
     public async Task A_pbix_already_open_in_desktop_is_not_opened_again()
     {
         var dialogs = new FakeDialogs();

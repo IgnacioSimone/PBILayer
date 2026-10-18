@@ -13,4 +13,6 @@ public partial class AboutWindow : Window
 
         Loaded += (_, _) => ThemeService.UseImmersiveDarkTitleBar(this, ThemeService.IsDark);
     }
+    private void CloseButton_Click(object sender, RoutedEventArgs e) => Close();
+
 }
