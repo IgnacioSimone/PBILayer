@@ -20,8 +20,11 @@ public partial class App : Application
         {
             base.OnStartup(e);
 
-            var viewModel = new MainViewModel(new PowerBiBackend(), new WpfDialogService());
-            new MainWindow(viewModel).Show();
+            var settings = AppSettings.Load();
+            ThemeService.Apply(settings.Theme);
+
+            var viewModel = new MainViewModel(new PowerBiBackend(), new WpfDialogService(), settings, () => settings.Save());
+            new MainWindow(viewModel, settings).Show();
         }
         catch (Exception ex)
         {

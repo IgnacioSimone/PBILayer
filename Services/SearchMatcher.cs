@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 
 namespace PBIExplorer.Services;
@@ -8,6 +9,7 @@ namespace PBIExplorer.Services;
 public static class SearchMatcher
 {
     private static readonly Dictionary<Type, PropertyInfo[]> Cache = new();
+    private static readonly CompareInfo Comparer = CultureInfo.InvariantCulture.CompareInfo;
 
     public static bool Matches(object item, string? search)
     {
@@ -28,7 +30,9 @@ public static class SearchMatcher
 
         foreach (var p in props)
         {
-            if (p.GetValue(item) is string value && value.Contains(search, StringComparison.OrdinalIgnoreCase))
+            // Sin distinguir mayúsculas ni acentos: "pagina" encuentra "Página".
+            if (p.GetValue(item) is string value &&
+                Comparer.IndexOf(value, search, CompareOptions.IgnoreCase | CompareOptions.IgnoreNonSpace) >= 0)
                 return true;
         }
         return false;

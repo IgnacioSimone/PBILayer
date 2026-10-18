@@ -25,49 +25,73 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!-- Encabezado: nota, contenido propio de la sección y buscador. Se oculta
+        <!-- Encabezado: nota, contenido propio de la sección y contador de filas. Se oculta
              cuando la sección muestra su estado vacío. -->
-        <StackPanel Grid.Row="0">
-            <StackPanel.Style>
-                <Style TargetType="StackPanel">
+        <Grid Grid.Row="0" Margin="16,12,16,8">
+            <Grid.Style>
+                <Style TargetType="Grid">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsEmpty}" Value="True">
                             <Setter Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </StackPanel.Style>
+            </Grid.Style>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-            <TextBlock Margin="16,14,16,4" TextWrapping="Wrap"
-                       FontFamily="{StaticResource FontSmall}" FontSize="11"
-                       Foreground="{StaticResource InkFaint}"
-                       Text="{Binding Note}"
-                       Visibility="{Binding Note, Converter={StaticResource NullToCollapsed}}" />
+            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                <TextBlock TextWrapping="Wrap" Margin="0,0,16,6"
+                           FontFamily="{StaticResource FontSmall}" FontSize="11"
+                           Foreground="{DynamicResource InkFaint}"
+                           Text="{Binding Note}"
+                           Visibility="{Binding Note, Converter={StaticResource NullToCollapsed}}" />
+                <ContentPresenter Content="{Binding HeaderContent, ElementName=Root}" />
+            </StackPanel>
 
-            <ContentPresenter Margin="16,6,16,4" Content="{Binding HeaderContent, ElementName=Root}" />
-
-            <TextBox Margin="16,14,16,0" Style="{StaticResource SearchBox}"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                     Visibility="{Binding HasSearch, Converter={StaticResource BoolToVisibility}}" />
-        </StackPanel>
+            <TextBlock Grid.Column="1" VerticalAlignment="Center"
+                       FontFamily="{StaticResource FontSmall}" FontSize="12" FontWeight="SemiBold"
+                       Foreground="{DynamicResource InkDim}"
+                       Text="{Binding CountText}"
+                       AutomationProperties.LiveSetting="Polite" />
+        </Grid>
 
         <DataGrid x:Name="Grid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True"
-                  ItemsSource="{Binding View}" />
+                  ItemsSource="{Binding View}"
+                  AutomationProperties.Name="{Binding Title}"
+                  PreviewMouseRightButtonDown="Grid_PreviewMouseRightButtonDown">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Copiar celda" Click="CopyCell_Click" />
+                    <MenuItem Header="Copiar fila" Click="CopyRow_Click" />
+                    <MenuItem Header="Copiar todas las filas visibles" Click="CopyAll_Click" />
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+
+        <!-- Búsqueda sin coincidencias en esta sección -->
+        <TextBlock Grid.Row="1" Text="{Binding NoResultsText}" HorizontalAlignment="Center" VerticalAlignment="Center"
+                   Margin="0,40,0,0" IsHitTestVisible="False"
+                   FontFamily="{StaticResource FontText}" FontSize="13.5"
+                   Foreground="{DynamicResource InkDim}"
+                   Visibility="{Binding NoResultsText, Converter={StaticResource NullToCollapsed}}" />
 
         <!-- Estado vacío: dice qué está pasando en vez de mostrar una grilla en blanco -->
-        <Border Grid.Row="1" Background="{StaticResource CardBg}"
+        <Border Grid.Row="1" Background="{DynamicResource CardBg}"
                 Visibility="{Binding IsEmpty, Converter={StaticResource BoolToVisibility}}">
             <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="470">
                 <TextBlock Text="{Binding EmptyIcon}" FontFamily="{StaticResource FontIcon}"
-                           FontSize="42" Foreground="{StaticResource InkFaint}"
+                           FontSize="42" Foreground="{DynamicResource InkFaint}"
                            HorizontalAlignment="Center" />
                 <TextBlock Text="{Binding EmptyTitle}"
                            FontFamily="{StaticResource FontDisplay}" FontSize="17" FontWeight="SemiBold"
-                           Foreground="{StaticResource Ink}" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource Ink}" HorizontalAlignment="Center"
                            Margin="0,16,0,0" TextWrapping="Wrap" TextAlignment="Center" />
                 <TextBlock Text="{Binding EmptyBody}"
                            FontFamily="{StaticResource FontText}" FontSize="12.5"
-                           Foreground="{StaticResource InkDim}" HorizontalAlignment="Center"
+                           Foreground="{DynamicResource InkDim}" HorizontalAlignment="Center"
                            Margin="0,8,0,0" TextWrapping="Wrap" TextAlignment="Center" />
                 <Button Content="{Binding EmptyActionText}" Command="{Binding EmptyActionCommand}"
                         Style="{StaticResource AccentButton}" HorizontalAlignment="Center"
