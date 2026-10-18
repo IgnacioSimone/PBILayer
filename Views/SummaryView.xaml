@@ -31,7 +31,7 @@
                     </Style>
                 </Border.Style>
                 <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource FontText}" FontSize="13"
-                           Foreground="{StaticResource InkDim}"
+                           Foreground="{DynamicResource InkDim}"
                            Text="Conectate a un modelo desde Power BI Desktop y/o abrí el .pbix para ver los números acá." />
             </Border>
 
@@ -46,28 +46,20 @@
                         <Border Style="{StaticResource Card}" Width="196" MinHeight="152" Padding="20"
                                 Margin="0,0,14,14"
                                 Loaded="Tile_Loaded" MouseEnter="Tile_MouseEnter" MouseLeave="Tile_MouseLeave">
-                            <!-- Sombra y transform propios (no los del Style "Card", compartidos): así el
-                                 hover anima solo la tarjeta bajo el mouse. -->
-                            <Border.RenderTransform>
-                                <TranslateTransform />
-                            </Border.RenderTransform>
-                            <Border.Effect>
-                                <DropShadowEffect Color="Black" Opacity="0.05" BlurRadius="18" ShadowDepth="3" Direction="270" />
-                            </Border.Effect>
                             <StackPanel>
                                 <Border Width="38" Height="38" CornerRadius="10" Margin="0,0,0,16"
-                                        Background="{StaticResource AccentSoft}" HorizontalAlignment="Left">
+                                        Background="{DynamicResource AccentSoft}" HorizontalAlignment="Left">
                                     <TextBlock Text="{Binding Icon}" FontFamily="{StaticResource FontIcon}"
-                                               FontSize="17" Foreground="{StaticResource Accent}"
+                                               FontSize="17" Foreground="{DynamicResource Accent}"
                                                HorizontalAlignment="Center" VerticalAlignment="Center" />
                                 </Border>
                                 <TextBlock Text="{Binding Value, StringFormat=N0}" FontSize="32" FontWeight="Bold"
-                                           FontFamily="{StaticResource FontText}" Foreground="{StaticResource Ink}" />
+                                           FontFamily="{StaticResource FontText}" Foreground="{DynamicResource Ink}" />
                                 <TextBlock Text="{Binding Label}" FontSize="12.5" FontWeight="SemiBold" Margin="0,3,0,0"
-                                           FontFamily="{StaticResource FontText}" Foreground="{StaticResource InkDim}"
+                                           FontFamily="{StaticResource FontText}" Foreground="{DynamicResource InkDim}"
                                            TextWrapping="Wrap" />
                                 <TextBlock Text="{Binding Sub}" FontSize="11" Margin="0,2,0,0"
-                                           FontFamily="{StaticResource FontText}" Foreground="{StaticResource InkFaint}"
+                                           FontFamily="{StaticResource FontText}" Foreground="{DynamicResource InkFaint}"
                                            TextWrapping="Wrap">
                                     <TextBlock.Style>
                                         <Style TargetType="TextBlock">

@@ -8,13 +8,13 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Status}" Value="Sin uso — candidata a eliminar">
-                <Setter Property="Foreground" Value="#C0392B" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Status}" Value="Solo uso interno">
-                <Setter Property="Foreground" Value="#96650F" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Status}" Value="En uso">
-                <Setter Property="Foreground" Value="#1C7C4C" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusGood}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -23,10 +23,10 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding Severity}" Value="Alta">
-                <Setter Property="Foreground" Value="#C0392B" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding Severity}" Value="Media">
-                <Setter Property="Foreground" Value="#96650F" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -35,13 +35,13 @@
         <Setter Property="FontWeight" Value="SemiBold" />
         <Style.Triggers>
             <DataTrigger Binding="{Binding KindText}" Value="Agregado">
-                <Setter Property="Foreground" Value="#1C7C4C" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusGood}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding KindText}" Value="Eliminado">
-                <Setter Property="Foreground" Value="#C0392B" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusBad}" />
             </DataTrigger>
             <DataTrigger Binding="{Binding KindText}" Value="Modificado">
-                <Setter Property="Foreground" Value="#96650F" />
+                <Setter Property="Foreground" Value="{DynamicResource StatusWarn}" />
             </DataTrigger>
         </Style.Triggers>
     </Style>
@@ -112,7 +112,7 @@
             <views:GridSectionView.HeaderContent>
                 <CheckBox Content="Mostrar solo objetos sin uso"
                           FontFamily="{StaticResource FontText}" FontSize="12.5"
-                          Foreground="{StaticResource InkDim}" VerticalAlignment="Center"
+                          Foreground="{DynamicResource InkDim}" VerticalAlignment="Center"
                           IsChecked="{Binding OnlyUnused}" />
             </views:GridSectionView.HeaderContent>
             <DataGridTextColumn Header="TIPO" Binding="{Binding Kind}" Width="90" />

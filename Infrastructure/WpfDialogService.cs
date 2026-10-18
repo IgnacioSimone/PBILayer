@@ -1,3 +1,5 @@
+using System.Diagnostics;
+using System.IO;
 using System.Windows;
 using Microsoft.Win32;
 
@@ -23,5 +25,32 @@ public sealed class WpfDialogService : IDialogService
     {
         var dialog = new SaveFileDialog { Filter = filter, FileName = suggestedName };
         return dialog.ShowDialog() == true ? dialog.FileName : null;
+    }
+
+    public void RevealInExplorer(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                Process.Start(new ProcessStartInfo("explorer.exe", $"/select,\"{path}\"") { UseShellExecute = true });
+            else if (Directory.Exists(path))
+                Process.Start(new ProcessStartInfo("explorer.exe", $"\"{path}\"") { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write($"No se pudo abrir el Explorador: {ex.Message}");
+        }
+    }
+
+    public void OpenWithShell(string path)
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(path) { UseShellExecute = true });
+        }
+        catch (Exception ex)
+        {
+            AppLog.Write($"No se pudo abrir {path}: {ex.Message}");
+        }
     }
 }

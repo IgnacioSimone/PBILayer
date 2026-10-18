@@ -20,6 +20,15 @@ public partial class SummaryView : UserControl
         var delay = TimeSpan.FromMilliseconds(Math.Min(tile.Order, 10) * 35);
         var ease = new CubicEase { EasingMode = EasingMode.EaseOut };
 
+        // Transform y sombra propios de cada tarjeta, creados acá: los que se declaran en una
+        // plantilla XAML WPF los congela y no se pueden animar (y el Style "Card" comparte la
+        // sombra entre todas, así que el hover movería todas a la vez).
+        card.RenderTransform = new TranslateTransform();
+        card.Effect = new DropShadowEffect
+        {
+            Color = Colors.Black, Opacity = 0.05, BlurRadius = 18, ShadowDepth = 3, Direction = 270
+        };
+
         card.Opacity = 0;
         card.BeginAnimation(OpacityProperty, new DoubleAnimation
         {
