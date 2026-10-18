@@ -1,0 +1,12 @@
+# Avisa (con un pull request) cuando hay versiones nuevas de las librerías y de las acciones
+# de GitHub que usa el proyecto, para recibir las correcciones de seguridad a tiempo.
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
