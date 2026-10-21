@@ -6,7 +6,7 @@ public class SensitiveTextGuardTests
 {
     [Theory]
     [InlineData("Contacto: ana@empresa.com", "Contacto: ***@***")]
-    [InlineData("Cliente[Email] = \"juan.perez@gmail.com\"", "Cliente[Email] = \"***@***\"")]
+    [InlineData("Cliente[Email] = \"juan.perez@example.com\"", "Cliente[Email] = \"***@***\"")]
     [InlineData("Cliente[DNI] = \"12345678\"", "Cliente[DNI] = \"********\"")]
     [InlineData("Cliente[CUIT] = \"20-12345678-9\"", "Cliente[CUIT] = \"**-********-*\"")]
     [InlineData("20-12345678-9", "**-********-*")]
