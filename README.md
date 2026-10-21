@@ -12,6 +12,23 @@ Microsoft. Se usa aquí únicamente para describir la compatibilidad de esta
 herramienta, tal como lo hacen otras herramientas externas de la comunidad
 (DAX Studio, Tabular Editor, ALM Toolkit).
 
+## Qué hace
+
+- **Modelo:** medidas DAX, tablas, columnas, relaciones y consultas de Power Query (M), con el código completo y resaltado de sintaxis.
+- **Reporte:** páginas, visuales, qué campo usa cada visual y los filtros aplicados.
+- **Mapa de relaciones:** las tablas como cajas conectadas, con cardinalidad, dirección del filtro y relaciones inactivas.
+- **Uso y limpieza:** detecta tablas, columnas, medidas y consultas que nada usa (candidatas a eliminar).
+- **Rendimiento y comparación:** alertas de buenas prácticas del modelo y comparación entre dos versiones.
+- **Exportación:** Word, Excel, HTML, CSV, JSON y un Markdown de "contexto para IA" para pegar en un asistente de IA.
+- Interfaz en **español e inglés**, con tema claro y oscuro.
+
+## Requisitos
+
+- **Windows 10 o 11 de 64 bits.** No hace falta instalar .NET: la app lo trae incluido.
+- **Power BI Desktop instalado** (versión de Microsoft Store o instalador clásico). Es lo que permite leer el modelo de un tablero.
+- Permisos de administrador **solo para instalar**.
+- Unos 50 MB de descarga y unos 160 MB de espacio una vez instalada.
+
 ## Qué lee y qué no lee (privacidad)
 
 - Se conecta al modelo que Power BI Desktop ya tiene abierto en memoria: o bien lanzada desde la pestaña
@@ -45,8 +62,8 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
 
 1. Bajá `PBILayer-Setup-<versión>.exe` de la página de [Releases](https://github.com/IgnacioSimone/PBILayer/releases)
    y ejecutalo. Pide permisos de administrador porque registra la herramienta externa en una carpeta de
-   sistema que lee Power BI Desktop. Instala en `Program Files`, crea el acceso directo del menú Inicio y,
-   si había una copia vieja en `%LOCALAPPDATA%\PBILayer`, la reemplaza sin tocar tus preferencias.
+   sistema que lee Power BI Desktop. Instala en `Program Files` y crea el acceso directo del menú Inicio. Si tenías la app con su
+   nombre anterior ("PBI Context"), la desinstala sola y trae tus preferencias.
 2. Abrí **PBI Layer** desde el menú Inicio (busca solo el tablero abierto en Power BI Desktop) o desde
    Power BI Desktop → pestaña **Herramientas externas** → **PBI Layer**.
 
@@ -64,7 +81,7 @@ El instalador **no está firmado digitalmente**, así que Windows SmartScreen pu
 
 ## Actualizaciones
 
-En **Acerca de** (botón `?` de la barra lateral) se ve la versión, se busca una versión nueva y se activa o
+En **Acerca de** (menú ⚙ de la barra lateral) se ve la versión, se busca una versión nueva y se activa o
 no la búsqueda automática. Si hay una versión nueva con instalador y hash publicados, **Descargar e instalar**
 la baja, verifica el SHA-256 y lanza el instalador. Ojo: esto solo funciona si las releases son accesibles
 públicamente; con un repositorio privado la app informa que no hay versiones para consultar.
@@ -73,7 +90,7 @@ públicamente; con un repositorio privado la app informa que no hay versiones pa
 
 Este proyecto se distribuye bajo licencia MIT (ver `LICENSE`) — sin garantía, "tal cual".
 
-Usa dos componentes de terceros, redistribuidos dentro de la publicación self-contained:
+Usa estos componentes de terceros, redistribuidos dentro de la publicación self-contained:
 
 - **DocumentFormat.OpenXml** (Microsoft, licencia MIT) — generación de los documentos Word y Excel.
 - **CommunityToolkit.Mvvm** (.NET Foundation, licencia MIT) — estructura MVVM de la interfaz.
@@ -82,6 +99,12 @@ Usa dos componentes de terceros, redistribuidos dentro de la publicación self-c
   Server Feature Pack) — cliente para conectarse al motor analítico local que expone
   Power BI Desktop. Es el mismo componente que redistribuyen otras herramientas
   públicas de la comunidad (DAX Studio, Tabular Editor) por el mismo motivo.
+
+## Comentarios y problemas
+
+Desde la app: menú ⚙ → **Enviar comentarios o reportar un problema**, o directamente en
+[Issues](https://github.com/IgnacioSimone/PBILayer/issues/new/choose). No pegues datos sensibles: la app solo lee
+metadata, pero lo que escribas en un issue puede ser público. Las vulnerabilidades se reportan en privado (ver [SECURITY.md](SECURITY.md)).
 
 ## Alcance
 
