@@ -266,6 +266,10 @@ public sealed partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void OpenDataFolder() => _dialogs.OpenWithShell(AppInfo.DataDirectory);
 
+    /// <summary>Abre la página para reportar un problema o proponer una mejora (formularios de GitHub Issues).</summary>
+    [RelayCommand]
+    private void OpenFeedback() => _dialogs.OpenWithShell(AppInfo.FeedbackUrl);
+
     /// <summary>Un único argumento que es un .pbix existente (Power BI Desktop, en cambio, pasa servidor y base).</summary>
     private static string? StartupFile(string[] args) =>
         args.Length == 2 && args[1].EndsWith(".pbix", StringComparison.OrdinalIgnoreCase) && File.Exists(args[1])
@@ -452,6 +456,7 @@ public sealed partial class MainViewModel : ObservableObject
             Measures.SetItems(_model.Measures);
             Tables.SetItems(_model.Tables);
             Columns.SetItems(_model.Columns);
+            Relationships.HiddenTables = _model.Tables.Where(t => t.IsHidden).Select(t => t.Name).ToHashSet();
             Relationships.SetItems(_model.Relationships);
             PowerQuery.SetItems(_model.PowerQueries);
 

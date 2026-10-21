@@ -89,6 +89,9 @@
             </DataGrid.ContextMenu>
         </DataGrid>
 
+        <!-- Contenido opcional encima de la grilla (mapa de relaciones) -->
+        <ContentPresenter Grid.Row="1" Content="{Binding GridOverlay, ElementName=Root}" />
+
         <!-- Búsqueda sin coincidencias en esta sección -->
         <TextBlock Grid.Row="1" Text="{Binding NoResultsText}" HorizontalAlignment="Center" VerticalAlignment="Center"
                    Margin="0,40,0,0" IsHitTestVisible="False"

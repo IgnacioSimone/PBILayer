@@ -1,0 +1,34 @@
+<UserControl x:Class="PBIExplorer.Views.RelationshipMapView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="clr-namespace:PBIExplorer.Views">
+    <Border Background="{DynamicResource CardBg}">
+        <Grid>
+            <ScrollViewer x:Name="Scroller" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                          PreviewMouseWheel="Scroller_PreviewMouseWheel">
+                <Grid x:Name="Surface" HorizontalAlignment="Center" VerticalAlignment="Center">
+                    <Grid.LayoutTransform>
+                        <ScaleTransform x:Name="Zoom" ScaleX="1" ScaleY="1" />
+                    </Grid.LayoutTransform>
+                    <Canvas x:Name="Map" />
+                </Grid>
+            </ScrollViewer>
+
+            <!-- Leyenda -->
+            <Border HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="14,0,0,14" Padding="12,9" CornerRadius="10"
+                    Background="{DynamicResource SidebarBg}" BorderBrush="{DynamicResource Separator}" BorderThickness="1">
+                <StackPanel>
+                    <TextBlock Text="{views:Loc Map_Legend1}" FontSize="11" Foreground="{DynamicResource InkDim}" />
+                    <TextBlock Text="{views:Loc Map_Legend2}" FontSize="11" Foreground="{DynamicResource InkDim}" Margin="0,3,0,0" />
+                    <TextBlock Text="{views:Loc Map_Legend3}" FontSize="11" Foreground="{DynamicResource InkDim}" Margin="0,3,0,0" />
+                    <TextBlock Text="{views:Loc Map_Hint}" FontSize="11" Foreground="{DynamicResource InkFaint}" Margin="0,6,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Ajustar a la ventana -->
+            <Button HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,22,14"
+                    Style="{StaticResource SoftButton}" Content="{views:Loc Map_Fit}" Click="Fit_Click"
+                    ToolTip="{views:Loc Map_FitTip}" />
+        </Grid>
+    </Border>
+</UserControl>

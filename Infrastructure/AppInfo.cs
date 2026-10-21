@@ -14,6 +14,7 @@ public static class AppInfo
     public const string RepositoryUrl = "https://github.com/" + RepositoryOwner + "/" + RepositoryName;
     public const string LicenseUrl = RepositoryUrl + "/blob/master/LICENSE";
     public const string LicenseName = "MIT";
+    public const string FeedbackUrl = RepositoryUrl + "/issues/new/choose";
 
     public static Version Version { get; } = ReadVersion();
 

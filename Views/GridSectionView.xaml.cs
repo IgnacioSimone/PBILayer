@@ -18,6 +18,10 @@ public partial class GridSectionView : UserControl
     public static readonly DependencyProperty HeaderContentProperty =
         DependencyProperty.Register(nameof(HeaderContent), typeof(object), typeof(GridSectionView));
 
+    /// <summary>Contenido que se dibuja encima de la grilla (por ejemplo, el mapa de relaciones). Vacío = solo la grilla.</summary>
+    public static readonly DependencyProperty GridOverlayProperty =
+        DependencyProperty.Register(nameof(GridOverlay), typeof(object), typeof(GridSectionView));
+
     private DataGridCell? _contextCell;
 
     public GridSectionView()
@@ -27,6 +31,12 @@ public partial class GridSectionView : UserControl
     }
 
     public ObservableCollection<DataGridColumn> Columns { get; } = new();
+
+    public object? GridOverlay
+    {
+        get => GetValue(GridOverlayProperty);
+        set => SetValue(GridOverlayProperty, value);
+    }
 
     public object? HeaderContent
     {

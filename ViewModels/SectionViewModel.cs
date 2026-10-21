@@ -210,6 +210,51 @@ public sealed class RelationshipsSectionViewModel() : GridSectionViewModel<Relat
         new(Loc.T("Col_Cardinality"), r => r.CardinalityText), new(Loc.T("Col_CrossFilter"), r => r.CrossFilterText),
         new(Loc.T("Col_Active"), r => YesNo(r.IsActive))
     };
+
+    private bool _showMap;
+    private MapLayout _map = MapLayout.Empty;
+
+    /// <summary>Tablas ocultas del modelo (se dibujan atenuadas en el mapa). Se asigna antes de <see cref="SetItems"/>.</summary>
+    public ISet<string> HiddenTables { get; set; } = new HashSet<string>();
+
+    /// <summary>true: se ve el mapa de relaciones; false: la lista.</summary>
+    public bool ShowMap
+    {
+        get => _showMap;
+        private set
+        {
+            SetProperty(ref _showMap, value);
+        }
+    }
+
+    /// <summary>Las tablas acomodadas para dibujarlas; vacío si el modelo no tiene relaciones.</summary>
+    public MapLayout Map
+    {
+        get => _map;
+        private set
+        {
+            if (SetProperty(ref _map, value))
+            {
+                ShowTableCommand.NotifyCanExecuteChanged();
+                ShowMapCommand.NotifyCanExecuteChanged();
+            }
+        }
+    }
+
+    private IRelayCommand? _showTableCommand, _showMapCommand;
+
+    public IRelayCommand ShowTableCommand => _showTableCommand ??= new RelayCommand(() => ShowMap = false);
+    public IRelayCommand ShowMapCommand => _showMapCommand ??= new RelayCommand(() => ShowMap = true, () => !Map.IsEmpty);
+
+    public override void SetItems(IEnumerable<RelationshipInfo> items)
+    {
+        var list = items.ToList();
+        base.SetItems(list);
+
+        // El acomodo se calcula una sola vez por modelo, no cada vez que se abre el mapa.
+        Map = RelationshipLayout.Compute(list, HiddenTables);
+        if (Map.IsEmpty) ShowMap = false;
+    }
 }
 
 public sealed class PowerQuerySectionViewModel() : GridSectionViewModel<PowerQueryInfo>(Loc.T("Section_PowerQuery"), "")

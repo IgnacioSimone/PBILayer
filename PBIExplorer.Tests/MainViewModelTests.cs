@@ -495,6 +495,17 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public void The_feedback_command_opens_the_issue_forms_of_the_project()
+    {
+        var dialogs = new FakeDialogs();
+        var vm = Create(dialogs: dialogs);
+
+        vm.OpenFeedbackCommand.Execute(null);
+
+        Assert.Equal(new[] { "https://github.com/IgnacioSimone/PBILayer/issues/new/choose" }, dialogs.Opened);
+    }
+
+    [Fact]
     public async Task The_waiting_card_shows_while_desktop_opens_the_file_and_goes_away_after()
     {
         var backend = new FakeBackend { Model = SampleModel() };

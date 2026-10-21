@@ -1,0 +1,16 @@
+Map_Table	Tabla	Table
+Map_Map	Mapa	Map
+Map_ViewTip	Ver las relaciones como lista o como mapa	See relationships as a list or as a map
+Map_Legend1	1  = uno      *  = muchos	1  = one      *  = many
+Map_Legend2	Flecha: hacia dónde viaja el filtro	Arrow: where the filter flows
+Map_Legend3	Línea punteada: relación inactiva	Dashed line: inactive relationship
+Map_Hint	Pasá el mouse por una tabla · Ctrl + rueda: zoom	Hover a table · Ctrl + wheel: zoom
+Map_Fit	Ajustar	Fit
+Map_FitTip	Ajustar el mapa a la ventana	Fit the map to the window
+Map_Connections	Relaciones: {0}	Relationships: {0}
+Map_HiddenTable	Tabla oculta	Hidden table
+Map_Inactive	Relación inactiva	Inactive relationship
+Map_FilterBoth	El filtro viaja en ambos sentidos	The filter flows both ways
+Map_FilterOne	El filtro viaja de {0} a {1}	The filter flows from {0} to {1}
+Feedback_Menu	Enviar comentarios o reportar un problema…	Send feedback or report a problem…
+Link_Feedback	Comentarios	Feedback

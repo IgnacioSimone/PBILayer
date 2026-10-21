@@ -1,0 +1,15 @@
+name: Proponer una mejora
+description: Una idea para que PBI Layer sea más útil
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: ¿Qué necesitás hacer?
+      description: Contá la situación o el problema; la solución puede venir después.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: ¿Cómo imaginás que funcionaría? (opcional)

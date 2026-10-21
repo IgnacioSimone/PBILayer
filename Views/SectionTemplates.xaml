@@ -88,6 +88,51 @@
 
     <DataTemplate DataType="{x:Type vm:RelationshipsSectionViewModel}">
         <views:GridSectionView>
+            <!-- Lista | Mapa: el botón de la vista activa va resaltado -->
+            <views:GridSectionView.HeaderContent>
+                <StackPanel Orientation="Horizontal" ToolTip="{views:Loc Map_ViewTip}">
+                    <Button Content="{views:Loc Map_Table}" Command="{Binding ShowTableCommand}" Margin="0,0,6,0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SoftButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowMap}" Value="False">
+                                        <Setter Property="Background" Value="{DynamicResource AccentStrong}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource AccentStrong}" />
+                                        <Setter Property="Foreground" Value="#151616" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Content="{views:Loc Map_Map}" Command="{Binding ShowMapCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource SoftButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ShowMap}" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentStrong}" />
+                                        <Setter Property="BorderBrush" Value="{DynamicResource AccentStrong}" />
+                                        <Setter Property="Foreground" Value="#151616" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </views:GridSectionView.HeaderContent>
+            <views:GridSectionView.GridOverlay>
+                <views:RelationshipMapView Layout="{Binding Map}">
+                    <views:RelationshipMapView.Style>
+                        <Style TargetType="views:RelationshipMapView">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ShowMap}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </views:RelationshipMapView.Style>
+                </views:RelationshipMapView>
+            </views:GridSectionView.GridOverlay>
             <DataGridTextColumn Header="{views:Loc Col_From, Upper=True}" Binding="{Binding FromTable}" Width="180" />
             <DataGridTextColumn Header="{views:Loc Col_Column, Upper=True}" Binding="{Binding FromColumn}" Width="180" />
             <DataGridTextColumn Header="{views:Loc Col_To, Upper=True}" Binding="{Binding ToTable}" Width="180" />

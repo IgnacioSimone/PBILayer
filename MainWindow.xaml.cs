@@ -136,6 +136,7 @@ public partial class MainWindow : Window
 
         Add(Loc.T("Menu_Shortcuts"), _viewModel.ShowShortcutsCommand, "F1");
         Add(Loc.T("Link_DataFolder"), _viewModel.OpenDataFolderCommand);
+        Add(Loc.T("Feedback_Menu"), _viewModel.OpenFeedbackCommand);
         menu.Items.Add(new Separator());
 
         // El idioma elegido se marca con un punto; el cambio se aplica al reiniciar.

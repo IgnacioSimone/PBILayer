@@ -84,6 +84,8 @@
                         CommandParameter="https://github.com/IgnacioSimone/PBILayer/blob/master/LICENSE" />
                 <Button Content="{views:Loc Link_Changelog}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
                         CommandParameter="https://github.com/IgnacioSimone/PBILayer/blob/master/CHANGELOG.md" />
+                <Button Content="{views:Loc Link_Feedback}" Style="{StaticResource LinkButton}" Command="{Binding OpenUrlCommand}"
+                        CommandParameter="https://github.com/IgnacioSimone/PBILayer/issues/new/choose" />
                 <Button Content="{views:Loc Link_DataFolder}" Style="{StaticResource LinkButton}" Command="{Binding OpenDataFolderCommand}"
                         ToolTip="{Binding DataFolder}" />
             </WrapPanel>

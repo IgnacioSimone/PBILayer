@@ -197,6 +197,22 @@
   <data name="Toast_NothingLoaded" xml:space="preserve"><value>No hay nada cargado todavía — conectate a un modelo o abrí un .pbix primero.</value></data>
   <data name="Default_SourceName" xml:space="preserve"><value>modelo</value></data>
   <data name="Status_PagesAndUses" xml:space="preserve"><value>{0} páginas · {1} usos de campos</value></data>
+  <data name="Map_Table" xml:space="preserve"><value>Tabla</value></data>
+  <data name="Map_Map" xml:space="preserve"><value>Mapa</value></data>
+  <data name="Map_ViewTip" xml:space="preserve"><value>Ver las relaciones como lista o como mapa</value></data>
+  <data name="Map_Legend1" xml:space="preserve"><value>1  = uno      *  = muchos</value></data>
+  <data name="Map_Legend2" xml:space="preserve"><value>Flecha: hacia dónde viaja el filtro</value></data>
+  <data name="Map_Legend3" xml:space="preserve"><value>Línea punteada: relación inactiva</value></data>
+  <data name="Map_Hint" xml:space="preserve"><value>Pasá el mouse por una tabla · Ctrl + rueda: zoom</value></data>
+  <data name="Map_Fit" xml:space="preserve"><value>Ajustar</value></data>
+  <data name="Map_FitTip" xml:space="preserve"><value>Ajustar el mapa a la ventana</value></data>
+  <data name="Map_Connections" xml:space="preserve"><value>Relaciones: {0}</value></data>
+  <data name="Map_HiddenTable" xml:space="preserve"><value>Tabla oculta</value></data>
+  <data name="Map_Inactive" xml:space="preserve"><value>Relación inactiva</value></data>
+  <data name="Map_FilterBoth" xml:space="preserve"><value>El filtro viaja en ambos sentidos</value></data>
+  <data name="Map_FilterOne" xml:space="preserve"><value>El filtro viaja de {0} a {1}</value></data>
+  <data name="Feedback_Menu" xml:space="preserve"><value>Enviar comentarios o reportar un problema…</value></data>
+  <data name="Link_Feedback" xml:space="preserve"><value>Comentarios</value></data>
   <data name="Filter_TypeUnknown" xml:space="preserve"><value>tipo desconocido</value></data>
   <data name="Filter_TypeOnly" xml:space="preserve"><value>(tipo: {0})</value></data>
   <data name="Filter_NotInterpreted" xml:space="preserve"><value>(tipo: {0} — condición no interpretada automáticamente)</value></data>

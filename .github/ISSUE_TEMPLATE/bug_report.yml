@@ -1,0 +1,35 @@
+name: Reportar un problema
+description: Algo no funciona como esperabas
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Gracias por avisar. **No pegues datos sensibles** (nombres de clientes, contraseñas, rutas con tu usuario):
+        la app solo lee metadata, pero lo que escribas acá puede ser público.
+  - type: input
+    id: version
+    attributes:
+      label: Versión de PBI Layer
+      description: Está en Acerca de (menú ⚙).
+      placeholder: "2.0.0"
+    validations:
+      required: true
+  - type: input
+    id: windows
+    attributes:
+      label: Versión de Windows y de Power BI Desktop
+      placeholder: "Windows 11 23H2 · Power BI Desktop octubre 2026"
+  - type: textarea
+    id: what
+    attributes:
+      label: ¿Qué pasó?
+      description: Contá los pasos para repetirlo y qué esperabas que pasara.
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Registro de errores (opcional)
+      description: Menú ⚙ → Carpeta de datos y registros → `debug.log`. Revisalo antes de pegarlo.
+      render: text
