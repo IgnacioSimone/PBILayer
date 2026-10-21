@@ -9,6 +9,8 @@ Versión grande: la app pasa de herramienta externa de un solo uso a una aplicac
 **Nuevo nombre: PBI Layer** (antes "PBI Context"). El instalador desinstala solo la versión anterior y las preferencias se copian a la carpeta nueva (`%LOCALAPPDATA%\PBILayer`).
 
 ### Agregado
+- **Mapa de relaciones** (Relaciones → *Mapa*): las tablas como cajas conectadas, con "1" / "*" en los extremos, flecha hacia donde viaja el filtro y línea punteada en las relaciones inactivas. Al pasar el mouse por una tabla se resaltan sus relaciones; Ctrl + rueda hace zoom.
+- Botón **Enviar comentarios o reportar un problema** (menú ⚙ y *Acerca de*), con formularios de GitHub Issues para fallas y mejoras.
 - Tarjetas del Resumen con una descripción breve; al presionarlas llevan a su sección.
 - Aviso de espera mientras Power BI Desktop abre el archivo, y botón ✕ para borrar de una vez el texto de los buscadores.
 - Interfaz y exportaciones (Word, Excel, HTML, CSV) en español e inglés; idioma automático según Windows, con selector en el menú Ayuda (se aplica al reiniciar).
