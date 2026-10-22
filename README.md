@@ -86,6 +86,21 @@ públicamente; con un repositorio privado la app informa que no hay versiones pa
   consulta por día a la API pública de GitHub (`releases/latest`) sin enviar nada tuyo, del modelo ni del
   tablero, y baja el instalador solo desde GitHub y verificando su SHA-256 antes de ejecutarlo.
 
+## Limitaciones conocidas
+
+Para que no te sorprendan:
+
+- **Solo abre archivos `.pbix`.** Los proyectos `.pbip` y las plantillas `.pbit` todavía no se pueden abrir.
+- **Necesita Power BI Desktop.** El modelo de un `.pbix` va comprimido y solo el motor de Power BI Desktop puede leerlo. Probada con la edición de escritorio habitual; la edición para *Report Server* no está probada.
+- **Un tablero a la vez es lo más confiable.** Con varios abiertos en Power BI Desktop, la app busca el que corresponde por nombre; si no puede decidir, puede conectarse a otro.
+- **Modelos con DirectQuery, conexión en vivo o compuestos** pueden mostrar información incompleta (por ejemplo, tablas o relaciones).
+- **Las tablas calculadas (DAX) no muestran su fórmula** en ninguna sección.
+- **"Uso y limpieza" es una ayuda, no una certeza.** No detecta usos en parámetros de campo, grupos de cálculo, marcadores, preguntas y respuestas (Q&A), seguridad por filas, acciones de detalle ni formato condicional. **Revisá antes de eliminar algo.**
+- **El formato interno de los reportes cambia** con las versiones de Power BI. Si falta algún visual o campo en una versión nueva, avisá con un Issue.
+- **Windows de 64 bits (x64).** En Windows para ARM no está probada.
+- **Sin firma digital:** Windows SmartScreen y algunos antivirus pueden avisar o bloquear el instalador (ver *Instalación*).
+- Desarrollada y probada con Power BI Desktop en Windows 11; en otros entornos pueden aparecer fallos. Los reportes ayudan a mejorarla.
+
 ## Comentarios y problemas
 
 Desde la app: menú ⚙ → **Enviar comentarios o reportar un problema**, o directamente en
