@@ -86,6 +86,15 @@ public partial class MainWindow : Window
         if (_settings.WindowMaximized) WindowState = WindowState.Maximized;
     }
 
+    private void FitToWorkArea()
+{
+    var work = SystemParameters.WorkArea;
+    MinWidth = Math.Min(MinWidth, work.Width);
+    MinHeight = Math.Min(MinHeight, work.Height);
+    Width = Math.Min(Width, work.Width);
+    Height = Math.Min(Height, work.Height);
+}
+
     private void OnClosing(object? sender, CancelEventArgs e)
     {
         var bounds = WindowState == WindowState.Normal ? new Rect(Left, Top, Width, Height) : RestoreBounds;
