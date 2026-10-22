@@ -29,33 +29,6 @@ herramienta, tal como lo hacen otras herramientas externas de la comunidad
 - Permisos de administrador **solo para instalar**.
 - Unos 50 MB de descarga y unos 160 MB de espacio una vez instalada.
 
-## Qué lee y qué no lee (privacidad)
-
-- Se conecta al modelo que Power BI Desktop ya tiene abierto en memoria: o bien lanzada desde la pestaña
-  [Herramientas externas](https://learn.microsoft.com/power-bi/transform-model/desktop-external-tools),
-  o bien sola, detectando el tablero abierto (por el proceso de Power BI Desktop y los archivos de su
-  carpeta de trabajo). Si abrís un `.pbix` que no está abierto en Power BI Desktop, lo abre ahí para poder leer su modelo.
-- Solo consulta las vistas de metadata del motor (`$SYSTEM.TMSCHEMA_*`): nombres de
-  tablas/columnas/medidas, fórmulas DAX, código M de Power Query, relaciones. **Nunca
-  ejecuta una consulta `EVALUATE` ni de ningún otro tipo sobre las tablas de datos** —
-  no hay forma de que esta herramienta lea una fila real de tu tablero.
-- Para leer visuales y qué campo usa cada uno, abre el archivo `.pbix` como un zip y lee
-  únicamente la definición del reporte (`Report/definition` o `Report/Layout`), nunca los
-  datos del modelo empaquetados adentro.
-- Para encontrar automáticamente el `.pbix` abierto, busca por nombre de archivo en el
-  Escritorio, Documentos, OneDrive y el resto de tus discos locales. No sube nada a
-  ningún servidor: toda la búsqueda y lectura ocurre en tu máquina.
-- El código DAX/M que se exporta pasa por un enmascarado automático de patrones
-  sensibles (emails, DNI, CUIT/CUIL, contraseñas/tokens en cadenas de conexión, rutas
-  locales que revelan tu usuario de Windows) antes de escribirse en cualquier exportación (Word, Excel, HTML, CSV, Markdown).
-  Aun así, revisá el archivo exportado antes de compartirlo — ninguna heurística
-  automática reemplaza una revisión humana si tu modelo tiene texto libre con datos
-  personales embebidos a mano en una fórmula.
-- **No hay telemetría.** La única conexión de red posible es **buscar actualizaciones**: está apagada por
-  defecto, solo se activa si lo elegís (la app te pregunta una vez, y se cambia en *Acerca de*), hace una
-  consulta por día a la API pública de GitHub (`releases/latest`) sin enviar nada tuyo, del modelo ni del
-  tablero, y baja el instalador solo desde GitHub y verificando su SHA-256 antes de ejecutarlo.
-
 ## Instalación
 
 ### Instalador (recomendado)
@@ -86,6 +59,39 @@ no la búsqueda automática. Si hay una versión nueva con instalador y hash pub
 la baja, verifica el SHA-256 y lanza el instalador. Ojo: esto solo funciona si las releases son accesibles
 públicamente; con un repositorio privado la app informa que no hay versiones para consultar.
 
+## Qué lee y qué no lee (privacidad)
+
+- Se conecta al modelo que Power BI Desktop ya tiene abierto en memoria: o bien lanzada desde la pestaña
+  [Herramientas externas](https://learn.microsoft.com/power-bi/transform-model/desktop-external-tools),
+  o bien sola, detectando el tablero abierto (por el proceso de Power BI Desktop y los archivos de su
+  carpeta de trabajo). Si abrís un `.pbix` que no está abierto en Power BI Desktop, lo abre ahí para poder leer su modelo.
+- Solo consulta las vistas de metadata del motor (`$SYSTEM.TMSCHEMA_*`): nombres de
+  tablas/columnas/medidas, fórmulas DAX, código M de Power Query, relaciones. **Nunca
+  ejecuta una consulta `EVALUATE` ni de ningún otro tipo sobre las tablas de datos** —
+  no hay forma de que esta herramienta lea una fila real de tu tablero.
+- Para leer visuales y qué campo usa cada uno, abre el archivo `.pbix` como un zip y lee
+  únicamente la definición del reporte (`Report/definition` o `Report/Layout`), nunca los
+  datos del modelo empaquetados adentro.
+- Para encontrar automáticamente el `.pbix` abierto, busca por nombre de archivo en el
+  Escritorio, Documentos, OneDrive y el resto de tus discos locales. No sube nada a
+  ningún servidor: toda la búsqueda y lectura ocurre en tu máquina.
+- El código DAX/M que se exporta pasa por un enmascarado automático de patrones
+  sensibles (emails, DNI, CUIT/CUIL, contraseñas/tokens en cadenas de conexión, rutas
+  locales que revelan tu usuario de Windows) antes de escribirse en cualquier exportación (Word, Excel, HTML, CSV, Markdown).
+  Aun así, revisá el archivo exportado antes de compartirlo — ninguna heurística
+  automática reemplaza una revisión humana si tu modelo tiene texto libre con datos
+  personales embebidos a mano en una fórmula.
+- **No hay telemetría.** La única conexión de red posible es **buscar actualizaciones**: está apagada por
+  defecto, solo se activa si lo elegís (la app te pregunta una vez, y se cambia en *Acerca de*), hace una
+  consulta por día a la API pública de GitHub (`releases/latest`) sin enviar nada tuyo, del modelo ni del
+  tablero, y baja el instalador solo desde GitHub y verificando su SHA-256 antes de ejecutarlo.
+
+## Comentarios y problemas
+
+Desde la app: menú ⚙ → **Enviar comentarios o reportar un problema**, o directamente en
+[Issues](https://github.com/IgnacioSimone/PBILayer/issues/new/choose). No pegues datos sensibles: la app solo lee
+metadata, pero lo que escribas en un issue puede ser público. Las vulnerabilidades se reportan en privado (ver [SECURITY.md](SECURITY.md)).
+
 ## Licencia y dependencias de terceros
 
 Este proyecto se distribuye bajo licencia MIT (ver `LICENSE`) — sin garantía, "tal cual".
@@ -99,12 +105,6 @@ Usa estos componentes de terceros, redistribuidos dentro de la publicación self
   Server Feature Pack) — cliente para conectarse al motor analítico local que expone
   Power BI Desktop. Es el mismo componente que redistribuyen otras herramientas
   públicas de la comunidad (DAX Studio, Tabular Editor) por el mismo motivo.
-
-## Comentarios y problemas
-
-Desde la app: menú ⚙ → **Enviar comentarios o reportar un problema**, o directamente en
-[Issues](https://github.com/IgnacioSimone/PBILayer/issues/new/choose). No pegues datos sensibles: la app solo lee
-metadata, pero lo que escribas en un issue puede ser público. Las vulnerabilidades se reportan en privado (ver [SECURITY.md](SECURITY.md)).
 
 ## Alcance
 
