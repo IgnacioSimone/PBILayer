@@ -48,6 +48,8 @@ OutputDir=..\installer_output
 OutputBaseFilename=PBILayer-Setup-{#AppVersion}
 #endif
 SetupIconFile=..\Assets\PBILayer.ico
+; Al terminar avisa a Windows que los iconos cambiaron, para que el Explorador refresque la cache y no quede el icono viejo.
+ChangesAssociations=yes
 UninstallDisplayIcon={app}\{#AppExe}
 UninstallDisplayName={#AppName}
 LicenseFile=..\LICENSE

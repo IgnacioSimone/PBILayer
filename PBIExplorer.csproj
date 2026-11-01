@@ -17,9 +17,9 @@
     <Description>Documenta un modelo de Power BI y su reporte (medidas, tablas, relaciones, Power Query, visuales y qué se usa) sin tocar datos.</Description>
     <Company>Ignacio Simone</Company>
     <Copyright>© 2026 Ignacio Simone — Licencia MIT</Copyright>
-    <Version>2.0.1</Version>
-    <AssemblyVersion>2.0.1.0</AssemblyVersion>
-    <FileVersion>2.0.1.0</FileVersion>
+    <Version>2.0.2</Version>
+    <AssemblyVersion>2.0.2.0</AssemblyVersion>
+    <FileVersion>2.0.2.0</FileVersion>
     <RepositoryUrl>https://github.com/IgnacioSimone/PBILayer</RepositoryUrl>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 

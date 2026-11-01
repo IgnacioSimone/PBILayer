@@ -2,6 +2,11 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). Las versiones siguen [SemVer](https://semver.org/lang/es/).
 
+## [2.0.2] — 2026-11-01
+
+### Corregido
+- El instalador ahora avisa a Windows que los íconos cambiaron, para que el escritorio y la barra de tareas muestren el ícono nuevo sin tener que reiniciar sesión ni borrar el acceso directo.
+
 ## [2.0.1] — 2026-11-01
 
 ### Cambiado
