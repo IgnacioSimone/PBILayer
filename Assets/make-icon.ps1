@@ -78,15 +78,15 @@ function Render([int]$size) {
         $brush.Dispose()
     }
 
-    # Los textos decorativos (01 {} CSV / 10 [] XML) solo se leen a partir de 64 px.
-    if ($size -ge 64) {
+    # Los textos decorativos (01 {} CSV / 10 [] XML) solo se leen a partir de 40 px.
+    if ($size -ge 40) {
         $family = New-Object Drawing.FontFamily 'Consolas'
-        $font = New-Object Drawing.Font $family, ([single](5 * $s)), ([Drawing.FontStyle]::Bold), ([Drawing.GraphicsUnit]::Pixel)
+        $font = New-Object Drawing.Font $family, ([single](8 * $s)), ([Drawing.FontStyle]::Bold), ([Drawing.GraphicsUnit]::Pixel)
         $ascent = $font.Size * $family.GetCellAscent([Drawing.FontStyle]::Bold) / $family.GetEmHeight([Drawing.FontStyle]::Bold)
         $g.TextRenderingHint = 'AntiAliasGridFit'
         $labels = @(
-            @(17, 90, '01', 255), @(20, 99, '{}', 179), @(15, 109, 'CSV', 102),
-            @(101, 90, '10', 255), @(98, 99, '[]', 179), @(96, 109, 'XML', 102)
+            @(9, 88, '01', 255), @(9, 98, '{}', 200), @(9, 108, 'CSV', 140),
+            @(106, 88, '10', 255), @(106, 98, '[]', 200), @(106, 108, 'XML', 140)
         )
         foreach ($l in $labels) {
             $tb = New-Object Drawing.SolidBrush ([Drawing.Color]::FromArgb($l[3], 0xF6, 0xC9, 0x44))

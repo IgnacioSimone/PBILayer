@@ -2,6 +2,12 @@
 
 Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). Las versiones siguen [SemVer](https://semver.org/lang/es/).
 
+## [2.0.1] — 2026-11-01
+
+### Cambiado
+- Icono: los rótulos `01 {} CSV` y `10 [] XML` de los costados ahora son más grandes y se ven también en el escritorio y la barra de tareas (antes solo aparecían desde 64 px).
+- La ventana se limita al área útil de la pantalla.
+
 ## [2.0.0] — 2026-10-18
 
 Versión grande: la app pasa de herramienta externa de un solo uso a una aplicación completa.
